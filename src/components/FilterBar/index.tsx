@@ -3,6 +3,7 @@
  * 独立的筛选器容器
  */
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Form, Input, Select, DatePicker, Space, Button, Tag } from 'antd';
 import { SearchOutlined, ReloadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { colors } from '../../styles/tokens';
@@ -58,6 +59,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   showCollapse = true,
   defaultShowCount = 3,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [expanded, setExpanded] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
@@ -70,7 +72,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       case 'text':
         return (
           <Input
-            placeholder={placeholder || `请输入${filter.label}`}
+            placeholder={placeholder || t('components.filterBar.pleaseEnter', { label: filter.label })}
             allowClear
           />
         );
@@ -78,7 +80,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       case 'select':
         return (
           <Select
-            placeholder={placeholder || `请选择${filter.label}`}
+            placeholder={placeholder || t('components.filterBar.pleaseSelect', { label: filter.label })}
             allowClear
             mode={mode}
             options={options}
@@ -89,7 +91,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       case 'date':
         return (
           <DatePicker
-            placeholder={placeholder || `请选择${filter.label}`}
+            placeholder={placeholder || t('components.filterBar.pleaseSelect', { label: filter.label })}
             style={{ width: '100%' }}
           />
         );
@@ -103,7 +105,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         return (
           <Input
             type="number"
-            placeholder={placeholder || `请输入${filter.label}`}
+            placeholder={placeholder || t('components.filterBar.pleaseEnter', { label: filter.label })}
             allowClear
           />
         );
@@ -189,10 +191,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               onClick={handleSearch}
               loading={loading}
             >
-              搜索
+              {t('components.filterBar.search')}
             </Button>
             <Button icon={<ReloadOutlined />} onClick={handleReset}>
-              重置
+              {t('components.filterBar.reset')}
             </Button>
             {showCollapse && hasMoreFilters && (
               <Button
@@ -200,7 +202,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 onClick={() => setExpanded(!expanded)}
                 icon={expanded ? <UpOutlined /> : <DownOutlined />}
               >
-                {expanded ? '收起' : '展开'}
+                {expanded ? t('components.filterBar.collapse') : t('components.filterBar.expand')}
               </Button>
             )}
           </Space>
@@ -219,7 +221,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           marginTop: 8,
         }}>
           <span style={{ color: colors.text.secondary, fontSize: 13 }}>
-            当前筛选：
+            {t('components.filterBar.currentFilter')}
           </span>
           {Object.entries(activeFilters).map(([name, value]) => (
             <Tag
@@ -237,7 +239,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             onClick={handleReset}
             style={{ padding: 0 }}
           >
-            清除全部
+            {t('components.filterBar.clearAll')}
           </Button>
         </div>
       )}

@@ -4,26 +4,29 @@
 
 import React from 'react';
 import { Card, Row, Col, Table, Statistic, Progress } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { LineChart } from '../components/Charts/LineChart';
 import { PieChart } from '../components/Charts/PieChart';
 import { BarChart } from '../components/Charts/BarChart';
 import { customerReport } from '../mock/reportData';
 
 const CustomerReport: React.FC = () => {
+  const { t } = useTranslation();
+
   const industryColumns = [
     {
-      title: '行业',
+      title: t('report.customer.industry'),
       dataIndex: 'industry',
       key: 'industry',
     },
     {
-      title: '客户数',
+      title: t('report.customer.customerCount'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
     },
     {
-      title: '占比',
+      title: t('report.customer.percentage'),
       dataIndex: 'percentage',
       key: 'percentage',
       render: (percentage: number) => (
@@ -39,7 +42,7 @@ const CustomerReport: React.FC = () => {
 
   const levelColumns = [
     {
-      title: '等级',
+      title: t('report.customer.level'),
       dataIndex: 'level',
       key: 'level',
       render: (level: string, record: any) => (
@@ -47,18 +50,18 @@ const CustomerReport: React.FC = () => {
           fontWeight: 'bold',
           color: level === 'A' ? '#f5222d' : level === 'B' ? '#faad14' : level === 'C' ? '#1890ff' : '#999',
         }}>
-          {level}级 - {record.label}
+          {level}{t('report.customer.levelSuffix')} - {record.label}
         </span>
       ),
     },
     {
-      title: '客户数',
+      title: t('report.customer.customerCount'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
     },
     {
-      title: '占比',
+      title: t('report.customer.percentage'),
       dataIndex: 'percentage',
       key: 'percentage',
       render: (percentage: number) => (
@@ -85,7 +88,7 @@ const CustomerReport: React.FC = () => {
   }));
 
   const levelBarData = customerReport.levelDist.map((item) => ({
-    name: `${item.level}级`,
+    name: `${item.level}${t('report.customer.levelSuffix')}`,
     value: item.count,
     percentage: item.percentage,
   }));
@@ -98,9 +101,9 @@ const CustomerReport: React.FC = () => {
     <div style={{ background: '#f0f2f5', minHeight: '100vh', padding: 16 }}>
       <Card style={{ marginBottom: 16 }}>
         <div>
-          <h2 style={{ margin: 0 }}>👥 客户分析报表</h2>
+          <h2 style={{ margin: 0 }}>👥 {t('report.customer.title')}</h2>
           <p style={{ margin: '8px 0 0 0', color: '#999' }}>
-            查看客户增长趋势和分布情况
+            {t('report.customer.subtitle')}
           </p>
         </div>
       </Card>
@@ -109,9 +112,9 @@ const CustomerReport: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="客户总数"
+              title={t('report.customer.totalCustomers')}
               value={totalCustomers}
-              suffix="个"
+              suffix={t('common.unit.count')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Card>
@@ -119,9 +122,9 @@ const CustomerReport: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="12 月新增"
+              title={t('report.customer.newIn12Months')}
               value={totalNewCustomers}
-              suffix="个"
+              suffix={t('common.unit.count')}
               valueStyle={{ color: '#52c41a' }}
             />
           </Card>
@@ -129,9 +132,9 @@ const CustomerReport: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="平均月增长率"
+              title={t('report.customer.avgGrowthRate')}
               value={avgGrowthRate}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               precision={1}
               valueStyle={{ color: '#faad14' }}
             />
@@ -141,19 +144,19 @@ const CustomerReport: React.FC = () => {
 
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={16}>
-          <Card title="📈 客户增长趋势">
+          <Card title={`📈 ${t('report.customer.growthTrend')}`}>
             <LineChart
               data={growthChartData}
               dataKeys={[
-                { key: 'newCustomers', name: '新增客户', color: '#1890ff' },
-                { key: 'totalCustomers', name: '总客户数', color: '#52c41a' },
+                { key: 'newCustomers', name: t('report.customer.newCustomers'), color: '#1890ff' },
+                { key: 'totalCustomers', name: t('report.customer.totalCustomersChart'), color: '#52c41a' },
               ]}
               height={300}
             />
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="客户行业分布">
+          <Card title={t('report.customer.industryDistribution')}>
             <PieChart
               data={industryPieData}
               height={300}
@@ -166,7 +169,7 @@ const CustomerReport: React.FC = () => {
 
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="📊 客户等级分布">
+          <Card title={`📊 ${t('report.customer.levelDistribution')}`}>
             <div style={{ height: 250, marginBottom: 16 }}>
               <BarChart
                 data={levelBarData}
@@ -184,7 +187,7 @@ const CustomerReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="🏭 客户行业详情">
+          <Card title={`🏭 ${t('report.customer.industryDetails')}`}>
             <Table
               columns={industryColumns}
               dataSource={customerReport.industryDist}

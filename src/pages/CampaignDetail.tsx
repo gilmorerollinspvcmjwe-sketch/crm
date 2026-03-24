@@ -30,6 +30,7 @@ import {
   BarChartOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Campaign, CampaignStatus, CampaignParticipant } from '../types/marketing';
 import { getCampaignsData } from '../mock/marketingData';
 // TODO: 图表功能暂时禁用，等待 @ant-design/charts 安装完成
@@ -41,6 +42,7 @@ const { Title } = Typography;
  * 营销活动详情页组件
  */
 export const CampaignDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
@@ -101,10 +103,10 @@ export const CampaignDetail: React.FC = () => {
           },
         ]);
       } else {
-        message.error('未找到该营销活动');
+        message.error(t('marketing.campaignDetail.notFound'));
       }
     } catch (error) {
-      message.error('加载活动详情失败');
+      message.error(t('marketing.campaignDetail.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -125,69 +127,15 @@ export const CampaignDetail: React.FC = () => {
     [CampaignStatus.COMPLETED]: 'purple',
   };
 
-  /** 效果趋势图配置 */
-  const trendConfig = {
-    data: [
-      { date: '03-01', sent: 120, opened: 60, clicked: 24, converted: 5 },
-      { date: '03-02', sent: 150, opened: 75, clicked: 30, converted: 6 },
-      { date: '03-03', sent: 180, opened: 90, clicked: 36, converted: 7 },
-      { date: '03-04', sent: 200, opened: 100, clicked: 40, converted: 8 },
-      { date: '03-05', sent: 250, opened: 125, clicked: 50, converted: 10 },
-      { date: '03-06', sent: 280, opened: 140, clicked: 56, converted: 11 },
-      { date: '03-07', sent: 320, opened: 160, clicked: 64, converted: 13 },
-      { date: '03-08', sent: 380, opened: 190, clicked: 76, converted: 15 },
-      { date: '03-09', sent: 450, opened: 225, clicked: 90, converted: 18 },
-      { date: '03-10', sent: 520, opened: 260, clicked: 104, converted: 21 },
-      { date: '03-11', sent: 600, opened: 300, clicked: 120, converted: 24 },
-      { date: '03-12', sent: 680, opened: 340, clicked: 136, converted: 27 },
-    ],
-    xField: 'date',
-    yField: 'value',
-    seriesField: 'type',
-    legend: {
-      position: 'top' as const,
-    },
-    smooth: true,
-    animation: {
-      appear: {
-        animation: 'path-in',
-        duration: 1000,
-      },
-    },
-  };
-
-  /** 渠道分布图配置 */
-  const pieConfig = {
-    appendPadding: 10,
-    data: [
-      { type: '邮件打开', value: campaign?.metrics.opened || 0 },
-      { type: '邮件点击', value: campaign?.metrics.clicked || 0 },
-      { type: '转化', value: campaign?.metrics.converted || 0 },
-      { type: '未打开', value: (campaign?.metrics.delivered || 0) - (campaign?.metrics.opened || 0) },
-    ],
-    angleField: 'value',
-    colorField: 'type',
-    radius: 0.8,
-    label: {
-      type: 'outer',
-      content: '{name} {percentage}',
-    },
-    interactions: [
-      {
-        type: 'element-active',
-      },
-    ],
-  };
-
   /** 参与者表格列 */
   const participantColumns = [
     {
-      title: '客户名称',
+      title: t('marketing.campaignDetail.customerName'),
       dataIndex: 'customerName',
       key: 'customerName',
     },
     {
-      title: '联系方式',
+      title: t('marketing.campaignDetail.contactInfo'),
       key: 'contact',
       render: (_: unknown, record: CampaignParticipant) => (
         <Space direction="vertical" size={0}>
@@ -197,7 +145,7 @@ export const CampaignDetail: React.FC = () => {
       ),
     },
     {
-      title: '状态',
+      title: t('marketing.campaigns.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => {
@@ -210,18 +158,18 @@ export const CampaignDetail: React.FC = () => {
           bounced: 'red',
         };
         const statusLabels: Record<string, string> = {
-          sent: '已发送',
-          delivered: '已送达',
-          opened: '已打开',
-          clicked: '已点击',
-          converted: '已转化',
-          bounced: '已退回',
+          sent: t('marketing.campaignDetail.statusSent'),
+          delivered: t('marketing.campaignDetail.statusDelivered'),
+          opened: t('marketing.campaignDetail.statusOpened'),
+          clicked: t('marketing.campaignDetail.statusClicked'),
+          converted: t('marketing.campaignDetail.statusConverted'),
+          bounced: t('marketing.campaignDetail.statusBounced'),
         };
         return <Tag color={statusMap[status]}>{statusLabels[status]}</Tag>;
       },
     },
     {
-      title: '参与时间',
+      title: t('marketing.campaignDetail.participatedAt'),
       dataIndex: 'participatedAt',
       key: 'participatedAt',
       render: (time: string) => new Date(time).toLocaleString('zh-CN'),
@@ -242,104 +190,104 @@ export const CampaignDetail: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space>
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/marketing/campaigns')}>
-            返回列表
+            {t('marketing.campaignDetail.backToList')}
           </Button>
           <Space style={{ marginLeft: 'auto' }}>
             {campaign.status === CampaignStatus.RUNNING && (
-              <Button icon={<PauseCircleOutlined />}>暂停活动</Button>
+              <Button icon={<PauseCircleOutlined />}>{t('marketing.campaignDetail.pauseCampaign')}</Button>
             )}
             {campaign.status === CampaignStatus.PAUSED && (
               <Button type="primary" icon={<PlayCircleOutlined />}>
-                继续活动
+                {t('marketing.campaignDetail.continueCampaign')}
               </Button>
             )}
-            <Button icon={<EditOutlined />}>编辑活动</Button>
+            <Button icon={<EditOutlined />}>{t('marketing.campaignDetail.editCampaign')}</Button>
           </Space>
         </Space>
       </Card>
 
       {/* 基本信息 */}
-      <Card title="活动基本信息" style={{ marginBottom: 16 }}>
+      <Card title={t('marketing.campaignDetail.title')} style={{ marginBottom: 16 }}>
         <Descriptions column={2} bordered>
-          <Descriptions.Item label="活动名称" span={2}>
+          <Descriptions.Item label={t('marketing.campaignDetail.campaignName')} span={2}>
             <Title level={4} style={{ margin: 0 }}>{campaign.name}</Title>
           </Descriptions.Item>
-          <Descriptions.Item label="活动类型">
+          <Descriptions.Item label={t('marketing.campaignDetail.campaignType')}>
             <Tag color={statusColorMap[campaign.status]}>{campaign.type}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="活动状态">
+          <Descriptions.Item label={t('marketing.campaignDetail.campaignStatus')}>
             <Tag color={statusColorMap[campaign.status]}>{campaign.status}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="负责人">{campaign.ownerName}</Descriptions.Item>
-          <Descriptions.Item label="预算">¥{(campaign.budget / 10000).toFixed(1)}万</Descriptions.Item>
-          <Descriptions.Item label="开始时间">{campaign.startDate}</Descriptions.Item>
-          <Descriptions.Item label="结束时间">{campaign.endDate}</Descriptions.Item>
-          <Descriptions.Item label="目标客户列表" span={2}>
-            {campaign.targetListName || '未指定'}
+          <Descriptions.Item label={t('marketing.campaignDetail.owner')}>{campaign.ownerName}</Descriptions.Item>
+          <Descriptions.Item label={t('marketing.campaignDetail.budget')}>¥{(campaign.budget / 10000).toFixed(1)}{t('marketing.campaigns.unitWan')}</Descriptions.Item>
+          <Descriptions.Item label={t('marketing.campaignDetail.startTime')}>{campaign.startDate}</Descriptions.Item>
+          <Descriptions.Item label={t('marketing.campaignDetail.endTime')}>{campaign.endDate}</Descriptions.Item>
+          <Descriptions.Item label={t('marketing.campaignDetail.targetCustomerList')} span={2}>
+            {campaign.targetListName || t('marketing.campaignDetail.notSpecified')}
           </Descriptions.Item>
-          <Descriptions.Item label="邮件模板" span={2}>
-            {campaign.emailTemplateName || '未指定'}
+          <Descriptions.Item label={t('marketing.campaignDetail.emailTemplate')} span={2}>
+            {campaign.emailTemplateName || t('marketing.campaignDetail.notSpecified')}
           </Descriptions.Item>
-          <Descriptions.Item label="工作流" span={2}>
-            {campaign.workflowName || '未指定'}
+          <Descriptions.Item label={t('marketing.campaignDetail.workflow')} span={2}>
+            {campaign.workflowName || t('marketing.campaignDetail.notSpecified')}
           </Descriptions.Item>
-          <Descriptions.Item label="活动目标" span={2}>
+          <Descriptions.Item label={t('marketing.campaignDetail.goal')} span={2}>
             {campaign.goal}
           </Descriptions.Item>
-          <Descriptions.Item label="活动描述" span={2}>
-            {campaign.description || '无'}
+          <Descriptions.Item label={t('marketing.campaignDetail.description')} span={2}>
+            {campaign.description || t('marketing.campaignDetail.none')}
           </Descriptions.Item>
         </Descriptions>
       </Card>
 
       {/* 效果数据 */}
-      <Card title="效果数据分析" style={{ marginBottom: 16 }}>
+      <Card title={t('marketing.campaignDetail.effectAnalysis')} style={{ marginBottom: 16 }}>
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={4}>
             <Statistic
-              title="发送数量"
+              title={t('marketing.campaignDetail.sentCount')}
               value={campaign.metrics.sent}
-              suffix="封"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Col>
           <Col span={4}>
             <Statistic
-              title="送达数量"
+              title={t('marketing.campaignDetail.deliveredCount')}
               value={campaign.metrics.delivered}
-              suffix="封"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#52c41a' }}
             />
           </Col>
           <Col span={4}>
             <Statistic
-              title="打开数量"
+              title={t('marketing.campaignDetail.openedCount')}
               value={campaign.metrics.opened}
-              suffix="封"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#13c2c2' }}
             />
           </Col>
           <Col span={4}>
             <Statistic
-              title="点击数量"
+              title={t('marketing.campaignDetail.clickedCount')}
               value={campaign.metrics.clicked}
-              suffix="次"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#faad14' }}
             />
           </Col>
           <Col span={4}>
             <Statistic
-              title="转化数量"
+              title={t('marketing.campaignDetail.convertedCount')}
               value={campaign.metrics.converted}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#722ed1' }}
             />
           </Col>
           <Col span={4}>
             <Statistic
-              title="退回数量"
+              title={t('marketing.campaignDetail.bouncedCount')}
               value={campaign.metrics.bounced}
-              suffix="封"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#ff4d4f' }}
             />
           </Col>
@@ -353,7 +301,7 @@ export const CampaignDetail: React.FC = () => {
                 percent={campaign.metrics.openRate}
                 format={() => `${campaign.metrics.openRate.toFixed(1)}%`}
               />
-              <div>打开率</div>
+              <div>{t('marketing.campaignDetail.openRate')}</div>
             </div>
           </Col>
           <Col span={6}>
@@ -363,7 +311,7 @@ export const CampaignDetail: React.FC = () => {
                 percent={campaign.metrics.clickRate}
                 format={() => `${campaign.metrics.clickRate.toFixed(1)}%`}
               />
-              <div>点击率</div>
+              <div>{t('marketing.campaignDetail.clickRate')}</div>
             </div>
           </Col>
           <Col span={6}>
@@ -373,7 +321,7 @@ export const CampaignDetail: React.FC = () => {
                 percent={campaign.metrics.conversionRate}
                 format={() => `${campaign.metrics.conversionRate.toFixed(1)}%`}
               />
-              <div>转化率</div>
+              <div>{t('marketing.campaignDetail.conversionRate')}</div>
             </div>
           </Col>
           <Col span={6}>
@@ -384,23 +332,23 @@ export const CampaignDetail: React.FC = () => {
                 strokeColor="#ff4d4f"
                 format={() => `${((campaign.metrics.bounced / campaign.metrics.sent) * 100).toFixed(1)}%`}
               />
-              <div>退回率</div>
+              <div>{t('marketing.campaignDetail.bounceRate')}</div>
             </div>
           </Col>
         </Row>
 
         <Row gutter={16}>
           <Col span={16}>
-            <Title level={5}>效果趋势</Title>
+            <Title level={5}>{t('marketing.campaignDetail.effectTrend')}</Title>
             <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
-              图表功能暂时禁用（等待 @ant-design/charts 安装）
+              {t('marketing.campaignDetail.chartDisabled')}
             </div>
             {/* <Line {...trendConfig} height={300} /> */}
           </Col>
           <Col span={8}>
-            <Title level={5}>转化漏斗</Title>
+            <Title level={5}>{t('marketing.campaignDetail.conversionFunnel')}</Title>
             <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
-              图表功能暂时禁用（等待 @ant-design/charts 安装）
+              {t('marketing.campaignDetail.chartDisabled')}
             </div>
             {/* <Pie {...pieConfig} height={300} /> */}
           </Col>
@@ -408,7 +356,7 @@ export const CampaignDetail: React.FC = () => {
       </Card>
 
       {/* 参与客户列表 */}
-      <Card title="参与客户列表">
+      <Card title={t('marketing.campaignDetail.participantList')}>
         <Table
           columns={participantColumns}
           dataSource={participants}

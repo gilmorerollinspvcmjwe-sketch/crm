@@ -17,23 +17,23 @@ import {
   Divider,
   Row,
   Col,
-  Tooltip,
 } from 'antd';
 import {
   RobotOutlined,
-  PlayCircleOutlined,
   FileTextOutlined,
   ThunderboltOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   ExportOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { MeetingRecord } from '../types/ai';
 import { meetingRecords } from '../mock/aiData';
 
 const { Title, Text, Paragraph } = Typography;
 
 const MeetingAssistant: React.FC = () => {
+  const { t } = useTranslation();
   const [meetings, setMeetings] = useState<MeetingRecord[]>(meetingRecords);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentMeeting, setCurrentMeeting] = useState<MeetingRecord | null>(null);
@@ -54,11 +54,11 @@ const MeetingAssistant: React.FC = () => {
   const getSentimentText = (sentiment: string): string => {
     switch (sentiment) {
       case 'positive':
-        return '积极';
+        return t('ai.meetingAssistant.sentimentPositive');
       case 'negative':
-        return '消极';
+        return t('ai.meetingAssistant.sentimentNegative');
       default:
-        return '中性';
+        return t('ai.meetingAssistant.sentimentNeutral');
     }
   };
 
@@ -75,19 +75,19 @@ const MeetingAssistant: React.FC = () => {
     const content = `
 # ${currentMeeting.title}
 
-## 会议信息
-- 日期：${currentMeeting.date}
-- 时间：${currentMeeting.time}
-- 时长：${currentMeeting.duration}分钟
-- 参会人数：${currentMeeting.participants.length}人
+## ${t('ai.meetingAssistant.meetingInfo')}
+- ${t('ai.meetingAssistant.date')}：${currentMeeting.date}
+- ${t('ai.meetingAssistant.time')}：${currentMeeting.time}
+- ${t('ai.meetingAssistant.duration')}：${currentMeeting.duration}${t('ai.meetingAssistant.minutes')}
+- ${t('ai.meetingAssistant.participantsCount')}：${currentMeeting.participants.length}${t('ai.meetingAssistant.people')}
 
-## AI 会议纪要
+## ${t('ai.meetingAssistant.aiSummary')}
 ${currentMeeting.aiSummary}
 
-## 待办事项
-${currentMeeting.actionItems.map((item) => `- [${item.status === 'completed' ? 'x' : ' '}] ${item.content} (负责人：${item.assignee || '未分配'}, 截止日期：${item.dueDate || '无'}, 优先级：${item.priority})`).join('\n')}
+## ${t('ai.meetingAssistant.actionItems')}
+${currentMeeting.actionItems.map((item) => `- [${item.status === 'completed' ? 'x' : ' '}] ${item.content} (${t('ai.meetingAssistant.assignee')}：${item.assignee || t('ai.meetingAssistant.unassigned')}, ${t('ai.meetingAssistant.dueDate')}：${item.dueDate || t('ai.meetingAssistant.none')}, ${t('ai.meetingAssistant.priority')}：${item.priority})`).join('\n')}
 
-## 关键词
+## ${t('ai.meetingAssistant.keywords')}
 ${currentMeeting.keywords.join(', ')}
     `.trim();
 
@@ -99,7 +99,7 @@ ${currentMeeting.keywords.join(', ')}
     a.click();
     URL.revokeObjectURL(url);
 
-    message.success('会议纪要已导出');
+    message.success(t('ai.meetingAssistant.exportSuccess'));
   };
 
   // 更新待办状态
@@ -134,7 +134,19 @@ ${currentMeeting.keywords.join(', ')}
         : null
     );
 
-    message.success('待办状态已更新');
+    message.success(t('ai.meetingAssistant.todoStatusUpdated'));
+  };
+
+  // 获取优先级文本
+  const getPriorityText = (priority: string): string => {
+    switch (priority) {
+      case 'high':
+        return t('ai.meetingAssistant.priorityHigh');
+      case 'medium':
+        return t('ai.meetingAssistant.priorityMedium');
+      default:
+        return t('ai.meetingAssistant.priorityLow');
+    }
   };
 
   return (
@@ -142,10 +154,10 @@ ${currentMeeting.keywords.join(', ')}
       {/* 页面头部 */}
       <div style={{ background: '#fff', padding: '16px 24px', marginBottom: 16 }}>
         <Title level={2} style={{ margin: 0 }}>
-          <RobotOutlined /> 会议助手
+          <RobotOutlined /> {t('ai.meetingAssistant.title')}
         </Title>
         <Text type="secondary">
-          AI 自动转写会议录音，生成会议纪要，提取待办事项
+          {t('ai.meetingAssistant.subtitle')}
         </Text>
       </div>
 
@@ -167,7 +179,7 @@ ${currentMeeting.keywords.join(', ')}
                     count={getSentimentText(meeting.sentiment)}
                     style={{ backgroundColor: getSentimentColor(meeting.sentiment) }}
                   />
-                  <Tag icon={<ClockCircleOutlined />}>{meeting.duration}分钟</Tag>
+                  <Tag icon={<ClockCircleOutlined />}>{meeting.duration}{t('ai.meetingAssistant.minutes')}</Tag>
                 </div>
 
                 <Title level={5} style={{ margin: '0 0 8px 0' }}>{meeting.title}</Title>
@@ -177,7 +189,7 @@ ${currentMeeting.keywords.join(', ')}
                 </Text>
                 <br />
                 <Text type="secondary" style={{ fontSize: 12 }}>
-                  参会：{meeting.participants.length}人
+                  {t('ai.meetingAssistant.participants')}：{meeting.participants.length}{t('ai.meetingAssistant.people')}
                 </Text>
 
                 <Divider style={{ margin: '12px 0' }} />
@@ -185,14 +197,14 @@ ${currentMeeting.keywords.join(', ')}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Space>
                     <Tag color="blue" icon={<FileTextOutlined />}>
-                      已转写
+                      {t('ai.meetingAssistant.transcribed')}
                     </Tag>
                     <Tag color="green" icon={<ThunderboltOutlined />}>
-                      AI 已总结
+                      {t('ai.meetingAssistant.aiSummarized')}
                     </Tag>
                   </Space>
                   <Text type="secondary" style={{ fontSize: 12 }}>
-                    待办：{completedActions}/{totalActions}
+                    {t('ai.meetingAssistant.todos')}：{completedActions}/{totalActions}
                   </Text>
                 </div>
 
@@ -216,7 +228,7 @@ ${currentMeeting.keywords.join(', ')}
         title={
           <Space>
             <RobotOutlined />
-            会议详情
+            {t('ai.meetingAssistant.meetingDetails')}
           </Space>
         }
         open={isModalVisible}
@@ -224,7 +236,7 @@ ${currentMeeting.keywords.join(', ')}
         width={1000}
         footer={[
           <Button key="export" icon={<ExportOutlined />} onClick={handleExport}>
-            导出纪要
+            {t('ai.meetingAssistant.exportNotes')}
           </Button>,
         ]}
       >
@@ -234,22 +246,22 @@ ${currentMeeting.keywords.join(', ')}
             <Card size="small" style={{ marginBottom: 16 }}>
               <Row gutter={16}>
                 <Col span={6}>
-                  <Text type="secondary">会议日期</Text>
+                  <Text type="secondary">{t('ai.meetingAssistant.meetingDate')}</Text>
                   <br />
                   <Text strong>{currentMeeting.date}</Text>
                 </Col>
                 <Col span={6}>
-                  <Text type="secondary">会议时间</Text>
+                  <Text type="secondary">{t('ai.meetingAssistant.meetingTime')}</Text>
                   <br />
                   <Text strong>{currentMeeting.time}</Text>
                 </Col>
                 <Col span={6}>
-                  <Text type="secondary">会议时长</Text>
+                  <Text type="secondary">{t('ai.meetingAssistant.duration')}</Text>
                   <br />
-                  <Text strong>{currentMeeting.duration}分钟</Text>
+                  <Text strong>{currentMeeting.duration}{t('ai.meetingAssistant.minutes')}</Text>
                 </Col>
                 <Col span={6}>
-                  <Text type="secondary">会议情感</Text>
+                  <Text type="secondary">{t('ai.meetingAssistant.sentiment')}</Text>
                   <br />
                   <Badge
                     count={getSentimentText(currentMeeting.sentiment)}
@@ -260,7 +272,7 @@ ${currentMeeting.keywords.join(', ')}
             </Card>
 
             {/* 参会人员 */}
-            <Title level={5}>参会人员</Title>
+            <Title level={5}>{t('ai.meetingAssistant.participants')}</Title>
             <Card size="small" style={{ marginBottom: 16 }}>
               <Space wrap>
                 {currentMeeting.participants.map((p) => (
@@ -268,7 +280,7 @@ ${currentMeeting.keywords.join(', ')}
                     key={p.id}
                     color={p.role === 'host' ? 'red' : p.role === 'external' ? 'blue' : 'green'}
                   >
-                    {p.name} {p.role === 'host' && '(主持)'}
+                    {p.name} {p.role === 'host' && `(${t('ai.meetingAssistant.host')})`}
                     {p.role === 'external' && `(${p.company})`}
                   </Tag>
                 ))}
@@ -277,7 +289,7 @@ ${currentMeeting.keywords.join(', ')}
 
             {/* AI 会议纪要 */}
             <Title level={5}>
-              <ThunderboltOutlined /> AI 会议纪要
+              <ThunderboltOutlined /> {t('ai.meetingAssistant.aiSummary')}
             </Title>
             <Card
               size="small"
@@ -294,7 +306,7 @@ ${currentMeeting.keywords.join(', ')}
 
             {/* 待办事项 */}
             <Title level={5}>
-              <CheckCircleOutlined /> 待办事项
+              <CheckCircleOutlined /> {t('ai.meetingAssistant.actionItems')}
             </Title>
             <Card size="small" style={{ marginBottom: 16 }}>
               <Timeline>
@@ -321,16 +333,16 @@ ${currentMeeting.keywords.join(', ')}
                       <Text strong>{item.content}</Text>
                       <br />
                       <Space size={16} style={{ fontSize: 12 }}>
-                        <span>负责人：{item.assignee || '未分配'}</span>
-                        <span>截止：{item.dueDate || '无'}</span>
+                        <span>{t('ai.meetingAssistant.assignee')}：{item.assignee || t('ai.meetingAssistant.unassigned')}</span>
+                        <span>{t('ai.meetingAssistant.dueDate')}：{item.dueDate || t('ai.meetingAssistant.none')}</span>
                         <Badge
-                          count={item.priority === 'high' ? '高' : item.priority === 'medium' ? '中' : '低'}
+                          count={getPriorityText(item.priority)}
                           style={{
                             backgroundColor:
                               item.priority === 'high' ? '#ff4d4f' : item.priority === 'medium' ? '#faad14' : '#1890ff',
                           }}
                         />
-                        <span>{item.status === 'completed' ? '已完成' : '待完成'}</span>
+                        <span>{item.status === 'completed' ? t('ai.meetingAssistant.completed') : t('ai.meetingAssistant.pending')}</span>
                       </Space>
                     </div>
                   </Timeline.Item>
@@ -340,7 +352,7 @@ ${currentMeeting.keywords.join(', ')}
 
             {/* 转写文本 */}
             <Title level={5}>
-              <FileTextOutlined /> 录音转写
+              <FileTextOutlined /> {t('ai.meetingAssistant.transcript')}
             </Title>
             <Card
               size="small"
@@ -356,7 +368,7 @@ ${currentMeeting.keywords.join(', ')}
             </Card>
 
             {/* 关键词 */}
-            <Title level={5} style={{ marginTop: 16 }}>关键词</Title>
+            <Title level={5} style={{ marginTop: 16 }}>{t('ai.meetingAssistant.keywords')}</Title>
             <Space wrap>
               {currentMeeting.keywords.map((keyword, idx) => (
                 <Tag key={idx} color="geekblue">

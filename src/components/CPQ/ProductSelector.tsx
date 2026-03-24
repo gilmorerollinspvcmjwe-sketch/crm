@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Table, Input, Select, Space, Button, Tag, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { Product, ProductCategory } from '../../types/cpq';
 import { getProductList } from '../../mock/cpqData';
@@ -20,22 +21,24 @@ interface ProductSelectorProps {
   customerId?: string; // 客户 ID，用于查询客户专属价格
 }
 
-/** 产品类别选项 */
-const categoryOptions = [
-  { label: '全部', value: '' },
-  { label: ProductCategory.SOFTWARE, value: ProductCategory.SOFTWARE },
-  { label: ProductCategory.HARDWARE, value: ProductCategory.HARDWARE },
-  { label: ProductCategory.SERVICE, value: ProductCategory.SERVICE },
-  { label: ProductCategory.TRAINING, value: ProductCategory.TRAINING },
-  { label: ProductCategory.MAINTENANCE, value: ProductCategory.MAINTENANCE },
-];
+// 获取类别文本
+const getCategoryText = (category: ProductCategory, t: any) => {
+  const categoryMap: Record<ProductCategory, string> = {
+    [ProductCategory.SOFTWARE]: t('product.category.software'),
+    [ProductCategory.HARDWARE]: t('product.category.hardware'),
+    [ProductCategory.SERVICE]: t('product.category.service'),
+    [ProductCategory.TRAINING]: t('product.category.training'),
+    [ProductCategory.MAINTENANCE]: t('product.category.maintenance'),
+  };
+  return categoryMap[category] || category;
+};
 
 /** 库存状态标签 */
-const StockTag: React.FC<{ inStock: boolean }> = ({ inStock }) => {
+const StockTag: React.FC<{ inStock: boolean; t: any }> = ({ inStock, t }) => {
   return inStock ? (
-    <Tag color="green">有货</Tag>
+    <Tag color="green">{t('product.selector.inStock')}</Tag>
   ) : (
-    <Tag color="red">缺货</Tag>
+    <Tag color="red">{t('product.selector.outOfStock')}</Tag>
   );
 };
 
@@ -49,12 +52,23 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
   selectedProducts = [],
   customerId,
 }) => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [productPrices, setProductPrices] = useState<Record<string, number>>({});
+
+  /** 产品类别选项 */
+  const categoryOptions = [
+    { label: t('product.selector.allCategories'), value: '' },
+    { label: getCategoryText(ProductCategory.SOFTWARE, t), value: ProductCategory.SOFTWARE },
+    { label: getCategoryText(ProductCategory.HARDWARE, t), value: ProductCategory.HARDWARE },
+    { label: getCategoryText(ProductCategory.SERVICE, t), value: ProductCategory.SERVICE },
+    { label: getCategoryText(ProductCategory.TRAINING, t), value: ProductCategory.TRAINING },
+    { label: getCategoryText(ProductCategory.MAINTENANCE, t), value: ProductCategory.MAINTENANCE },
+  ];
 
   /** 加载产品列表和价格 */
   useEffect(() => {
@@ -124,27 +138,27 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
     
     onSelected(selected);
     onClose();
-    message.success(`已选择 ${selected.length} 个产品`);
+    message.success(t('product.selector.selected', { count: selected.length }));
   };
 
   /** 表格列定义 */
   const columns: ColumnsType<Product> = [
     {
-      title: '产品编号',
+      title: t('product.selector.sku'),
       dataIndex: 'sku',
       key: 'sku',
       width: 120,
       sorter: (a, b) => a.sku.localeCompare(b.sku),
     },
     {
-      title: '产品名称',
+      title: t('product.selector.productName'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: '类别',
+      title: t('product.selector.category'),
       dataIndex: 'category',
       key: 'category',
       width: 100,
@@ -156,11 +170,11 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
           [ProductCategory.TRAINING]: 'cyan',
           [ProductCategory.MAINTENANCE]: 'green',
         };
-        return <Tag color={colorMap[category]}>{category}</Tag>;
+        return <Tag color={colorMap[category]}>{getCategoryText(category, t)}</Tag>;
       },
     },
     {
-      title: '单价',
+      title: t('product.selector.unitPrice'),
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       width: 100,
@@ -184,20 +198,20 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
       },
     },
     {
-      title: '单位',
+      title: t('product.selector.unit'),
       dataIndex: 'unit',
       key: 'unit',
       width: 80,
     },
     {
-      title: '库存',
+      title: t('product.selector.stock'),
       dataIndex: 'inStock',
       key: 'inStock',
       width: 80,
-      render: (_: boolean, record: Product) => <StockTag inStock={record.inStock} />,
+      render: (_: boolean, record: Product) => <StockTag inStock={record.inStock} t={t} />,
     },
     {
-      title: '描述',
+      title: t('product.selector.description'),
       dataIndex: 'description',
       key: 'description',
       ellipsis: true,
@@ -214,17 +228,17 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
 
   return (
     <Modal
-      title="选择产品"
+      title={t('product.selector.title')}
       open={open}
       onCancel={onClose}
       onOk={handleConfirm}
       width={1200}
-      okText="确认选择"
-      cancelText="取消"
+      okText={t('product.selector.confirm')}
+      cancelText={t('common.actions.cancel')}
     >
       <Space style={{ marginBottom: 16, width: '100%', display: 'flex' }}>
         <Input
-          placeholder="搜索产品名称、编号或描述"
+          placeholder={t('product.selector.searchPlaceholder')}
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -232,7 +246,7 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
           allowClear
         />
         <Select
-          placeholder="产品类别"
+          placeholder={t('product.selector.categoryFilter')}
           value={categoryFilter}
           onChange={setCategoryFilter}
           style={{ width: 150 }}
@@ -246,7 +260,7 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
         </Select>
         <div style={{ flex: 1 }} />
         <span style={{ color: '#666' }}>
-          已选择 {selectedRowKeys.length} 个产品
+          {t('product.selector.selectedCount', { count: selectedRowKeys.length })}
         </span>
       </Space>
 
@@ -258,7 +272,7 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
-          showTotal: (total) => `共 ${total} 个产品`,
+          showTotal: (total) => t('product.selector.total', { total }),
         }}
         scroll={{ y: 400 }}
       />

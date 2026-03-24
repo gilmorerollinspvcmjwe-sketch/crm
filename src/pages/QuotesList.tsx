@@ -22,6 +22,7 @@ import {
 } from 'antd';
 import { PlusOutlined, EyeOutlined, EditOutlined, DeleteOutlined, FileDoneOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { Quote, QuoteStatus, QuoteFilter } from '../types/cpq';
 import { getQuoteList } from '../mock/cpqData';
@@ -38,24 +39,25 @@ const statusColorMap: Record<QuoteStatus, string> = {
   [QuoteStatus.EXPIRED]: 'orange',
 };
 
+/**
+ * 报价单列表页组件
+ */
+export const QuotesList: React.FC = () => {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const [quoteList, setQuoteList] = useState<Quote[]>([]);
+  const [total, setTotal] = useState(0);
+
 /** 状态选项 */
 const statusOptions = [
-  { label: '全部', value: '' },
+  { label: t('quote.list.allStatus'), value: '' },
   { label: QuoteStatus.DRAFT, value: QuoteStatus.DRAFT },
   { label: QuoteStatus.SENT, value: QuoteStatus.SENT },
   { label: QuoteStatus.ACCEPTED, value: QuoteStatus.ACCEPTED },
   { label: QuoteStatus.REJECTED, value: QuoteStatus.REJECTED },
   { label: QuoteStatus.EXPIRED, value: QuoteStatus.EXPIRED },
 ];
-
-/**
- * 报价单列表页组件
- */
-export const QuotesList: React.FC = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [quoteList, setQuoteList] = useState<Quote[]>([]);
-  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(20);
   const [filters, setFilters] = useState<QuoteFilter>({});
@@ -73,7 +75,7 @@ export const QuotesList: React.FC = () => {
       setQuoteList(list);
       setTotal(total);
     } catch (error) {
-      message.error('加载报价单列表失败');
+      message.error(t('quote.list.loadError'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -116,13 +118,13 @@ export const QuotesList: React.FC = () => {
   /** 删除报价单 */
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除该报价单吗？删除后无法恢复。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t('quote.list.deleteConfirm'),
+      content: t('quote.list.deleteContent'),
+      okText: t('common.actions.confirmDelete'),
+      cancelText: t('common.actions.cancel'),
       okType: 'danger',
       onOk: () => {
-        message.success('删除报价单成功');
+        message.success(t('quote.list.deleteSuccess'));
         loadQuoteList();
       },
     });
@@ -131,12 +133,12 @@ export const QuotesList: React.FC = () => {
   /** 转合同 */
   const handleConvertToContract = (id: string) => {
     Modal.confirm({
-      title: '转合同确认',
-      content: '确定要将该报价单转为合同吗？',
-      okText: '确认转换',
-      cancelText: '取消',
+      title: t('quote.list.convertConfirm'),
+      content: t('quote.list.convertContent'),
+      okText: t('common.actions.confirm'),
+      cancelText: t('common.actions.cancel'),
       onOk: () => {
-        message.success('报价单已转为合同');
+        message.success(t('quote.list.convertSuccess'));
         loadQuoteList();
       },
     });
@@ -150,7 +152,7 @@ export const QuotesList: React.FC = () => {
   /** 表格列定义 */
   const columns: ColumnsType<Quote> = [
     {
-      title: '报价单号',
+      title: t('quote.list.columns.quoteNumber'),
       dataIndex: 'quoteNumber',
       key: 'quoteNumber',
       width: 130,
@@ -159,28 +161,28 @@ export const QuotesList: React.FC = () => {
       render: (text: string) => <Text strong>{text}</Text>,
     },
     {
-      title: '客户名称',
+      title: t('quote.list.columns.customerName'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 200,
       ellipsis: true,
     },
     {
-      title: '联系人',
+      title: t('quote.list.columns.contactName'),
       dataIndex: 'contactName',
       key: 'contactName',
       width: 100,
       ellipsis: true,
     },
     {
-      title: '商机',
+      title: t('quote.list.columns.opportunityName'),
       dataIndex: 'opportunityName',
       key: 'opportunityName',
       width: 150,
       ellipsis: true,
     },
     {
-      title: '状态',
+      title: t('quote.list.columns.status'),
       dataIndex: 'status',
       key: 'status',
       width: 90,
@@ -189,21 +191,21 @@ export const QuotesList: React.FC = () => {
       ),
     },
     {
-      title: '有效期',
+      title: t('quote.list.columns.validUntil'),
       dataIndex: 'validUntil',
       key: 'validUntil',
       width: 110,
       sorter: (a, b) => a.validUntil.localeCompare(b.validUntil),
     },
     {
-      title: '产品数量',
+      title: t('quote.list.columns.productCount'),
       dataIndex: 'products',
       key: 'products',
       width: 90,
-      render: (products: any[]) => `${products.length} 个`,
+      render: (products: any[]) => `${products.length} ${t('quote.list.columns.productCountUnit')}`,
     },
     {
-      title: '总金额',
+      title: t('quote.list.columns.totalAmount'),
       dataIndex: 'grandTotal',
       key: 'grandTotal',
       width: 130,
@@ -215,20 +217,20 @@ export const QuotesList: React.FC = () => {
       ),
     },
     {
-      title: '创建人',
+      title: t('quote.list.columns.createdBy'),
       dataIndex: 'createdByName',
       key: 'createdByName',
       width: 100,
     },
     {
-      title: '创建时间',
+      title: t('quote.list.columns.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
       sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
     },
     {
-      title: '操作',
+      title: t('quote.list.columns.actions'),
       key: 'action',
       width: 200,
       fixed: 'right',
@@ -240,7 +242,7 @@ export const QuotesList: React.FC = () => {
             icon={<EyeOutlined />}
             onClick={() => handleViewDetail(record.id)}
           >
-            查看
+            {t('quote.list.actions.view')}
           </Button>
           {record.status === QuoteStatus.DRAFT && (
             <Button
@@ -249,7 +251,7 @@ export const QuotesList: React.FC = () => {
               icon={<EditOutlined />}
               onClick={() => handleEdit(record.id)}
             >
-              编辑
+              {t('quote.list.actions.edit')}
             </Button>
           )}
           {record.status === QuoteStatus.ACCEPTED && !record.convertedToContractId && (
@@ -259,7 +261,7 @@ export const QuotesList: React.FC = () => {
               icon={<FileDoneOutlined />}
               onClick={() => handleConvertToContract(record.id)}
             >
-              转合同
+              {t('quote.list.actions.convert')}
             </Button>
           )}
           <Button
@@ -269,7 +271,7 @@ export const QuotesList: React.FC = () => {
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.id)}
           >
-            删除
+            {t('quote.list.actions.delete')}
           </Button>
         </Space>
       ),
@@ -285,14 +287,14 @@ export const QuotesList: React.FC = () => {
           layout="inline"
           initialValues={{ status: '' }}
         >
-          <Form.Item name="quoteNumber" label="报价单号">
-            <Input placeholder="请输入报价单号" style={{ width: 200 }} allowClear />
+          <Form.Item name="quoteNumber" label={t('quote.detail.quoteNumber')}>
+            <Input placeholder={t('quote.list.searchPlaceholder')} style={{ width: 200 }} allowClear />
           </Form.Item>
-          <Form.Item name="customerName" label="客户名称">
-            <Input placeholder="请输入客户名称" style={{ width: 200 }} allowClear />
+          <Form.Item name="customerName" label={t('quote.detail.customerName')}>
+            <Input placeholder={t('quote.list.customerPlaceholder')} style={{ width: 200 }} allowClear />
           </Form.Item>
-          <Form.Item name="status" label="状态">
-            <Select placeholder="请选择状态" style={{ width: 150 }} allowClear>
+          <Form.Item name="status" label={t('quote.detail.status')}>
+            <Select placeholder={t('quote.list.statusPlaceholder')} style={{ width: 150 }} allowClear>
               {statusOptions.map(opt => (
                 <Option key={opt.value} value={opt.value}>
                   {opt.label}
@@ -303,11 +305,11 @@ export const QuotesList: React.FC = () => {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit">
-                搜索
+                {t('common.actions.search')}
               </Button>
-              <Button onClick={handleReset}>重置</Button>
+              <Button onClick={handleReset}>{t('common.actions.reset')}</Button>
               <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                新建报价单
+                {t('quote.list.newQuote')}
               </Button>
             </Space>
           </Form.Item>
@@ -325,7 +327,7 @@ export const QuotesList: React.FC = () => {
           total,
           onChange: handlePageChange,
           showSizeChanger: true,
-          showTotal: (total) => `共 ${total} 条`,
+          showTotal: (total) => t('quote.list.pagination.total', { total }),
         }}
         scroll={{ x: 1400 }}
         size="middle"

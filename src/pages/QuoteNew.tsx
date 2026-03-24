@@ -27,6 +27,7 @@ import {
   CheckCircleOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -99,6 +100,7 @@ interface QuoteFormValues {
  * 新建报价单页面组件
  */
 export const QuoteNew: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -146,7 +148,7 @@ export const QuoteNew: React.FC = () => {
       }
       setCurrentStep(currentStep + 1);
     } catch (error) {
-      message.error('请填写必填项');
+      message.error(t('quote.new.validation.fillRequired'));
     }
   };
 
@@ -158,7 +160,7 @@ export const QuoteNew: React.FC = () => {
       
       // 验证是否已选择产品
       if (quoteProducts.length === 0) {
-        message.error('请至少选择一个产品');
+        message.error(t('quote.new.validation.selectProduct'));
         setCurrentStep(1);
         return;
       }
@@ -169,10 +171,10 @@ export const QuoteNew: React.FC = () => {
         products: quoteProducts,
       });
 
-      message.success('报价单创建成功！');
+      message.success(t('quote.new.success'));
       navigate('/quote/list');
     } catch (error) {
-      message.error('请填写完整信息');
+      message.error(t('quote.new.validation.fillComplete'));
       console.error(error);
     }
   };
@@ -185,18 +187,30 @@ export const QuoteNew: React.FC = () => {
   /** 步骤配置 */
   const steps = [
     {
-      title: '基本信息',
-      description: '填写报价单基本信息',
+      title: t('quote.new.steps.basicInfo'),
+      description: t('quote.new.steps.basicInfoDesc'),
     },
     {
-      title: '选择产品',
-      description: '添加报价产品明细',
+      title: t('quote.new.steps.selectProducts'),
+      description: t('quote.new.steps.selectProductsDesc'),
     },
     {
-      title: '确认提交',
-      description: '确认信息并提交',
+      title: t('quote.new.steps.confirm'),
+      description: t('quote.new.steps.confirmDesc'),
     },
   ];
+
+  // 获取状态文本
+  const getStatusText = (status: QuoteStatus) => {
+    const statusMap: Record<QuoteStatus, string> = {
+      [QuoteStatus.DRAFT]: t('quote.status.draft'),
+      [QuoteStatus.SENT]: t('quote.status.sent'),
+      [QuoteStatus.ACCEPTED]: t('quote.status.accepted'),
+      [QuoteStatus.REJECTED]: t('quote.status.rejected'),
+      [QuoteStatus.EXPIRED]: t('quote.status.expired'),
+    };
+    return statusMap[status] || status;
+  };
 
   return (
     <div>
@@ -205,9 +219,9 @@ export const QuoteNew: React.FC = () => {
         <div style={{ marginBottom: 24 }}>
           <Space>
             <Button icon={<ArrowLeftOutlined />} onClick={handleCancel}>
-              返回
+              {t('quote.new.back')}
             </Button>
-            <span style={{ fontSize: 18, fontWeight: 600 }}>新建报价单</span>
+            <span style={{ fontSize: 18, fontWeight: 600 }}>{t('quote.new.title')}</span>
           </Space>
         </div>
 
@@ -229,22 +243,22 @@ export const QuoteNew: React.FC = () => {
               <Col span={12}>
                 <Form.Item
                   name="quoteNumber"
-                  label="报价单号"
-                  rules={[{ required: true, message: '请输入报价单号' }]}
+                  label={t('quote.new.form.quoteNumber')}
+                  rules={[{ required: true, message: t('quote.new.form.quoteNumberPlaceholder') }]}
                 >
-                  <Input placeholder="请输入报价单号" />
+                  <Input placeholder={t('quote.new.form.quoteNumberPlaceholder')} />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="status"
-                  label="状态"
-                  rules={[{ required: true, message: '请选择状态' }]}
+                  label={t('quote.new.form.status')}
+                  rules={[{ required: true, message: t('quote.new.form.statusPlaceholder') }]}
                 >
                   <Select>
                     {statusOptions.map(opt => (
                       <Option key={opt.value} value={opt.value}>
-                        {opt.label}
+                        {getStatusText(opt.label)}
                       </Option>
                     ))}
                   </Select>
@@ -252,17 +266,17 @@ export const QuoteNew: React.FC = () => {
               </Col>
             </Row>
 
-            <Divider orientation="left">客户信息</Divider>
+            <Divider orientation="left">{t('quote.new.form.customerInfo')}</Divider>
 
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
                   name="customerId"
-                  label="客户"
-                  rules={[{ required: true, message: '请选择客户' }]}
+                  label={t('quote.new.form.customer')}
+                  rules={[{ required: true, message: t('quote.new.form.customerPlaceholder') }]}
                 >
                   <Select
-                    placeholder="请选择客户"
+                    placeholder={t('quote.new.form.customerPlaceholder')}
                     showSearch
                     filterOption={(input, option) =>
                       (option?.label as unknown as string)?.toLowerCase().includes(input.toLowerCase())
@@ -280,16 +294,16 @@ export const QuoteNew: React.FC = () => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="customerName" label="客户名称">
-                  <Input placeholder="自动填充" disabled />
+                <Form.Item name="customerName" label={t('quote.new.form.customerName')}>
+                  <Input placeholder={t('quote.new.form.customerNameAutoFill')} disabled />
                 </Form.Item>
               </Col>
             </Row>
 
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="contactId" label="联系人">
-                  <Select placeholder="请选择联系人" allowClear>
+                <Form.Item name="contactId" label={t('quote.new.form.contact')}>
+                  <Select placeholder={t('quote.new.form.contactPlaceholder')} allowClear>
                     {contactOptions.map(contact => (
                       <Option key={contact.id} value={contact.id}>
                         {contact.name}
@@ -299,8 +313,8 @@ export const QuoteNew: React.FC = () => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="opportunityId" label="关联商机">
-                  <Select placeholder="请选择商机" allowClear>
+                <Form.Item name="opportunityId" label={t('quote.new.form.opportunity')}>
+                  <Select placeholder={t('quote.new.form.opportunityPlaceholder')} allowClear>
                     {opportunityOptions.map(opp => (
                       <Option key={opp.id} value={opp.id}>
                         {opp.name}
@@ -315,22 +329,22 @@ export const QuoteNew: React.FC = () => {
               <Col span={12}>
                 <Form.Item
                   name="validUntil"
-                  label="有效期至"
-                  rules={[{ required: true, message: '请选择有效期' }]}
+                  label={t('quote.new.form.validUntil')}
+                  rules={[{ required: true, message: t('quote.new.form.validUntilPlaceholder') }]}
                 >
                   <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
                 </Form.Item>
               </Col>
             </Row>
 
-            <Divider orientation="left">备注条款</Divider>
+            <Divider orientation="left">{t('quote.new.form.notesAndTerms')}</Divider>
 
-            <Form.Item name="notes" label="备注">
-              <TextArea rows={3} placeholder="请输入备注信息" />
+            <Form.Item name="notes" label={t('quote.new.form.notes')}>
+              <TextArea rows={3} placeholder={t('quote.new.form.notesPlaceholder')} />
             </Form.Item>
 
-            <Form.Item name="terms" label="条款">
-              <TextArea rows={3} placeholder="请输入条款信息" />
+            <Form.Item name="terms" label={t('quote.new.form.terms')}>
+              <TextArea rows={3} placeholder={t('quote.new.form.termsPlaceholder')} />
             </Form.Item>
           </Form>
         )}
@@ -340,10 +354,10 @@ export const QuoteNew: React.FC = () => {
           <div>
             <div style={{ marginBottom: 16 }}>
               <Button type="primary" onClick={handleAddProducts}>
-                选择产品
+                {t('quote.new.products.selectProducts')}
               </Button>
               <span style={{ marginLeft: 16, color: '#666' }}>
-                已选择 {quoteProducts.length} 个产品
+                {t('quote.new.products.selected', { count: quoteProducts.length })}
               </span>
             </div>
 
@@ -359,7 +373,7 @@ export const QuoteNew: React.FC = () => {
                 // 实际添加产品由 QuoteCalculator 内部处理
                 // 这里只是关闭弹窗
                 setProductSelectorVisible(false);
-                message.success(`已选择 ${products.length} 个产品`);
+                message.success(t('quote.calculator.productsAdded', { count: products.length }));
               }}
               selectedProducts={selectedProducts}
             />
@@ -368,14 +382,14 @@ export const QuoteNew: React.FC = () => {
 
         {/* 步骤 3: 确认提交 */}
         {currentStep === 2 && (
-          <Card title="确认信息" type="inner">
-            <p>请确认以下信息：</p>
+          <Card title={t('quote.new.confirm.title')} type="inner">
+            <p>{t('quote.new.confirm.title')}：</p>
             <ul>
-              <li>报价单号：{form.getFieldValue('quoteNumber')}</li>
-              <li>客户名称：{form.getFieldValue('customerName')}</li>
-              <li>产品数量：{quoteProducts.length} 个</li>
+              <li>{t('quote.new.confirm.quoteNumber')}：{form.getFieldValue('quoteNumber')}</li>
+              <li>{t('quote.new.confirm.customerName')}：{form.getFieldValue('customerName')}</li>
+              <li>{t('quote.new.confirm.productCount')}：{quoteProducts.length} {t('quote.new.confirm.productCountUnit')}</li>
               <li>
-                总金额：¥
+                {t('quote.new.confirm.totalAmount')}：¥
                 {quoteProducts.reduce((sum, p) => sum + p.total, 0).toLocaleString()}
               </li>
             </ul>
@@ -387,18 +401,18 @@ export const QuoteNew: React.FC = () => {
         <div style={{ textAlign: 'right' }}>
           <Space>
             {currentStep > 0 && (
-              <Button onClick={handlePrev}>上一步</Button>
+              <Button onClick={handlePrev}>{t('quote.new.navigation.prev')}</Button>
             )}
             {currentStep < 2 ? (
               <Button type="primary" onClick={handleNext}>
-                下一步
+                {t('quote.new.navigation.next')}
               </Button>
             ) : (
               <Button type="primary" icon={<SaveOutlined />} onClick={handleSubmit}>
-                提交保存
+                {t('quote.new.navigation.submit')}
               </Button>
             )}
-            <Button onClick={handleCancel}>取消</Button>
+            <Button onClick={handleCancel}>{t('quote.new.navigation.cancel')}</Button>
           </Space>
         </div>
       </Card>

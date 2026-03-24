@@ -26,11 +26,13 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { LeadToAssign, SalesPerson } from '../types/ai';
 import { leadsToAssign, salesTeam } from '../mock/aiData';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const LeadAssignment: React.FC = () => {
+  const { t } = useTranslation();
   const [leads, setLeads] = useState<LeadToAssign[]>(leadsToAssign);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentLead, setCurrentLead] = useState<LeadToAssign | null>(null);
@@ -60,7 +62,7 @@ const LeadAssignment: React.FC = () => {
   // 确认分配
   const handleAssignConfirm = () => {
     if (!currentLead || !selectedSales) {
-      message.error('请选择销售人员');
+      message.error(t('common.validation.pleaseSelect'));
       return;
     }
 
@@ -76,7 +78,7 @@ const LeadAssignment: React.FC = () => {
       );
       setLoading(false);
       setIsModalVisible(false);
-      message.success(`线索已分配给 ${sales?.name}`);
+      message.success(t('ai.leadAssignment.assignedSuccess', { name: sales?.name }));
     }, 500);
   };
 
@@ -102,7 +104,7 @@ const LeadAssignment: React.FC = () => {
         })
       );
       setLoading(false);
-      message.success(`已批量分配 ${updatedLeads.length} 条线索`);
+      message.success(t('ai.leadAssignment.batchAssigned', { count: updatedLeads.length }));
     }, 800);
   };
 

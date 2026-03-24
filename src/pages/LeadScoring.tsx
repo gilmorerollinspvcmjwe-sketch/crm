@@ -22,6 +22,7 @@ import {
   ThunderboltOutlined,
   EditOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { ScoredLead } from '../types/ai';
 import { scoredLeads } from '../mock/aiData';
@@ -29,6 +30,7 @@ import { scoredLeads } from '../mock/aiData';
 const { Title, Text } = Typography;
 
 const LeadScoring: React.FC = () => {
+  const { t } = useTranslation();
   const [leads, setLeads] = useState<ScoredLead[]>(scoredLeads);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentLead, setCurrentLead] = useState<ScoredLead | null>(null);
@@ -60,7 +62,7 @@ const LeadScoring: React.FC = () => {
           : lead
       )
     );
-    message.success('评分已更新');
+    message.success(t('ai.leadScoring.scoreUpdated'));
     setIsModalVisible(false);
   };
 
@@ -78,9 +80,14 @@ const LeadScoring: React.FC = () => {
     }
   };
 
+  // 获取等级文本
+  const getLevelText = (level: string): string => {
+    return `${level}${t('ai.leadScoring.levelSuffix')}`;
+  };
+
   const columns: ColumnsType<ScoredLead> = [
     {
-      title: '线索名称',
+      title: t('ai.leadScoring.leadName'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
@@ -95,14 +102,14 @@ const LeadScoring: React.FC = () => {
       ),
     },
     {
-      title: '行业',
+      title: t('ai.leadScoring.industry'),
       dataIndex: 'industry',
       key: 'industry',
       width: 150,
       render: (text: string) => <Tag color="blue">{text}</Tag>,
     },
     {
-      title: 'AI 评分',
+      title: t('ai.leadScoring.aiScore'),
       key: 'score',
       width: 150,
       render: (_, record) => (
@@ -122,25 +129,25 @@ const LeadScoring: React.FC = () => {
               <div style={{ textAlign: 'center' }}>
                 <Text strong style={{ fontSize: 14 }}>{percent}</Text>
                 <br />
-                <Text type="secondary" style={{ fontSize: 10 }}>分</Text>
+                <Text type="secondary" style={{ fontSize: 10 }}>{t('ai.leadScoring.points')}</Text>
               </div>
             )}
           />
           <div>
             <Badge
-              count={`等级：${record.scoreDetail.level}`}
+              count={`${t('ai.leadScoring.level')}：${getLevelText(record.scoreDetail.level)}`}
               style={{ backgroundColor: getLevelColor(record.scoreDetail.level) }}
             />
             <br />
             {record.scoreDetail.isHighValue && (
-              <Tag color="gold" icon={<StarOutlined />}>高价值</Tag>
+              <Tag color="gold" icon={<StarOutlined />}>{t('ai.leadScoring.highValue')}</Tag>
             )}
           </div>
         </div>
       ),
     },
     {
-      title: '属性分',
+      title: t('ai.leadScoring.attributeScore'),
       key: 'attributeScore',
       width: 100,
       render: (_, record) => (
@@ -153,7 +160,7 @@ const LeadScoring: React.FC = () => {
       ),
     },
     {
-      title: '行为分',
+      title: t('ai.leadScoring.behaviorScore'),
       key: 'behaviorScore',
       width: 100,
       render: (_, record) => (
@@ -166,19 +173,19 @@ const LeadScoring: React.FC = () => {
       ),
     },
     {
-      title: '最后活动',
+      title: t('ai.leadScoring.lastActivity'),
       dataIndex: 'lastActivity',
       key: 'lastActivity',
       width: 160,
     },
     {
-      title: '负责人',
+      title: t('ai.leadScoring.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '操作',
+      title: t('ai.leadScoring.actions'),
       key: 'action',
       width: 100,
       render: (_, record) => (
@@ -187,7 +194,7 @@ const LeadScoring: React.FC = () => {
           icon={<EditOutlined />}
           onClick={() => handleViewDetail(record)}
         >
-          评分详情
+          {t('ai.leadScoring.scoreDetails')}
         </Button>
       ),
     },
@@ -204,10 +211,10 @@ const LeadScoring: React.FC = () => {
       {/* 页面头部 */}
       <div style={{ background: '#fff', padding: '16px 24px', marginBottom: 16 }}>
         <Title level={2} style={{ margin: 0 }}>
-          <RobotOutlined /> 线索评分 AI
+          <RobotOutlined /> {t('ai.leadScoring.title')}
         </Title>
         <Text type="secondary">
-          AI 基于属性分（行业匹配、公司规模、职位级别）和行为分（网站访问、邮件打开、活动参与）自动评分
+          {t('ai.leadScoring.subtitle')}
         </Text>
       </div>
 
@@ -216,25 +223,25 @@ const LeadScoring: React.FC = () => {
         <Card>
           <div style={{ textAlign: 'center' }}>
             <Title level={3} style={{ margin: 0 }}>{totalLeads}</Title>
-            <Text type="secondary">总线索数</Text>
+            <Text type="secondary">{t('ai.leadScoring.totalLeads')}</Text>
           </div>
         </Card>
         <Card>
           <div style={{ textAlign: 'center' }}>
             <Title level={3} style={{ margin: 0, color: '#52c41a' }}>{highValueLeads}</Title>
-            <Text type="secondary">高价值线索 (≥80)</Text>
+            <Text type="secondary">{t('ai.leadScoring.highValueLeads')}</Text>
           </div>
         </Card>
         <Card>
           <div style={{ textAlign: 'center' }}>
             <Title level={3} style={{ margin: 0, color: '#1890ff' }}>{aLevelLeads}</Title>
-            <Text type="secondary">A 级线索</Text>
+            <Text type="secondary">{t('ai.leadScoring.aLevelLeads')}</Text>
           </div>
         </Card>
         <Card>
           <div style={{ textAlign: 'center' }}>
             <Title level={3} style={{ margin: 0, color: '#faad14' }}>{avgScore}</Title>
-            <Text type="secondary">平均评分</Text>
+            <Text type="secondary">{t('ai.leadScoring.avgScore')}</Text>
           </div>
         </Card>
       </div>
@@ -255,7 +262,7 @@ const LeadScoring: React.FC = () => {
         title={
           <Space>
             <ThunderboltOutlined />
-            评分详情
+            {t('ai.leadScoring.scoreDetails')}
           </Space>
         }
         open={isModalVisible}
@@ -264,10 +271,10 @@ const LeadScoring: React.FC = () => {
         width={800}
         footer={[
           <Button key="cancel" onClick={() => setIsModalVisible(false)}>
-            取消
+            {t('common.actions.cancel')}
           </Button>,
           <Button key="save" type="primary" onClick={handleSaveScore}>
-            保存调整
+            {t('ai.leadScoring.saveAdjustment')}
           </Button>,
         ]}
       >
@@ -284,7 +291,7 @@ const LeadScoring: React.FC = () => {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {/* 总分展示 */}
-              <Card title="总分" size="small">
+              <Card title={t('ai.leadScoring.totalScore')} size="small">
                 <div style={{ textAlign: 'center' }}>
                   <Progress
                     type="dashboard"
@@ -300,18 +307,18 @@ const LeadScoring: React.FC = () => {
                       <div>
                         <Text strong style={{ fontSize: 24 }}>{percent}</Text>
                         <br />
-                        <Text type="secondary">分</Text>
+                        <Text type="secondary">{t('ai.leadScoring.points')}</Text>
                       </div>
                     )}
                   />
                   <div style={{ marginTop: 16 }}>
                     <Badge
-                      count={`等级：${currentLead.scoreDetail.level}`}
+                      count={`${t('ai.leadScoring.level')}：${getLevelText(currentLead.scoreDetail.level)}`}
                       style={{ backgroundColor: getLevelColor(currentLead.scoreDetail.level) }}
                     />
                     {currentLead.scoreDetail.isHighValue && (
                       <Tag color="gold" icon={<StarOutlined />} style={{ marginLeft: 8 }}>
-                        高价值
+                        {t('ai.leadScoring.highValue')}
                       </Tag>
                     )}
                   </div>
@@ -319,7 +326,7 @@ const LeadScoring: React.FC = () => {
               </Card>
 
               {/* 手动调整 */}
-              <Card title="手动调整评分" size="small">
+              <Card title={t('ai.leadScoring.manualAdjustment')} size="small">
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
                   <Slider
                     value={adjustedScore}
@@ -334,23 +341,23 @@ const LeadScoring: React.FC = () => {
                       100: '100',
                     }}
                   />
-                  <Title level={3} style={{ margin: '16px 0 0 0' }}>{adjustedScore} 分</Title>
+                  <Title level={3} style={{ margin: '16px 0 0 0' }}>{adjustedScore} {t('ai.leadScoring.points')}</Title>
                   <Text type="secondary">
-                    等级：{adjustedScore >= 80 ? 'A' : adjustedScore >= 60 ? 'B' : adjustedScore >= 40 ? 'C' : 'D'}
+                    {t('ai.leadScoring.level')}：{adjustedScore >= 80 ? 'A' : adjustedScore >= 60 ? 'B' : adjustedScore >= 40 ? 'C' : 'D'}
                   </Text>
                 </div>
               </Card>
             </div>
 
             {/* 评分维度 */}
-            <Title level={5} style={{ marginTop: 16 }}>评分维度详情</Title>
+            <Title level={5} style={{ marginTop: 16 }}>{t('ai.leadScoring.scoreDimensions')}</Title>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {/* 属性分 */}
-              <Card title="属性分 (60 分)" size="small">
+              <Card title={`${t('ai.leadScoring.attributeScoreTitle')} (60 ${t('ai.leadScoring.points')})`} size="small">
                 <Space direction="vertical" size={12} style={{ width: '100%' }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Text>行业匹配</Text>
+                      <Text>{t('ai.leadScoring.industryMatch')}</Text>
                       <Text strong>{currentLead.scoreDetail.attributeDetails.industryMatch}/20</Text>
                     </div>
                     <Progress
@@ -362,7 +369,7 @@ const LeadScoring: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Text>公司规模</Text>
+                      <Text>{t('ai.leadScoring.companySize')}</Text>
                       <Text strong>{currentLead.scoreDetail.attributeDetails.companySize}/20</Text>
                     </div>
                     <Progress
@@ -374,7 +381,7 @@ const LeadScoring: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Text>职位级别</Text>
+                      <Text>{t('ai.leadScoring.positionLevel')}</Text>
                       <Text strong>{currentLead.scoreDetail.attributeDetails.positionLevel}/20</Text>
                     </div>
                     <Progress
@@ -385,17 +392,17 @@ const LeadScoring: React.FC = () => {
                     />
                   </div>
                   <div style={{ textAlign: 'right', marginTop: 8 }}>
-                    <Text strong>属性分总计：{currentLead.scoreDetail.attributeScore}/60</Text>
+                    <Text strong>{t('ai.leadScoring.attributeTotal')}：{currentLead.scoreDetail.attributeScore}/60</Text>
                   </div>
                 </Space>
               </Card>
 
               {/* 行为分 */}
-              <Card title="行为分 (40 分)" size="small">
+              <Card title={`${t('ai.leadScoring.behaviorScoreTitle')} (40 ${t('ai.leadScoring.points')})`} size="small">
                 <Space direction="vertical" size={12} style={{ width: '100%' }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Text>网站访问</Text>
+                      <Text>{t('ai.leadScoring.websiteVisit')}</Text>
                       <Text strong>{currentLead.scoreDetail.behaviorDetails.websiteVisit}/15</Text>
                     </div>
                     <Progress
@@ -407,7 +414,7 @@ const LeadScoring: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Text>邮件打开</Text>
+                      <Text>{t('ai.leadScoring.emailOpen')}</Text>
                       <Text strong>{currentLead.scoreDetail.behaviorDetails.emailOpen}/15</Text>
                     </div>
                     <Progress
@@ -419,7 +426,7 @@ const LeadScoring: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Text>活动参与</Text>
+                      <Text>{t('ai.leadScoring.activityParticipation')}</Text>
                       <Text strong>{currentLead.scoreDetail.behaviorDetails.activityParticipation}/10</Text>
                     </div>
                     <Progress
@@ -430,7 +437,7 @@ const LeadScoring: React.FC = () => {
                     />
                   </div>
                   <div style={{ textAlign: 'right', marginTop: 8 }}>
-                    <Text strong>行为分总计：{currentLead.scoreDetail.behaviorScore}/40</Text>
+                    <Text strong>{t('ai.leadScoring.behaviorTotal')}：{currentLead.scoreDetail.behaviorScore}/40</Text>
                   </div>
                 </Space>
               </Card>

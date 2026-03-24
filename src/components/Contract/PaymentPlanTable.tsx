@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, Tag, Typography, Progress, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { PaymentPlan } from '../../types/contract';
 
 const { Text } = Typography;
@@ -22,14 +23,6 @@ const STATUS_COLORS: Record<string, string> = {
   OVERDUE: 'red'
 };
 
-// 状态文本
-const STATUS_TEXT: Record<string, string> = {
-  PENDING: '待回款',
-  PARTIAL: '部分回款',
-  COMPLETED: '已回款',
-  OVERDUE: '已逾期'
-};
-
 // 格式化金额
 const formatAmount = (amount: number) => {
   return `¥${(amount / 10000).toFixed(1)}万`;
@@ -49,17 +42,30 @@ export const PaymentPlanTable: React.FC<PaymentPlanTableProps> = ({
   showActions = false,
   onPlanClick
 }) => {
+  const { t } = useTranslation();
+
+  // 获取状态文本
+  const getStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      PENDING: t('contract.paymentPlan.pending'),
+      PARTIAL: t('contract.paymentPlan.partial'),
+      COMPLETED: t('contract.paymentPlan.completed'),
+      OVERDUE: t('contract.paymentPlan.overdue')
+    };
+    return statusMap[status] || status;
+  };
+
   // 表格列定义
   const columns = [
     {
-      title: '期数',
+      title: t('contract.paymentPlan.installment'),
       dataIndex: 'installmentNumber',
       key: 'installmentNumber',
       width: 80,
-      render: (num: number) => <Text strong>第{num}期</Text>
+      render: (num: number) => <Text strong>{t('contract.paymentPlan.installmentFormat', { num })}</Text>
     },
     {
-      title: '计划金额',
+      title: t('contract.paymentPlan.plannedAmount'),
       dataIndex: 'plannedAmount',
       key: 'plannedAmount',
       width: 120,
@@ -68,14 +74,14 @@ export const PaymentPlanTable: React.FC<PaymentPlanTableProps> = ({
       )
     },
     {
-      title: '计划日期',
+      title: t('contract.paymentPlan.plannedDate'),
       dataIndex: 'plannedDate',
       key: 'plannedDate',
       width: 120,
       render: (date: string) => formatDate(date)
     },
     {
-      title: '实际金额',
+      title: t('contract.paymentPlan.actualAmount'),
       dataIndex: 'actualAmount',
       key: 'actualAmount',
       width: 120,
@@ -84,14 +90,14 @@ export const PaymentPlanTable: React.FC<PaymentPlanTableProps> = ({
       )
     },
     {
-      title: '实际日期',
+      title: t('contract.paymentPlan.actualDate'),
       dataIndex: 'actualDate',
       key: 'actualDate',
       width: 120,
       render: (date?: string) => (date ? formatDate(date) : '-')
     },
     {
-      title: '付款条件',
+      title: t('contract.paymentPlan.paymentCondition'),
       dataIndex: 'paymentCondition',
       key: 'paymentCondition',
       ellipsis: true,
@@ -104,7 +110,7 @@ export const PaymentPlanTable: React.FC<PaymentPlanTableProps> = ({
       )
     },
     {
-      title: '回款进度',
+      title: t('contract.paymentPlan.progress'),
       key: 'progress',
       width: 150,
       render: (_: any, record: PaymentPlan) => {
@@ -120,13 +126,13 @@ export const PaymentPlanTable: React.FC<PaymentPlanTableProps> = ({
       }
     },
     {
-      title: '状态',
+      title: t('contract.paymentPlan.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
       render: (status: string) => (
         <Tag color={STATUS_COLORS[status]}>
-          {STATUS_TEXT[status]}
+          {getStatusText(status)}
         </Tag>
       )
     }

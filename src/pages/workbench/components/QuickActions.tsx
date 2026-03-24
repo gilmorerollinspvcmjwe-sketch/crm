@@ -1,17 +1,10 @@
 /**
  * 快捷操作组件
  */
-
 import React from 'react';
 import { Card, Button, Space, Grid } from 'antd';
-import {
-  UserAddOutlined,
-  AimOutlined,
-  PhoneOutlined,
-  FileTextOutlined,
-  FileOutlined,
-  CalendarOutlined,
-} from '@ant-design/icons';
+import { UserAddOutlined, AimOutlined, PhoneOutlined, FileTextOutlined, FileOutlined, CalendarOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { QuickAction } from '../../../mock/workbench';
 
 const { useBreakpoint } = Grid;
@@ -30,10 +23,8 @@ const iconMap: Record<string, React.ReactNode> = {
   calendar: <CalendarOutlined />,
 };
 
-export const QuickActions: React.FC<QuickActionsProps> = ({
-  actions,
-  onActionClick,
-}) => {
+export const QuickActions: React.FC<QuickActionsProps> = ({ actions, onActionClick }) => {
+  const { t } = useTranslation();
   const screens = useBreakpoint();
 
   const handleClick = (action: QuickAction) => {
@@ -47,29 +38,19 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       title={
         <Space>
           <span>⚡</span>
-          <span>快捷操作</span>
+          <span>{t('workbench.quickActions.title')}</span>
         </Space>
       }
       bordered={false}
       bodyStyle={{ padding: '12px 16px' }}
     >
-      <Space
-        direction="horizontal"
-        style={{ width: '100%', flexWrap: 'wrap', rowGap: 8 }}
-        size={8}
-      >
+      <Space direction="horizontal" style={{ width: '100%', flexWrap: 'wrap', rowGap: 8 }} size={8}>
         {actions.map((action) => (
           <Button
             key={action.id}
             icon={iconMap[action.icon] || <UserAddOutlined />}
             onClick={() => handleClick(action)}
-            style={{
-              height: 36,
-              padding: '0 12px',
-              fontSize: 13,
-              minWidth: 80,
-              flex: '0 0 auto',
-            }}
+            style={{ height: 36, padding: '0 12px', fontSize: 13, minWidth: 80, flex: '0 0 auto' }}
           >
             {action.label}
           </Button>
@@ -78,3 +59,5 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     </Card>
   );
 };
+
+export default QuickActions;

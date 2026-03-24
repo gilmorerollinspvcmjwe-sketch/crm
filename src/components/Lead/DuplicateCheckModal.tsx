@@ -7,6 +7,7 @@ import { Modal, Table, Tag, Space, Button } from 'antd';
 import { WarningOutlined, EyeOutlined } from '@ant-design/icons';
 import { Lead } from '../../types/lead';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface DuplicateCheckModalProps {
   visible: boolean;
@@ -23,36 +24,37 @@ export const DuplicateCheckModal: React.FC<DuplicateCheckModalProps> = ({
   onContinue,
   onCancel,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const columns = [
     {
-      title: '线索名称',
+      title: t('lead.duplicate.view'),
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '联系人',
+      title: t('lead.form.contactName'),
       dataIndex: 'contactName',
       key: 'contactName',
     },
     {
-      title: '手机',
+      title: t('lead.form.mobile'),
       dataIndex: 'phone',
       key: 'phone',
     },
     {
-      title: '邮箱',
+      title: t('lead.form.email'),
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: '公司',
+      title: t('lead.form.companyName'),
       dataIndex: 'company',
       key: 'company',
     },
     {
-      title: '状态',
+      title: t('lead.filter.status'),
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => {
@@ -66,7 +68,7 @@ export const DuplicateCheckModal: React.FC<DuplicateCheckModalProps> = ({
       },
     },
     {
-      title: '操作',
+      title: t('opportunity.table.actions'),
       key: 'action',
       render: (_: any, record: Lead) => (
         <Button
@@ -77,17 +79,17 @@ export const DuplicateCheckModal: React.FC<DuplicateCheckModalProps> = ({
             onCancel();
           }}
         >
-          查看
+          {t('lead.duplicate.view')}
         </Button>
       ),
     },
   ];
 
   const typeText = {
-    phone: '手机号',
-    email: '邮箱',
-    company: '公司名称',
-    multiple: '多个信息',
+    phone: t('lead.duplicate.phone'),
+    email: t('lead.duplicate.email'),
+    company: t('lead.duplicate.company'),
+    multiple: t('lead.duplicate.multiple'),
   }[matchType];
 
   return (
@@ -95,25 +97,24 @@ export const DuplicateCheckModal: React.FC<DuplicateCheckModalProps> = ({
       title={
         <Space>
           <WarningOutlined style={{ color: '#faad14', fontSize: 20 }} />
-          <span>发现重复线索</span>
+          <span>{t('lead.duplicate.title')}</span>
         </Space>
       }
       open={visible}
       onCancel={onCancel}
       footer={[
         <Button key="cancel" onClick={onCancel}>
-          取消
+          {t('lead.form.cancel')}
         </Button>,
         <Button key="continue" onClick={onContinue} danger>
-          继续创建
+          {t('lead.duplicate.continueCreate')}
         </Button>,
       ]}
       width={900}
     >
       <div style={{ marginBottom: 16, padding: '12px 16px', background: '#fffbe6', border: '1px solid #ffe58f', borderRadius: 4 }}>
         <p style={{ margin: 0, color: '#fa8c16' }}>
-          <strong>提示：</strong>检测到 {duplicates.length} 条重复线索（{typeText}重复）。
-          请确认是否继续创建，或查看已有线索避免重复录入。
+          <strong>{t('lead.duplicate.hint', { count: duplicates.length, type: typeText })}</strong>
         </p>
       </div>
       

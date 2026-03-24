@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Steps, Button, Space, message, Divider, Row, Col } from 'antd';
 import { SaveOutlined, FilePdfOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { QuoteProduct, Product } from '../../types/cpq';
 import { ProductSelector } from '../../components/CPQ/ProductSelector';
 import { QuoteCalculator } from '../../components/CPQ/QuoteCalculator';
@@ -15,15 +16,16 @@ import { QuotePreview } from '../../components/CPQ/QuotePreview';
  * 报价配置器页面组件
  */
 export const QuoteBuilder: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [currentStep, setCurrentStep] = useState(0);
   const [quoteProducts, setQuoteProducts] = useState<QuoteProduct[]>([]);
   const [productSelectorVisible, setProductSelectorVisible] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
-    customerId: 'CUST001', // TODO: 从客户选择器获取
-    customerName: '北京科技创新有限公司', // TODO: 从客户选择器获取
-    contactName: '张经理', // TODO: 从客户选择器获取
+    customerId: 'CUST001',
+    customerName: '北京科技创新有限公司',
+    contactName: '张经理',
     quoteNumber: '',
     validUntil: '',
     notes: '',
@@ -32,7 +34,6 @@ export const QuoteBuilder: React.FC = () => {
 
   /** 处理产品选择 */
   const handleProductSelected = (products: Product[]) => {
-    // 将选中的产品添加到报价明细
     const newProducts: QuoteProduct[] = products.map(p => ({
       id: `QP${Date.now()}${Math.random()}`,
       productId: p.id,
@@ -46,7 +47,7 @@ export const QuoteBuilder: React.FC = () => {
     }));
     setQuoteProducts([...quoteProducts, ...newProducts]);
     setProductSelectorVisible(false);
-    message.success(`已添加 ${products.length} 个产品`);
+    message.success(t('quote.builder.productAdded', { count: products.length }));
   };
 
   /** 处理产品明细变化 */
@@ -65,24 +66,23 @@ export const QuoteBuilder: React.FC = () => {
 
   /** 导出 PDF */
   const handleExportPDF = () => {
-    message.info('PDF 导出功能开发中...');
-    // TODO: 使用 jsPDF 实现 PDF 导出
+    message.info(t('quote.builder.pdfExporting'));
   };
 
   /** 保存报价单 */
   const handleSave = () => {
     if (quoteProducts.length === 0) {
-      message.error('请至少添加一个产品');
+      message.error(t('quote.builder.addProductFirst'));
       return;
     }
-    message.success('报价单保存成功！');
+    message.success(t('quote.builder.saveSuccess'));
     navigate('/quote/list');
   };
 
   const steps = [
-    { title: '客户信息', description: '填写报价单基本信息' },
-    { title: '选择产品', description: '添加报价产品明细' },
-    { title: '预览确认', description: '预览报价单并确认' },
+    { title: t('quote.builder.step1Title'), description: t('quote.builder.step1Desc') },
+    { title: t('quote.builder.step2Title'), description: t('quote.builder.step2Desc') },
+    { title: t('quote.builder.step3Title'), description: t('quote.builder.step3Desc') },
   ];
 
   const totals = calculateTotals();
@@ -90,34 +90,31 @@ export const QuoteBuilder: React.FC = () => {
   return (
     <div>
       <Card>
-        {/* 顶部操作栏 */}
         <div style={{ marginBottom: 24 }}>
           <Space>
             <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/quote/list')}>
-              返回
+              {t('quote.builder.back')}
             </Button>
             <span style={{ fontSize: 18, fontWeight: 600 }}>
-              {id ? '编辑报价单' : '新建报价单'}
+              {id ? t('quote.builder.edit') : t('quote.builder.new')}
             </span>
           </Space>
         </div>
 
-        {/* 步骤条 */}
         <Steps current={currentStep} items={steps} style={{ marginBottom: 32 }} />
 
-        {/* 步骤 1: 客户信息 */}
         {currentStep === 0 && (
-          <Card title="客户信息" type="inner">
+          <Card title={t('quote.builder.customerInfo')} type="inner">
             <Row gutter={16}>
               <Col span={12}>
                 <div style={{ marginBottom: 16 }}>
-                  <strong>报价单号：</strong>
+                  <strong>{t('quote.builder.quoteNumber')}：</strong>
                   <span>QT-2026-{String(Date.now()).slice(-6)}</span>
                 </div>
               </Col>
               <Col span={12}>
                 <div style={{ marginBottom: 16 }}>
-                  <strong>有效期至：</strong>
+                  <strong>{t('quote.builder.validUntil')}：</strong>
                   <span>{new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</span>
                 </div>
               </Col>
@@ -125,33 +122,32 @@ export const QuoteBuilder: React.FC = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <div style={{ marginBottom: 16 }}>
-                  <strong>客户：</strong>
-                  <span>请选择客户</span>
+                  <strong>{t('quote.builder.customer')}：</strong>
+                  <span>{t('quote.builder.selectCustomer')}</span>
                 </div>
               </Col>
               <Col span={12}>
                 <div style={{ marginBottom: 16 }}>
-                  <strong>联系人：</strong>
-                  <span>请选择联系人</span>
+                  <strong>{t('quote.builder.contact')}：</strong>
+                  <span>{t('quote.builder.selectContact')}</span>
                 </div>
               </Col>
             </Row>
             <Divider />
             <p style={{ color: '#999', textAlign: 'center' }}>
-              客户信息表单待完善，当前使用 Mock 数据
+              {t('quote.builder.mockDataNote')}
             </p>
           </Card>
         )}
 
-        {/* 步骤 2: 选择产品 */}
         {currentStep === 1 && (
           <div>
             <div style={{ marginBottom: 16 }}>
               <Button type="primary" onClick={() => setProductSelectorVisible(true)}>
-                选择产品
+                {t('quote.builder.selectProduct')}
               </Button>
               <span style={{ marginLeft: 16, color: '#666' }}>
-                已选择 {quoteProducts.length} 个产品
+                {t('quote.builder.selectedProducts', { count: quoteProducts.length })}
               </span>
             </div>
 
@@ -169,13 +165,12 @@ export const QuoteBuilder: React.FC = () => {
           </div>
         )}
 
-        {/* 步骤 3: 预览确认 */}
         {currentStep === 2 && (
           <QuotePreview
             quoteNumber={customerInfo.quoteNumber || 'QT-2026-XXX'}
-            customerName={customerInfo.customerName || '未选择客户'}
-            contactName={customerInfo.contactName || '未选择联系人'}
-            validUntil={customerInfo.validUntil || '未设置'}
+            customerName={customerInfo.customerName || t('quote.builder.noCustomer')}
+            contactName={customerInfo.contactName || t('quote.builder.noContact')}
+            validUntil={customerInfo.validUntil || t('quote.builder.notSet')}
             products={quoteProducts}
             subtotal={totals.subtotal}
             totalDiscount={totals.totalDiscount}
@@ -186,12 +181,11 @@ export const QuoteBuilder: React.FC = () => {
           />
         )}
 
-        {/* 底部操作按钮 */}
         <Divider />
         <div style={{ textAlign: 'right' }}>
           <Space>
             {currentStep > 0 && (
-              <Button onClick={() => setCurrentStep(currentStep - 1)}>上一步</Button>
+              <Button onClick={() => setCurrentStep(currentStep - 1)}>{t('quote.builder.previous')}</Button>
             )}
             {currentStep < 2 ? (
               <Button
@@ -199,15 +193,15 @@ export const QuoteBuilder: React.FC = () => {
                 onClick={() => setCurrentStep(currentStep + 1)}
                 disabled={currentStep === 1 && quoteProducts.length === 0}
               >
-                下一步
+                {t('quote.builder.next')}
               </Button>
             ) : (
               <>
                 <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-                  保存报价单
+                  {t('quote.builder.saveQuote')}
                 </Button>
                 <Button icon={<FilePdfOutlined />} onClick={handleExportPDF}>
-                  导出 PDF
+                  {t('quote.builder.exportPDF')}
                 </Button>
               </>
             )}

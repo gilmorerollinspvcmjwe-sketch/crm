@@ -5,6 +5,7 @@ import {
   Table, Timeline, Progress
 } from 'antd';
 import { ArrowLeftOutlined, EditOutlined, CheckCircleOutlined, CloseOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { PaymentPlan, PaymentStatus, PaymentMethod } from '../types/payment';
 import { paymentPlanData, paymentRecordData } from '../mock/paymentData';
 import { PaymentProgress } from '../components/Payment/PaymentProgress';
@@ -38,6 +39,7 @@ const PAYMENT_METHOD_COLORS: Record<PaymentMethod, string> = {
  * - 操作按钮
  */
 export const PaymentDetail: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -72,19 +74,19 @@ export const PaymentDetail: React.FC = () => {
 
   // 处理编辑
   const handleEdit = () => {
-    message.info(`编辑回款计划：${id}`);
+    message.info(`${t('common.actions.edit')}：${id}`);
     // TODO: 打开编辑表单
   };
 
   // 处理核销
   const handleVerify = () => {
     Modal.confirm({
-      title: '确定要核销这笔回款吗？',
-      content: '核销后回款状态将变更为已回款',
-      okText: '确定',
-      cancelText: '取消',
+      title: t('payment.detail.verifyConfirm'),
+      content: t('payment.detail.verifyContent'),
+      okText: t('common.actions.confirm'),
+      cancelText: t('common.actions.cancel'),
       onOk: () => {
-        message.success('回款已核销');
+        message.success(t('common.messages.operationSuccess'));
         // TODO: 调用核销 API
       }
     });
@@ -93,12 +95,12 @@ export const PaymentDetail: React.FC = () => {
   // 处理驳回
   const handleReject = () => {
     Modal.confirm({
-      title: '确定要驳回这笔回款吗？',
-      content: '请说明驳回原因',
-      okText: '确定',
-      cancelText: '取消',
+      title: t('payment.detail.rejectConfirm'),
+      content: t('payment.detail.rejectContent'),
+      okText: t('common.actions.confirm'),
+      cancelText: t('common.actions.cancel'),
       onOk: () => {
-        message.info('回款已驳回');
+        message.info(t('common.messages.operationSuccess'));
         // TODO: 调用驳回 API
       }
     });
@@ -109,26 +111,47 @@ export const PaymentDetail: React.FC = () => {
     return (
       <div style={{ padding: 24 }}>
         <Card>
-          <Title level={3}>回款计划不存在</Title>
+          <Title level={3}>{t('payment.detail.notFound')}</Title>
           <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-            返回
+            {t('payment.detail.back')}
           </Button>
         </Card>
       </div>
     );
   }
 
+  // 获取状态文本
+  const getStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      PENDING: t('payment.status.pending'),
+      PARTIAL: t('payment.status.partial'),
+      COMPLETED: t('payment.status.completed'),
+      OVERDUE: t('payment.status.overdue')
+    };
+    return statusMap[status] || status;
+  };
+
+  // 获取记录状态文本
+  const getRecordStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      VERIFIED: t('payment.recordStatus.verified'),
+      PENDING_VERIFY: t('payment.recordStatus.pendingVerify'),
+      REJECTED: t('payment.recordStatus.rejected')
+    };
+    return statusMap[status] || status;
+  };
+
   // 回款记录表格列
   const recordColumns = [
     {
-      title: '回款时间',
+      title: t('payment.detail.planInfo').replace('📋 ', ''),
       dataIndex: 'paymentDate',
       key: 'paymentDate',
       width: 120,
       render: (date: string) => formatDate(date)
     },
     {
-      title: '回款金额',
+      title: t('payment.detail.actualAmount'),
       dataIndex: 'amount',
       key: 'amount',
       width: 120,
@@ -137,7 +160,7 @@ export const PaymentDetail: React.FC = () => {
       )
     },
     {
-      title: '付款方式',
+      title: t('payment.detail.paymentMethod'),
       dataIndex: 'paymentMethod',
       key: 'paymentMethod',
       width: 100,
@@ -152,17 +175,17 @@ export const PaymentDetail: React.FC = () => {
       ellipsis: true
     },
     {
-      title: '状态',
+      title: t('payment.detail.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
       render: (status: string) => {
-        const statusMap: Record<string, { text: string; color: string }> = {
-          VERIFIED: { text: '已核销', color: 'green' },
-          PENDING_VERIFY: { text: '待核销', color: 'orange' },
-          REJECTED: { text: '已驳回', color: 'red' }
+        const statusConfig: Record<string, { text: string; color: string }> = {
+          VERIFIED: { text: getRecordStatusText('VERIFIED'), color: 'green' },
+          PENDING_VERIFY: { text: getRecordStatusText('PENDING_VERIFY'), color: 'orange' },
+          REJECTED: { text: getRecordStatusText('REJECTED'), color: 'red' }
         };
-        const config = statusMap[status] || { text: status, color: 'default' };
+        const config = statusConfig[status] || { text: status, color: 'default' };
         return <Tag color={config.color}>{config.text}</Tag>;
       }
     },
@@ -174,7 +197,7 @@ export const PaymentDetail: React.FC = () => {
       render: (name?: string) => name || '-'
     },
     {
-      title: '备注',
+      title: t('payment.detail.remarks'),
       dataIndex: 'remarks',
       key: 'remarks',
       ellipsis: true
@@ -188,15 +211,15 @@ export const PaymentDetail: React.FC = () => {
         <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
           <Space>
             <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-              返回
+              {t('payment.detail.back')}
             </Button>
             <Title level={3} style={{ margin: 0 }}>
-              回款计划：{paymentPlan.contractNumber} - 第{paymentPlan.installmentNumber}期
+              {t('payment.detail.title')}：{paymentPlan.contractNumber} - {t('payment.detail.installmentFormat', { num: paymentPlan.installmentNumber })}
             </Title>
           </Space>
           <Space>
             <Button icon={<EditOutlined />} onClick={handleEdit}>
-              编辑
+              {t('payment.detail.edit')}
             </Button>
             {paymentPlan.actualAmount && paymentPlan.status !== PaymentStatus.COMPLETED && (
               <>
@@ -206,14 +229,14 @@ export const PaymentDetail: React.FC = () => {
                   onClick={handleVerify}
                   style={{ color: '#52c41a' }}
                 >
-                  核销
+                  {t('payment.detail.verify')}
                 </Button>
                 <Button
                   danger
                   icon={<CloseOutlined />}
                   onClick={handleReject}
                 >
-                  驳回
+                  {t('payment.detail.reject')}
                 </Button>
               </>
             )}
@@ -222,29 +245,29 @@ export const PaymentDetail: React.FC = () => {
       </Card>
 
       {/* 基本信息 */}
-      <Card title="📋 回款计划信息" style={{ marginBottom: 16 }}>
+      <Card title={t('payment.detail.planInfo')} style={{ marginBottom: 16 }}>
         <Descriptions column={3} bordered>
-          <Descriptions.Item label="合同编号">
+          <Descriptions.Item label={t('payment.detail.contractNumber')}>
             <Text code>{paymentPlan.contractNumber}</Text>
           </Descriptions.Item>
-          <Descriptions.Item label="合同名称">{paymentPlan.contractName}</Descriptions.Item>
-          <Descriptions.Item label="客户名称">{paymentPlan.customerName}</Descriptions.Item>
-          <Descriptions.Item label="期数">第{paymentPlan.installmentNumber}期</Descriptions.Item>
-          <Descriptions.Item label="计划金额">
+          <Descriptions.Item label={t('payment.detail.contractName')}>{paymentPlan.contractName}</Descriptions.Item>
+          <Descriptions.Item label={t('payment.detail.customerName')}>{paymentPlan.customerName}</Descriptions.Item>
+          <Descriptions.Item label={t('payment.detail.installmentNumber')}>{t('payment.detail.installmentFormat', { num: paymentPlan.installmentNumber })}</Descriptions.Item>
+          <Descriptions.Item label={t('payment.detail.plannedAmount')}>
             <Text strong>{formatAmount(paymentPlan.plannedAmount)}</Text>
           </Descriptions.Item>
-          <Descriptions.Item label="实际金额">
+          <Descriptions.Item label={t('payment.detail.actualAmount')}>
             {paymentPlan.actualAmount ? (
               <Text strong style={{ color: '#52c41a' }}>{formatAmount(paymentPlan.actualAmount)}</Text>
             ) : (
               '-'
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="计划日期">{formatDate(paymentPlan.plannedDate)}</Descriptions.Item>
-          <Descriptions.Item label="实际日期">
+          <Descriptions.Item label={t('payment.detail.plannedDate')}>{formatDate(paymentPlan.plannedDate)}</Descriptions.Item>
+          <Descriptions.Item label={t('payment.detail.actualDate')}>
             {paymentPlan.actualDate ? formatDate(paymentPlan.actualDate) : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="付款方式">
+          <Descriptions.Item label={t('payment.detail.paymentMethod')}>
             {paymentPlan.paymentMethod ? (
               <Tag color={PAYMENT_METHOD_COLORS[paymentPlan.paymentMethod]}>
                 {paymentPlan.paymentMethod}
@@ -253,27 +276,27 @@ export const PaymentDetail: React.FC = () => {
               '-'
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="状态">
-            <Tag color={STATUS_COLORS[paymentPlan.status]}>{paymentPlan.status}</Tag>
+          <Descriptions.Item label={t('payment.detail.status')}>
+            <Tag color={STATUS_COLORS[paymentPlan.status]}>{getStatusText(paymentPlan.status)}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="逾期天数">
+          <Descriptions.Item label={t('payment.detail.overdueDays')}>
             {paymentPlan.overdueDays && paymentPlan.overdueDays > 0 ? (
-              <Text type="danger">{paymentPlan.overdueDays}天</Text>
+              <Text type="danger">{paymentPlan.overdueDays}{t('payment.detail.daysUnit')}</Text>
             ) : (
               '-'
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="付款条件" span={2}>
+          <Descriptions.Item label={t('payment.detail.paymentCondition')} span={2}>
             {paymentPlan.paymentCondition || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="备注" span={3}>
+          <Descriptions.Item label={t('payment.detail.remarks')} span={3}>
             {paymentPlan.remarks || '-'}
           </Descriptions.Item>
         </Descriptions>
       </Card>
 
       {/* 回款进度 */}
-      <Card title="💰 回款进度" style={{ marginBottom: 16 }}>
+      <Card title={t('payment.detail.paymentProgress')} style={{ marginBottom: 16 }}>
         <PaymentProgress
           paymentPlans={[paymentPlan]}
           totalAmount={paymentPlan.plannedAmount}
@@ -282,7 +305,7 @@ export const PaymentDetail: React.FC = () => {
       </Card>
 
       {/* 关联回款记录 */}
-      <Card title="回款记录" style={{ marginBottom: 16 }}>
+      <Card title={t('payment.detail.records')} style={{ marginBottom: 16 }}>
         {relatedRecords.length > 0 ? (
           <Table
             columns={recordColumns}
@@ -293,20 +316,20 @@ export const PaymentDetail: React.FC = () => {
           />
         ) : (
           <div style={{ textAlign: 'center', padding: '40px 0', color: '#999' }}>
-            暂无回款记录
+            {t('payment.detail.noRecords')}
           </div>
         )}
       </Card>
 
       {/* 时间线 */}
-      <Card title="📅 回款时间线">
+      <Card title={t('payment.detail.timeline')}>
         <Timeline
           items={[
             {
               color: 'green',
               children: (
                 <div>
-                  <div>回款计划创建</div>
+                  <div>{t('payment.detail.planCreated')}</div>
                   <Text type="secondary" style={{ fontSize: 12 }}>
                     {new Date(paymentPlan.createdAt).toLocaleString('zh-CN')}
                   </Text>
@@ -317,11 +340,11 @@ export const PaymentDetail: React.FC = () => {
               color: 'blue',
               children: (
                 <div>
-                  <div>回款到账</div>
+                  <div>{t('payment.detail.paymentReceived')}</div>
                   <Text type="secondary" style={{ fontSize: 12 }}>
                     {new Date(paymentPlan.actualDate).toLocaleString('zh-CN')}
                   </Text>
-                  <div>金额：{formatAmount(paymentPlan.actualAmount!)}</div>
+                  <div>{t('payment.detail.actualAmount')}：{formatAmount(paymentPlan.actualAmount!)}</div>
                 </div>
               )
             },
@@ -329,7 +352,7 @@ export const PaymentDetail: React.FC = () => {
               color: 'green',
               children: (
                 <div>
-                  <div>回款核销</div>
+                  <div>{t('payment.detail.paymentVerified')}</div>
                   <Text type="secondary" style={{ fontSize: 12 }}>
                     {new Date(paymentPlan.updatedAt).toLocaleString('zh-CN')}
                   </Text>
@@ -340,9 +363,9 @@ export const PaymentDetail: React.FC = () => {
               color: 'red',
               children: (
                 <div>
-                  <div style={{ color: '#ff4d4f' }}>回款逾期</div>
+                  <div style={{ color: '#ff4d4f' }}>{t('payment.detail.paymentOverdue')}</div>
                   <Text type="danger" style={{ fontSize: 12 }}>
-                    已逾期 {paymentPlan.overdueDays} 天
+                    {t('payment.detail.overdueDaysFormat', { days: paymentPlan.overdueDays })}
                   </Text>
                 </div>
               )

@@ -33,6 +33,7 @@ import {
   UsergroupAddOutlined,
   FilterOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { TargetList } from '../types/marketing';
 import { getTargetListsData } from '../mock/marketingData';
 
@@ -43,6 +44,7 @@ const { Search } = Input;
  * 目标客户列表管理页组件
  */
 export const TargetLists: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [targetLists, setTargetLists] = useState<TargetList[]>([]);
   const [filteredData, setFilteredData] = useState<TargetList[]>([]);
@@ -58,7 +60,7 @@ export const TargetLists: React.FC = () => {
       setTargetLists(data);
       setFilteredData(data);
     } catch (error) {
-      message.error('加载目标列表失败');
+      message.error(t('marketing.targetLists.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -104,8 +106,8 @@ export const TargetLists: React.FC = () => {
   /** 新建列表 */
   const handleCreate = () => {
     Modal.info({
-      title: '新建目标列表',
-      content: '新建目标列表功能开发中...',
+      title: t('marketing.targetLists.newList'),
+      content: t('common.loading'),
       width: 600,
     });
   };
@@ -113,8 +115,8 @@ export const TargetLists: React.FC = () => {
   /** 编辑列表 */
   const handleEdit = (list: TargetList) => {
     Modal.info({
-      title: '编辑目标列表',
-      content: '编辑目标列表功能开发中...',
+      title: t('marketing.targetLists.edit'),
+      content: t('common.loading'),
       width: 600,
     });
   };
@@ -122,11 +124,11 @@ export const TargetLists: React.FC = () => {
   /** 删除列表 */
   const handleDelete = (list: TargetList) => {
     Modal.confirm({
-      title: '确认删除',
-      content: `确定要删除目标列表"${list.name}"吗？此操作不可恢复。`,
+      title: t('common.confirm'),
+      content: t('marketing.targetLists.deleteConfirm', { name: list.name }),
       onOk: () => {
         setTargetLists(targetLists.filter((l) => l.id !== list.id));
-        message.success('列表已删除');
+        message.success(t('marketing.targetLists.deletedSuccess'));
       },
     });
   };
@@ -134,7 +136,7 @@ export const TargetLists: React.FC = () => {
   /** 表格列定义 */
   const columns = [
     {
-      title: '列表名称',
+      title: t('marketing.targetLists.columnName'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
@@ -150,7 +152,7 @@ export const TargetLists: React.FC = () => {
       ),
     },
     {
-      title: '客户数量',
+      title: t('marketing.targetLists.columnCustomerCount'),
       dataIndex: 'customerCount',
       key: 'customerCount',
       width: 120,
@@ -162,7 +164,7 @@ export const TargetLists: React.FC = () => {
       ),
     },
     {
-      title: '筛选条件',
+      title: t('marketing.targetLists.columnCriteria'),
       dataIndex: 'criteria',
       key: 'criteria',
       width: 300,
@@ -174,20 +176,20 @@ export const TargetLists: React.FC = () => {
       ),
     },
     {
-      title: '创建人',
+      title: t('marketing.targetLists.columnCreator'),
       dataIndex: 'createdByName',
       key: 'createdByName',
       width: 100,
     },
     {
-      title: '更新时间',
+      title: t('marketing.targetLists.columnUpdateTime'),
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 180,
       render: (time: string) => new Date(time).toLocaleString('zh-CN'),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 200,
       render: (_: unknown, record: TargetList) => (
@@ -198,7 +200,7 @@ export const TargetLists: React.FC = () => {
             icon={<EyeOutlined />}
             onClick={() => handleViewDetail(record)}
           >
-            详情
+            {t('marketing.targetLists.viewDetail')}
           </Button>
           <Button
             type="link"
@@ -206,7 +208,7 @@ export const TargetLists: React.FC = () => {
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
-            编辑
+            {t('marketing.targetLists.edit')}
           </Button>
           <Button
             type="link"
@@ -215,7 +217,7 @@ export const TargetLists: React.FC = () => {
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
           >
-            删除
+            {t('marketing.targetLists.delete')}
           </Button>
         </Space>
       ),
@@ -233,33 +235,33 @@ export const TargetLists: React.FC = () => {
         <Row gutter={16}>
           <Col span={6}>
             <Statistic
-              title="目标列表数"
+              title={t('marketing.targetLists.totalLists')}
               value={targetLists.length}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="覆盖客户总数"
+              title={t('marketing.targetLists.totalCustomers')}
               value={totalCustomers.toLocaleString()}
-              suffix="人"
+              suffix={t('common.items')}
               valueStyle={{ color: '#722ed1' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="平均客户数"
+              title={t('marketing.targetLists.avgCustomers')}
               value={avgCustomers.toLocaleString()}
-              suffix="人/列表"
+              suffix={t('common.items')}
               valueStyle={{ color: '#faad14' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="最大列表"
+              title={t('marketing.targetLists.maxList')}
               value={maxCustomers.toLocaleString()}
-              suffix="人"
+              suffix={t('common.items')}
               valueStyle={{ color: '#52c41a' }}
             />
           </Col>
@@ -267,22 +269,22 @@ export const TargetLists: React.FC = () => {
       </Card>
 
       <Card
-        title="目标客户列表管理"
+        title={t('marketing.targetLists.title')}
         extra={
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建列表
+            {t('marketing.targetLists.newList')}
           </Button>
         }
       >
         <Space style={{ marginBottom: 16 }} wrap>
           <Search
-            placeholder="搜索列表名称、描述或筛选条件"
+            placeholder={t('marketing.targetLists.searchPlaceholder')}
             allowClear
             onSearch={handleSearch}
             style={{ width: 350 }}
             prefix={<SearchOutlined />}
           />
-          <Button onClick={handleReset}>重置</Button>
+          <Button onClick={handleReset}>{t('common.reset')}</Button>
         </Space>
 
         <Table
@@ -293,7 +295,7 @@ export const TargetLists: React.FC = () => {
           pagination={{
             pageSize: 20,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个列表`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
           }}
         />
       </Card>
@@ -303,7 +305,7 @@ export const TargetLists: React.FC = () => {
         title={
           <Space>
             <FilterOutlined />
-            <span>目标列表详情</span>
+            <span>{t('marketing.targetLists.listDetail')}</span>
           </Space>
         }
         open={detailVisible}
@@ -311,10 +313,10 @@ export const TargetLists: React.FC = () => {
         width={800}
         footer={[
           <Button key="close" onClick={() => setDetailVisible(false)}>
-            关闭
+            {t('common.cancel')}
           </Button>,
           <Button key="edit" type="primary" onClick={() => handleEdit(detailList!)}>
-            编辑列表
+            {t('marketing.targetLists.edit')}
           </Button>,
         ]}
       >
@@ -324,24 +326,24 @@ export const TargetLists: React.FC = () => {
             <Divider style={{ margin: '12px 0' }} />
 
             <Descriptions column={1} bordered size="small">
-              <Descriptions.Item label="列表名称">{detailList.name}</Descriptions.Item>
-              <Descriptions.Item label="客户数量">
+              <Descriptions.Item label={t('marketing.targetLists.listName')}>{detailList.name}</Descriptions.Item>
+              <Descriptions.Item label={t('marketing.targetLists.customerCount')}>
                 <Tag color="blue" style={{ fontSize: 14 }}>
                   <UsergroupAddOutlined style={{ marginRight: 4 }} />
                   {detailList.customerCount.toLocaleString()}
                 </Tag>
               </Descriptions.Item>
-              <Descriptions.Item label="创建人">{detailList.createdByName}</Descriptions.Item>
-              <Descriptions.Item label="创建时间">
+              <Descriptions.Item label={t('marketing.targetLists.columnCreator')}>{detailList.createdByName}</Descriptions.Item>
+              <Descriptions.Item label={t('marketing.targetLists.createdAt')}>
                 {new Date(detailList.createdAt).toLocaleString('zh-CN')}
               </Descriptions.Item>
-              <Descriptions.Item label="更新时间">
+              <Descriptions.Item label={t('marketing.targetLists.updatedAt')}>
                 {new Date(detailList.updatedAt).toLocaleString('zh-CN')}
               </Descriptions.Item>
-              <Descriptions.Item label="描述" span={2}>
-                {detailList.description || '无'}
+              <Descriptions.Item label={t('marketing.campaignDetail.description')} span={2}>
+                {detailList.description || t('marketing.campaignDetail.none')}
               </Descriptions.Item>
-              <Descriptions.Item label="筛选条件" span={2}>
+              <Descriptions.Item label={t('marketing.targetLists.criteria')} span={2}>
                 <Paragraph
                   copyable={{ text: detailList.criteria }}
                   code
@@ -352,9 +354,9 @@ export const TargetLists: React.FC = () => {
               </Descriptions.Item>
             </Descriptions>
 
-            <Divider>关联营销活动</Divider>
+            <Divider>{t('marketing.targetLists.relatedCampaigns')}</Divider>
             <Text type="secondary">
-              此目标列表当前未被任何营销活动使用
+              {t('marketing.targetLists.noRelatedCampaigns')}
             </Text>
 
             <Divider />
@@ -365,7 +367,7 @@ export const TargetLists: React.FC = () => {
                 format={() => `${((detailList.customerCount / maxCustomers) * 100).toFixed(1)}%`}
               />
               <div style={{ marginTop: 8 }}>
-                <Text type="secondary">列表容量占比（相对于最大列表）</Text>
+                <Text type="secondary">{t('marketing.targetLists.capacityRatio')}</Text>
               </div>
             </div>
           </div>

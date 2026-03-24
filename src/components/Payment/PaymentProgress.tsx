@@ -1,6 +1,7 @@
 import React from 'react';
 import { Progress, Tooltip, Space, Typography } from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { PaymentPlan, PaymentStatus } from '../../types/payment';
 
 const { Text } = Typography;
@@ -40,6 +41,8 @@ export const PaymentProgress: React.FC<PaymentProgressProps> = ({
   totalAmount,
   showDetail = true
 }) => {
+  const { t } = useTranslation();
+  
   // 计算回款进度
   const completedPlans = paymentPlans.filter(p => p.status === PaymentStatus.COMPLETED);
   const totalPlans = paymentPlans.length;
@@ -69,12 +72,12 @@ export const PaymentProgress: React.FC<PaymentProgressProps> = ({
         />
         <div>
           <div style={{ fontSize: 16, marginBottom: 8 }}>
-            已回款：<Text strong style={{ color: '#52c41a' }}>{formatAmount(paidAmount)}</Text>
+            {t('payment.detail.paidAmount') ? t('payment.detail.paidAmount').replace('：', '') : '已回款'}：<Text strong style={{ color: '#52c41a' }}>{formatAmount(paidAmount)}</Text>
             {' / '}
-            合同总额：<Text strong>{formatAmount(totalAmount)}</Text>
+            {t('payment.detail.totalAmount') ? t('payment.detail.totalAmount').replace('：', '') : '合同总额'}：<Text strong>{formatAmount(totalAmount)}</Text>
           </div>
           <div style={{ color: '#666' }}>
-            回款期数：{completedCount} / {totalPlans} 期
+            {t('payment.detail.paymentPeriods') ? t('payment.detail.paymentPeriods').replace('：', '') : '回款期数'}：{completedCount} / {totalPlans} 期
             {completedCount === totalPlans && totalPlans > 0 && (
               <Text type="success" style={{ marginLeft: 8 }}>✓ 已全部回款</Text>
             )}
@@ -89,9 +92,9 @@ export const PaymentProgress: React.FC<PaymentProgressProps> = ({
           <Space direction="vertical" style={{ width: '100%' }} size="small">
             {paymentPlans.map((plan, index) => (
               <div key={plan.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Tooltip title={`第${plan.installmentNumber}期：${formatAmount(plan.plannedAmount)}`}>
+                <Tooltip title={`${t('contract.paymentPlan.installmentFormat', { num: plan.installmentNumber })}：${formatAmount(plan.plannedAmount)}`}>
                   <span style={{ width: 60, flexShrink: 0 }}>
-                    {STATUS_ICONS[plan.status]} 第{plan.installmentNumber}期
+                    {STATUS_ICONS[plan.status]} {t('contract.paymentPlan.installmentFormat', { num: plan.installmentNumber })}
                   </span>
                 </Tooltip>
                 <Progress

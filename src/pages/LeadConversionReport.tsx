@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { Card, Select, Row, Col, Table, Statistic, Progress } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { LineChart } from '../components/Charts/LineChart';
 import { PieChart } from '../components/Charts/PieChart';
 import { BarChart } from '../components/Charts/BarChart';
@@ -49,22 +50,23 @@ const leadConversionReport = {
 };
 
 const LeadConversionReport: React.FC = () => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<TimeRange>('month');
 
   const channelColumns = [
     {
-      title: '渠道',
+      title: t('report.leadConversion.channel'),
       dataIndex: 'channel',
       key: 'channel',
     },
     {
-      title: '线索数',
+      title: t('report.leadConversion.leadCount'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
     },
     {
-      title: '转化数',
+      title: t('report.leadConversion.converted'),
       dataIndex: 'converted',
       key: 'converted',
       render: (count: number) => (
@@ -73,7 +75,7 @@ const LeadConversionReport: React.FC = () => {
       sorter: (a: any, b: any) => a.converted - b.converted,
     },
     {
-      title: '转化率',
+      title: t('report.leadConversion.conversionRate'),
       dataIndex: 'rate',
       key: 'rate',
       render: (rate: number) => (
@@ -90,18 +92,18 @@ const LeadConversionReport: React.FC = () => {
 
   const timeColumns = [
     {
-      title: '转化周期',
+      title: t('report.leadConversion.conversionCycle'),
       dataIndex: 'days',
       key: 'days',
     },
     {
-      title: '数量',
+      title: t('report.activity.count'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
     },
     {
-      title: '占比',
+      title: t('report.activity.percentage'),
       dataIndex: 'percentage',
       key: 'percentage',
       render: (percentage: number) => (
@@ -139,9 +141,9 @@ const LeadConversionReport: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h2 style={{ margin: 0 }}>🔄 线索转化分析</h2>
+            <h2 style={{ margin: 0 }}>🔄 {t('report.leadConversion.title')}</h2>
             <p style={{ margin: '8px 0 0 0', color: '#999' }}>
-              查看线索转化率、渠道效果和转化周期
+              {t('report.leadConversion.subtitle')}
             </p>
           </div>
           <Select
@@ -149,10 +151,10 @@ const LeadConversionReport: React.FC = () => {
             onChange={(value) => setTimeRange(value)}
             style={{ width: 120 }}
           >
-            <Option value="week">本周</Option>
-            <Option value="month">本月</Option>
-            <Option value="quarter">本季度</Option>
-            <Option value="year">本年</Option>
+            <Option value="week">{t('report.timeRange.week')}</Option>
+            <Option value="month">{t('report.timeRange.month')}</Option>
+            <Option value="quarter">{t('report.timeRange.quarter')}</Option>
+            <Option value="year">{t('report.timeRange.year')}</Option>
           </Select>
         </div>
       </Card>
@@ -161,9 +163,9 @@ const LeadConversionReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="总线索数"
+              title={t('report.leadConversion.totalLeads')}
               value={leadConversionReport.totalLeads}
-              suffix="条"
+              suffix={t('common.unit.record')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Card>
@@ -171,9 +173,9 @@ const LeadConversionReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="已转化"
+              title={t('report.leadConversion.convertedCount')}
               value={leadConversionReport.converted}
-              suffix="条"
+              suffix={t('common.unit.record')}
               valueStyle={{ color: '#52c41a' }}
             />
           </Card>
@@ -181,9 +183,9 @@ const LeadConversionReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="转化率"
+              title={t('report.leadConversion.conversionRate')}
               value={leadConversionReport.conversionRate}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               precision={1}
               valueStyle={{ color: '#faad14' }}
             />
@@ -192,9 +194,9 @@ const LeadConversionReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="平均转化天数"
+              title={t('report.leadConversion.avgConversionDays')}
               value={leadConversionReport.avgConvertDays}
-              suffix="天"
+              suffix={t('common.unit.days')}
               precision={1}
               valueStyle={{ color: '#722ed1' }}
             />
@@ -202,12 +204,12 @@ const LeadConversionReport: React.FC = () => {
         </Col>
       </Row>
 
-      <Card title="📈 转化趋势分析" style={{ marginBottom: 16 }}>
+      <Card title={`📈 ${t('report.leadConversion.trendAnalysis')}`} style={{ marginBottom: 16 }}>
         <LineChart
           data={trendChartData}
           dataKeys={[
-            { key: 'leads', name: '线索数', color: '#1890ff' },
-            { key: 'converted', name: '转化数', color: '#52c41a' },
+            { key: 'leads', name: t('report.leadConversion.leadsChart'), color: '#1890ff' },
+            { key: 'converted', name: t('report.leadConversion.convertedChart'), color: '#52c41a' },
           ]}
           height={300}
           yAxisFormatter={(value) => value.toFixed(0)}
@@ -216,7 +218,7 @@ const LeadConversionReport: React.FC = () => {
 
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={12}>
-          <Card title="📊 渠道效果分析">
+          <Card title={`📊 ${t('report.leadConversion.channelAnalysis')}`}>
             <PieChart
               data={channelPieData}
               height={300}
@@ -226,7 +228,7 @@ const LeadConversionReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="⏱️ 转化时间分布">
+          <Card title={`⏱️ ${t('report.leadConversion.timeDistribution')}`}>
             <BarChart
               data={timeBarData}
               height={300}
@@ -238,7 +240,7 @@ const LeadConversionReport: React.FC = () => {
 
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="📋 渠道详情" size="small">
+          <Card title={`📋 ${t('report.leadConversion.channelDetails')}`} size="small">
             <Table
               columns={channelColumns}
               dataSource={leadConversionReport.channelDist}
@@ -250,7 +252,7 @@ const LeadConversionReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="转化周期详情" size="small">
+          <Card title={t('report.leadConversion.cycleDetails')} size="small">
             <Table
               columns={timeColumns}
               dataSource={leadConversionReport.timeDist}

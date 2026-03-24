@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Select, Space, Button, Tag, Popconfirm, message, Modal } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, SettingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import { Pricebook, PricebookType, PricebookStatus } from '../../types/pricebook';
 import { getPricebookList, deletePricebook, createPricebook, updatePricebook } from '../../services/pricebookService';
 import { PricebookForm } from '../../components/Pricebook/PricebookForm';
@@ -18,6 +19,7 @@ const { Option } = Select;
  * 价格表列表页面组件
  */
 export const PricebookList: React.FC = () => {
+  const { t } = useTranslation();
   const [pricebooks, setPricebooks] = useState<Pricebook[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -43,7 +45,7 @@ export const PricebookList: React.FC = () => {
       const result = await getProducts({ pageSize: 100 });
       setProducts(result.list);
     } catch (error) {
-      console.error('加载产品列表失败:', error);
+      console.error(t('pricebook.list.loadFailed') + ':', error);
     }
   };
 
@@ -61,7 +63,7 @@ export const PricebookList: React.FC = () => {
       setPricebooks(result.list);
       setTotal(result.total);
     } catch (error) {
-      message.error('加载价格表列表失败');
+      message.error(t('pricebook.list.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -94,10 +96,10 @@ export const PricebookList: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await deletePricebook(id);
-      message.success('删除成功');
+      message.success(t('pricebook.list.deleteSuccess'));
       loadPricebooks();
     } catch (error) {
-      message.error('删除失败');
+      message.error(t('pricebook.list.deleteFailed'));
     }
   };
 
@@ -107,7 +109,7 @@ export const PricebookList: React.FC = () => {
     try {
       if (editingPricebook) {
         await updatePricebook(editingPricebook.id, values);
-        message.success('价格表更新成功');
+        message.success(t('pricebook.form.updateSuccess'));
       } else {
         await createPricebook({
           ...values,
@@ -116,12 +118,12 @@ export const PricebookList: React.FC = () => {
           createdBy: 'USER001',
           createdByName: '管理员',
         });
-        message.success('价格表创建成功');
+        message.success(t('pricebook.form.createSuccess'));
       }
       setPricebookModalVisible(false);
       loadPricebooks();
     } catch (error) {
-      message.error('操作失败');
+      message.error(t('common.operationFailed'));
     } finally {
       setPricebookFormLoading(false);
     }
@@ -131,24 +133,24 @@ export const PricebookList: React.FC = () => {
   const handleEntrySubmit = async (values: any) => {
     try {
       // Mock 添加条目
-      message.success('产品条目已添加到价格表');
+      message.success(t('pricebook.entryForm.productAdded'));
       setEntryModalVisible(false);
       loadPricebooks();
     } catch (error) {
-      message.error('操作失败');
+      message.error(t('pricebook.entryForm.operationFailed'));
     }
   };
 
   /** 表格列定义 */
   const columns: ColumnsType<Pricebook> = [
     {
-      title: '价格表名称',
+      title: t('pricebook.list.columnName'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
     },
     {
-      title: '类型',
+      title: t('pricebook.list.columnType'),
       dataIndex: 'type',
       key: 'type',
       width: 120,
@@ -157,7 +159,7 @@ export const PricebookList: React.FC = () => {
       ),
     },
     {
-      title: '状态',
+      title: t('pricebook.list.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -171,28 +173,28 @@ export const PricebookList: React.FC = () => {
       },
     },
     {
-      title: '客户',
+      title: t('pricebook.list.columnCustomer'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 200,
       render: (name?: string) => name || '-',
     },
     {
-      title: '有效期',
+      title: t('pricebook.list.columnValidPeriod'),
       key: 'validPeriod',
       width: 180,
       render: (_: any, record: Pricebook) => (
-        <span>{record.validFrom} 至 {record.validTo || '长期'}</span>
+        <span>{record.validFrom} {t('pricebook.detail.validPeriod')} {record.validTo || t('pricebook.list.longTerm')}</span>
       ),
     },
     {
-      title: '产品数量',
+      title: t('pricebook.list.columnItemCount'),
       key: 'itemCount',
       width: 100,
       render: (_: any, record: Pricebook) => record.items?.length || 0,
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 220,
       render: (_: any, record: Pricebook) => (
@@ -203,7 +205,7 @@ export const PricebookList: React.FC = () => {
             icon={<PlusOutlined />}
             onClick={() => handleAddEntry(record)}
           >
-            添加产品
+            {t('pricebook.list.addProduct')}
           </Button>
           <Button 
             type="link" 
@@ -211,15 +213,15 @@ export const PricebookList: React.FC = () => {
             icon={<EditOutlined />}
             onClick={() => handleEditPricebook(record)}
           >
-            编辑
+            {t('pricebook.list.edit')}
           </Button>
           {!record.isSystem && (
             <Popconfirm
-              title="确定删除此价格表吗？"
+              title={t('pricebook.list.deleteConfirm')}
               onConfirm={() => handleDelete(record.id)}
             >
               <Button type="link" size="small" danger icon={<DeleteOutlined />}>
-                删除
+                {t('pricebook.list.delete')}
               </Button>
             </Popconfirm>
           )}
@@ -235,7 +237,7 @@ export const PricebookList: React.FC = () => {
         <Space style={{ marginBottom: 16, width: '100%', display: 'flex', justifyContent: 'space-between' }}>
           <Space>
             <Input
-              placeholder="搜索价格表"
+              placeholder={t('pricebook.list.searchPlaceholder')}
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -244,32 +246,32 @@ export const PricebookList: React.FC = () => {
               onPressEnter={loadPricebooks}
             />
             <Select
-              placeholder="类型"
+              placeholder={t('pricebook.list.typeFilter')}
               value={typeFilter}
               onChange={setTypeFilter}
               style={{ width: 150 }}
               allowClear
             >
-              <Option value={PricebookType.STANDARD}>标准价格表</Option>
-              <Option value={PricebookType.CUSTOMER}>客户价格表</Option>
-              <Option value={PricebookType.PARTNER}>合作伙伴价格表</Option>
-              <Option value={PricebookType.PROMOTION}>促销价格表</Option>
+              <Option value={PricebookType.STANDARD}>{t('pricebook.list.standardPricebook')}</Option>
+              <Option value={PricebookType.CUSTOMER}>{t('pricebook.list.customerPricebook')}</Option>
+              <Option value={PricebookType.PARTNER}>{t('pricebook.list.partnerPricebook')}</Option>
+              <Option value={PricebookType.PROMOTION}>{t('pricebook.list.promotionPricebook')}</Option>
             </Select>
             <Select
-              placeholder="状态"
+              placeholder={t('pricebook.list.statusFilter')}
               value={statusFilter}
               onChange={setStatusFilter}
               style={{ width: 120 }}
               allowClear
             >
-              <Option value={PricebookStatus.ACTIVE}>启用</Option>
-              <Option value={PricebookStatus.INACTIVE}>停用</Option>
-              <Option value={PricebookStatus.DRAFT}>草稿</Option>
+              <Option value={PricebookStatus.ACTIVE}>{t('pricebook.list.statusActive')}</Option>
+              <Option value={PricebookStatus.INACTIVE}>{t('pricebook.list.statusInactive')}</Option>
+              <Option value={PricebookStatus.DRAFT}>{t('pricebook.list.statusDraft')}</Option>
             </Select>
-            <Button onClick={loadPricebooks}>查询</Button>
+            <Button onClick={loadPricebooks}>{t('common.query')}</Button>
           </Space>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreatePricebook}>
-            新建价格表
+            {t('pricebook.list.newPricebook')}
           </Button>
         </Space>
 
@@ -284,7 +286,7 @@ export const PricebookList: React.FC = () => {
             pageSize,
             total,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个价格表`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
             onChange: (page, pageSize) => {
               setPage(page);
               setPageSize(pageSize);
@@ -295,7 +297,7 @@ export const PricebookList: React.FC = () => {
 
       {/* 新建/编辑价格表弹窗 */}
       <Modal
-        title={editingPricebook ? '编辑价格表' : '新建价格表'}
+        title={editingPricebook ? t('pricebook.form.basicInfo') : t('pricebook.list.newPricebook')}
         open={pricebookModalVisible}
         onCancel={() => setPricebookModalVisible(false)}
         footer={null}
@@ -313,7 +315,7 @@ export const PricebookList: React.FC = () => {
 
       {/* 添加价格表条目弹窗 */}
       <Modal
-        title={`添加产品 - ${selectedPricebook?.name}`}
+        title={`${t('pricebook.list.addProduct')} - ${selectedPricebook?.name}`}
         open={entryModalVisible}
         onCancel={() => setEntryModalVisible(false)}
         footer={null}

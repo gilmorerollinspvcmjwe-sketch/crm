@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, Space, Tag, Spin, message, Table, Divider } from 'antd';
 import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import { Pricebook, PricebookItem } from '../../types/pricebook';
 import { getPricebookById } from '../../services/pricebookService';
 
@@ -13,6 +14,7 @@ import { getPricebookById } from '../../services/pricebookService';
  * 价格表详情页面组件
  */
 export const PricebookDetail: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [pricebook, setPricebook] = useState<Pricebook | null>(null);
@@ -26,7 +28,7 @@ export const PricebookDetail: React.FC = () => {
         const data = await getPricebookById(id);
         setPricebook(data || null);
       } catch (error) {
-        message.error('加载价格表详情失败');
+        message.error(t('pricebook.detail.loadFailed'));
       } finally {
         setLoading(false);
       }
@@ -35,36 +37,36 @@ export const PricebookDetail: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <Spin tip="加载中..." style={{ display: 'block', margin: '100px auto' }} />;
+    return <Spin tip={t('common.loading')} style={{ display: 'block', margin: '100px auto' }} />;
   }
 
   if (!pricebook) {
-    return <Card>价格表不存在</Card>;
+    return <Card>{t('pricebook.detail.notExist')}</Card>;
   }
 
   /** 价格项表格列 */
   const itemColumns: ColumnsType<PricebookItem> = [
     {
-      title: '产品编号',
+      title: t('pricebook.detail.columnProductSku'),
       dataIndex: 'productSku',
       key: 'productSku',
       width: 120,
     },
     {
-      title: '产品名称',
+      title: t('pricebook.detail.columnProductName'),
       dataIndex: 'productName',
       key: 'productName',
       width: 250,
     },
     {
-      title: '基础价格',
+      title: t('pricebook.detail.columnBasePrice'),
       dataIndex: 'basePrice',
       key: 'basePrice',
       width: 120,
       render: (price: number) => `¥${price.toLocaleString()}`,
     },
     {
-      title: '阶梯定价',
+      title: t('pricebook.detail.columnTiers'),
       key: 'tiers',
       render: (_: any, record: PricebookItem) => (
         <Space direction="vertical" size="small">
@@ -77,11 +79,11 @@ export const PricebookDetail: React.FC = () => {
       ),
     },
     {
-      title: '有效期',
+      title: t('pricebook.detail.columnEffectiveDate'),
       key: 'effectiveDate',
       width: 180,
       render: (_: any, record: PricebookItem) => (
-        <span>{record.effectiveDate} 至 {record.expirationDate || '长期'}</span>
+        <span>{record.effectiveDate} {t('pricebook.detail.validPeriod')} {record.expirationDate || t('pricebook.list.longTerm')}</span>
       ),
     },
   ];
@@ -92,37 +94,37 @@ export const PricebookDetail: React.FC = () => {
         {/* 顶部操作栏 */}
         <Space style={{ marginBottom: 24 }}>
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/pricebook/list')}>
-            返回
+            {t('pricebook.detail.back')}
           </Button>
           <Button type="primary" icon={<EditOutlined />}>
-            编辑
+            {t('pricebook.detail.edit')}
           </Button>
         </Space>
 
         {/* 价格表基本信息 */}
-        <Descriptions title="基本信息" bordered column={2}>
-          <Descriptions.Item label="价格表名称">{pricebook.name}</Descriptions.Item>
-          <Descriptions.Item label="类型">
+        <Descriptions title={t('pricebook.detail.basicInfo')} bordered column={2}>
+          <Descriptions.Item label={t('pricebook.detail.pricebookName')}>{pricebook.name}</Descriptions.Item>
+          <Descriptions.Item label={t('pricebook.detail.type')}>
             <Tag color="blue">{pricebook.type}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="状态">
+          <Descriptions.Item label={t('pricebook.detail.status')}>
             <Tag color={pricebook.status === '启用' ? 'green' : 'default'}>
               {pricebook.status}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="客户">
-            {pricebook.customerName || '全部客户'}
+          <Descriptions.Item label={t('pricebook.detail.customer')}>
+            {pricebook.customerName || t('pricebook.detail.allCustomers')}
           </Descriptions.Item>
-          <Descriptions.Item label="币种">{pricebook.currency}</Descriptions.Item>
-          <Descriptions.Item label="有效期">
-            {pricebook.validFrom} 至 {pricebook.validTo || '长期'}
+          <Descriptions.Item label={t('pricebook.detail.currency')}>{pricebook.currency}</Descriptions.Item>
+          <Descriptions.Item label={t('pricebook.detail.validPeriod')}>
+            {pricebook.validFrom} {t('pricebook.detail.validPeriod')} {pricebook.validTo || t('pricebook.list.longTerm')}
           </Descriptions.Item>
-          <Descriptions.Item label="描述" span={2}>
-            {pricebook.description || '无'}
+          <Descriptions.Item label={t('pricebook.detail.description')} span={2}>
+            {pricebook.description || t('pricebook.detail.none')}
           </Descriptions.Item>
         </Descriptions>
 
-        <Divider orientation="left">价格项明细 ({pricebook.items.length})</Divider>
+        <Divider orientation="left">{t('pricebook.detail.priceItems')} ({pricebook.items.length})</Divider>
 
         {/* 价格项表格 */}
         <Table

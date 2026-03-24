@@ -14,13 +14,12 @@ import {
   Statistic,
   Row,
   Col,
-  Tabs,
 } from 'antd';
 import {
   RobotOutlined,
   TeamOutlined,
-  ThunderboltOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import {
   ScatterChart,
@@ -49,6 +48,7 @@ const { Title, Text } = Typography;
 const COLORS = ['#52c41a', '#1890ff', '#faad14', '#ff4d4f'];
 
 const CustomerSegmentation: React.FC = () => {
+  const { t } = useTranslation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<CustomerSegment | null>(null);
   const [segmentCustomers, setSegmentCustomers] = useState<SegmentedCustomer[]>([]);
@@ -89,33 +89,33 @@ const CustomerSegmentation: React.FC = () => {
 
   const columns: ColumnsType<SegmentedCustomer> = [
     {
-      title: '客户名称',
+      title: t('ai.customerSegmentation.customerName'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
     },
     {
-      title: '负责人',
+      title: t('ai.customerSegmentation.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '最近消费 (天)',
+      title: t('ai.customerSegmentation.recencyDays'),
       dataIndex: 'recency',
       key: 'recency',
       width: 120,
       sorter: (a, b) => a.recency - b.recency,
     },
     {
-      title: '消费频率 (次/年)',
+      title: t('ai.customerSegmentation.frequency'),
       dataIndex: 'frequency',
       key: 'frequency',
       width: 130,
       sorter: (a, b) => a.frequency - b.frequency,
     },
     {
-      title: '消费金额 (元)',
+      title: t('ai.customerSegmentation.monetary'),
       dataIndex: 'monetary',
       key: 'monetary',
       width: 130,
@@ -123,7 +123,7 @@ const CustomerSegmentation: React.FC = () => {
       render: (value: number) => `¥${value.toLocaleString()}`,
     },
     {
-      title: '总价值 (元)',
+      title: t('ai.customerSegmentation.totalValue'),
       dataIndex: 'totalValue',
       key: 'totalValue',
       width: 130,
@@ -131,7 +131,7 @@ const CustomerSegmentation: React.FC = () => {
       render: (value: number) => `¥${value.toLocaleString()}`,
     },
     {
-      title: '最后购买',
+      title: t('ai.customerSegmentation.lastPurchase'),
       dataIndex: 'lastPurchase',
       key: 'lastPurchase',
       width: 120,
@@ -143,10 +143,10 @@ const CustomerSegmentation: React.FC = () => {
       {/* 页面头部 */}
       <div style={{ background: '#fff', padding: '16px 24px', marginBottom: 16 }}>
         <Title level={2} style={{ margin: 0 }}>
-          <RobotOutlined /> 客户分群 AI
+          <RobotOutlined /> {t('ai.customerSegmentation.title')}
         </Title>
         <Text type="secondary">
-          基于 RFM 模型（最近消费、消费频率、消费金额）自动分群，识别高价值客户和需关注客户
+          {t('ai.customerSegmentation.subtitle')}
         </Text>
       </div>
 
@@ -180,9 +180,9 @@ const CustomerSegmentation: React.FC = () => {
       {/* 图表展示 */}
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="客户分布散点图" style={{ marginBottom: 16 }}>
+          <Card title={t('ai.customerSegmentation.scatterChart')} style={{ marginBottom: 16 }}>
             <Text type="secondary" style={{ fontSize: 12 }}>
-              X 轴：消费频率 | Y 轴：消费金额 | 气泡大小：最近消费
+              {t('ai.customerSegmentation.scatterChartDesc')}
             </Text>
             <ResponsiveContainer width="100%" height={350}>
               <ScatterChart>
@@ -190,28 +190,28 @@ const CustomerSegmentation: React.FC = () => {
                 <XAxis
                   type="number"
                   dataKey="x"
-                  name="消费频率"
-                  unit="次/年"
-                  label={{ value: '消费频率 (次/年)', position: 'insideBottom', offset: -5 }}
+                  name={t('ai.customerSegmentation.frequencyChart')}
+                  unit={t('ai.customerSegmentation.frequencyUnit')}
+                  label={{ value: t('ai.customerSegmentation.frequencyChart'), position: 'insideBottom', offset: -5 }}
                 />
                 <YAxis
                   type="number"
                   dataKey="y"
-                  name="消费金额"
-                  unit="千元"
-                  label={{ value: '消费金额 (千元)', angle: -90, position: 'insideLeft' }}
+                  name={t('ai.customerSegmentation.monetaryChart')}
+                  unit={t('ai.customerSegmentation.monetaryUnit')}
+                  label={{ value: t('ai.customerSegmentation.monetaryChart'), angle: -90, position: 'insideLeft' }}
                 />
-                <ZAxis type="number" dataKey="z" range={[50, 400]} name="最近消费" />
+                <ZAxis type="number" dataKey="z" range={[50, 400]} name={t('ai.customerSegmentation.recencyDays')} />
                 <Tooltip
                   cursor={{ strokeDasharray: '3 3' }}
                   formatter={(value: any, name: any) => {
-                    if (name === '消费频率') return [`${value}次/年`, name];
-                    if (name === '消费金额') return [`¥${value * 1000}`, name];
-                    return [`${value}天`, name];
+                    if (name === t('ai.customerSegmentation.frequencyChart')) return [`${value}${t('ai.customerSegmentation.frequencyUnit')}`, name];
+                    if (name === t('ai.customerSegmentation.monetaryChart')) return [`¥${value * 1000}`, name];
+                    return [`${value}${t('ai.customerSegmentation.daysUnit')}`, name];
                   }}
                 />
                 <Legend />
-                <Scatter name="客户" data={scatterData} fill="#8884d8">
+                <Scatter name={t('ai.customerSegmentation.customer')} data={scatterData} fill="#8884d8">
                   {scatterData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
@@ -221,7 +221,7 @@ const CustomerSegmentation: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="客户群体占比" style={{ marginBottom: 16 }}>
+          <Card title={t('ai.customerSegmentation.segmentPieChart')} style={{ marginBottom: 16 }}>
             <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
@@ -237,7 +237,7 @@ const CustomerSegmentation: React.FC = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => [`${value}个客户`, '数量']} />
+                <Tooltip formatter={(value: number) => [`${value}${t('ai.customerSegmentation.customers')}`, t('ai.customerSegmentation.quantity')]} />
               </PieChart>
             </ResponsiveContainer>
           </Card>
@@ -245,18 +245,18 @@ const CustomerSegmentation: React.FC = () => {
       </Row>
 
       {/* RFM 雷达图 */}
-      <Card title="RFM 特征雷达图" style={{ marginBottom: 16 }}>
+      <Card title={t('ai.customerSegmentation.rfmRadar')} style={{ marginBottom: 16 }}>
         <Text type="secondary" style={{ fontSize: 12 }}>
-          展示各群体的 RFM 特征对比
+          {t('ai.customerSegmentation.rfmRadarDesc')}
         </Text>
         <ResponsiveContainer width="100%" height={350}>
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
             <PolarGrid />
             <PolarAngleAxis dataKey="subject" />
             <PolarRadiusAxis angle={30} domain={[0, 150]} />
-            <Radar name="最近消费 (天)" dataKey="A" stroke="#52c41a" fill="#52c41a" fillOpacity={0.3} />
-            <Radar name="消费频率 (次)" dataKey="B" stroke="#1890ff" fill="#1890ff" fillOpacity={0.3} />
-            <Radar name="消费金额 (万元)" dataKey="C" stroke="#faad14" fill="#faad14" fillOpacity={0.3} />
+            <Radar name={t('ai.customerSegmentation.recencyDays')} dataKey="A" stroke="#52c41a" fill="#52c41a" fillOpacity={0.3} />
+            <Radar name={t('ai.customerSegmentation.frequency')} dataKey="B" stroke="#1890ff" fill="#1890ff" fillOpacity={0.3} />
+            <Radar name={t('ai.customerSegmentation.monetaryUnit')} dataKey="C" stroke="#faad14" fill="#faad14" fillOpacity={0.3} />
             <Legend />
             <Tooltip />
           </RadarChart>
@@ -264,7 +264,7 @@ const CustomerSegmentation: React.FC = () => {
       </Card>
 
       {/* 群体特征详情 */}
-      <Card title="各群体特征详情">
+      <Card title={t('ai.customerSegmentation.segmentFeatures')}>
         <Row gutter={16}>
           {customerSegments.map((segment, idx) => (
             <Col span={6} key={segment.id}>
@@ -276,24 +276,24 @@ const CustomerSegmentation: React.FC = () => {
               >
                 <Space direction="vertical" size={8} style={{ width: '100%' }}>
                   <div>
-                    <Text type="secondary" style={{ fontSize: 12 }}>平均客单价</Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>{t('ai.customerSegmentation.avgDealSize')}</Text>
                     <br />
-                    <Text strong>¥{(segment.features.avgDealSize / 10000).toFixed(1)}万</Text>
+                    <Text strong>¥{(segment.features.avgDealSize / 10000).toFixed(1)}{t('common.unit.tenThousand')}</Text>
                   </div>
                   <div>
-                    <Text type="secondary" style={{ fontSize: 12 }}>平均成交周期</Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>{t('ai.customerSegmentation.avgCycle')}</Text>
                     <br />
-                    <Text strong>{segment.features.avgCycle}天</Text>
+                    <Text strong>{segment.features.avgCycle}{t('ai.customerSegmentation.daysUnit')}</Text>
                   </div>
                   <div>
-                    <Text type="secondary" style={{ fontSize: 12 }}>留存率</Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>{t('ai.customerSegmentation.retentionRate')}</Text>
                     <br />
                     <Text strong style={{ color: segment.features.retentionRate >= 80 ? '#52c41a' : '#faad14' }}>
                       {segment.features.retentionRate}%
                     </Text>
                   </div>
                   <div>
-                    <Text type="secondary" style={{ fontSize: 12 }}>满意度</Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>{t('ai.customerSegmentation.satisfaction')}</Text>
                     <br />
                     <Text strong>{'★'.repeat(Math.round(segment.features.satisfaction))}{'☆'.repeat(5 - Math.round(segment.features.satisfaction))}</Text>
                   </div>
@@ -309,7 +309,7 @@ const CustomerSegmentation: React.FC = () => {
         title={
           <Space>
             <TeamOutlined />
-            {currentSegment?.name} - 客户列表
+            {currentSegment?.name} - {t('ai.customerSegmentation.customerList')}
           </Space>
         }
         open={isModalVisible}
@@ -322,7 +322,7 @@ const CustomerSegmentation: React.FC = () => {
             <Card size="small" style={{ marginBottom: 16 }}>
               <Space>
                 <Tag color={currentSegment.color}>{currentSegment.name}</Tag>
-                <Text>共 {currentSegment.count} 个客户</Text>
+                <Text>{t('ai.customerSegmentation.totalCustomers')} {currentSegment.count}</Text>
                 <Text type="secondary">{currentSegment.description}</Text>
               </Space>
             </Card>

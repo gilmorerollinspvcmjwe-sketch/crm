@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Select, Space, Button, Tag, Spin, Modal, Typography, Divider } from 'antd';
 import { SearchOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import { Ticket, TicketStatus, TicketPriority } from '../../types/ticket';
 import { getTicketList, getTicketById, getTicketActivities } from '../../services/ticketService';
 import { TicketCard } from '../../components/Integration/TicketCard';
@@ -16,6 +17,7 @@ const { Option } = Select;
  * 工单列表页面组件
  */
 export const TicketList: React.FC = () => {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -38,7 +40,7 @@ export const TicketList: React.FC = () => {
       setTickets(result.list);
       setTotal(result.total);
     } catch (error) {
-      console.error('加载工单失败:', error);
+      console.error(t('integration.tickets.loadFailed'), ':', error);
     } finally {
       setLoading(false);
     }
@@ -74,20 +76,20 @@ export const TicketList: React.FC = () => {
   /** 表格列定义 */
   const columns: ColumnsType<Ticket> = [
     {
-      title: '工单号',
+      title: t('integration.tickets.columnTicketNumber'),
       dataIndex: 'ticketNumber',
       key: 'ticketNumber',
       width: 140,
     },
     {
-      title: '标题',
+      title: t('integration.tickets.columnTitle'),
       dataIndex: 'title',
       key: 'title',
       width: 250,
       ellipsis: true,
     },
     {
-      title: '状态',
+      title: t('integration.tickets.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -96,7 +98,7 @@ export const TicketList: React.FC = () => {
       ),
     },
     {
-      title: '优先级',
+      title: t('integration.tickets.columnPriority'),
       dataIndex: 'priority',
       key: 'priority',
       width: 90,
@@ -105,32 +107,32 @@ export const TicketList: React.FC = () => {
       ),
     },
     {
-      title: '客户',
+      title: t('integration.tickets.columnCustomer'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 180,
       render: (name?: string) => name || '-',
     },
     {
-      title: '处理人',
+      title: t('integration.tickets.columnAssignee'),
       dataIndex: 'assigneeName',
       key: 'assigneeName',
       width: 100,
-      render: (name?: string) => name || '未分配',
+      render: (name?: string) => name || t('integration.tickets.unassigned'),
     },
     {
-      title: '创建时间',
+      title: t('integration.tickets.columnCreatedAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
     },
     {
-      title: '操作',
+      title: t('common.detail'),
       key: 'action',
       width: 100,
       render: (_: any, record: Ticket) => (
         <Button type="link" icon={<EyeOutlined />} onClick={() => handleViewDetail(record)}>
-          详情
+          {t('integration.tickets.viewDetail')}
         </Button>
       ),
     },
@@ -143,7 +145,7 @@ export const TicketList: React.FC = () => {
         <Space style={{ marginBottom: 16, width: '100%', display: 'flex', justifyContent: 'space-between' }}>
           <Space>
             <Input
-              placeholder="搜索工单"
+              placeholder={t('integration.tickets.searchPlaceholder')}
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -151,34 +153,34 @@ export const TicketList: React.FC = () => {
               allowClear
             />
             <Select
-              placeholder="状态"
+              placeholder={t('integration.tickets.statusFilter')}
               value={statusFilter}
               onChange={setStatusFilter}
               style={{ width: 120 }}
               allowClear
             >
-              <Option value={TicketStatus.OPEN}>待处理</Option>
-              <Option value={TicketStatus.IN_PROGRESS}>处理中</Option>
-              <Option value={TicketStatus.PENDING}>待反馈</Option>
-              <Option value={TicketStatus.RESOLVED}>已解决</Option>
-              <Option value={TicketStatus.CLOSED}>已关闭</Option>
+              <Option value={TicketStatus.OPEN}>{t('integration.tickets.statusOpen')}</Option>
+              <Option value={TicketStatus.IN_PROGRESS}>{t('integration.tickets.statusInProgress')}</Option>
+              <Option value={TicketStatus.PENDING}>{t('integration.tickets.statusPending')}</Option>
+              <Option value={TicketStatus.RESOLVED}>{t('integration.tickets.statusResolved')}</Option>
+              <Option value={TicketStatus.CLOSED}>{t('integration.tickets.statusClosed')}</Option>
             </Select>
             <Select
-              placeholder="优先级"
+              placeholder={t('integration.tickets.priorityFilter')}
               value={priorityFilter}
               onChange={setPriorityFilter}
               style={{ width: 100 }}
               allowClear
             >
-              <Option value={TicketPriority.LOW}>低</Option>
-              <Option value={TicketPriority.MEDIUM}>中</Option>
-              <Option value={TicketPriority.HIGH}>高</Option>
-              <Option value={TicketPriority.URGENT}>紧急</Option>
+              <Option value={TicketPriority.LOW}>{t('integration.tickets.priorityLow')}</Option>
+              <Option value={TicketPriority.MEDIUM}>{t('integration.tickets.priorityMedium')}</Option>
+              <Option value={TicketPriority.HIGH}>{t('integration.tickets.priorityHigh')}</Option>
+              <Option value={TicketPriority.URGENT}>{t('integration.tickets.priorityUrgent')}</Option>
             </Select>
-            <Button onClick={loadTickets}>查询</Button>
+            <Button onClick={loadTickets}>{t('common.query')}</Button>
           </Space>
           <Button type="primary" icon={<PlusOutlined />}>
-            新建工单
+            {t('integration.tickets.newTicket')}
           </Button>
         </Space>
 
@@ -193,7 +195,7 @@ export const TicketList: React.FC = () => {
             pageSize,
             total,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个工单`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('common.items')}`,
             onChange: (page, pageSize) => {
               setPage(page);
               setPageSize(pageSize);
@@ -204,7 +206,7 @@ export const TicketList: React.FC = () => {
 
       {/* 工单详情弹窗 */}
       <Modal
-        title="工单详情"
+        title={t('integration.tickets.ticketDetail')}
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={null}
@@ -219,24 +221,24 @@ export const TicketList: React.FC = () => {
 
             <Title level={4}>{selectedTicket.title}</Title>
 
-            <Divider orientation="left">基本信息</Divider>
+            <Divider orientation="left">{t('integration.tickets.basicInfo')}</Divider>
             <Paragraph>
-              <Text strong>工单号：</Text>{selectedTicket.ticketNumber}<br />
-              <Text strong>客户：</Text>{selectedTicket.customerName || '-'}<br />
-              <Text strong>联系人：</Text>{selectedTicket.contactName || '-'}<br />
-              <Text strong>处理人：</Text>{selectedTicket.assigneeName || '未分配'}<br />
-              <Text strong>分类：</Text>{selectedTicket.categoryName}<br />
-              <Text strong>来源：</Text>{selectedTicket.source}<br />
-              <Text strong>创建时间：</Text>{selectedTicket.createdAt}<br />
-              <Text strong>截止时间：</Text>{selectedTicket.dueDate || '无'}
+              <Text strong>{t('integration.tickets.columnTicketNumber')}：</Text>{selectedTicket.ticketNumber}<br />
+              <Text strong>{t('integration.tickets.columnCustomer')}：</Text>{selectedTicket.customerName || '-'}<br />
+              <Text strong>{t('integration.tickets.contact')}：</Text>{selectedTicket.contactName || '-'}<br />
+              <Text strong>{t('integration.tickets.columnAssignee')}：</Text>{selectedTicket.assigneeName || t('integration.tickets.unassigned')}<br />
+              <Text strong>{t('integration.tickets.category')}：</Text>{selectedTicket.categoryName}<br />
+              <Text strong>{t('integration.tickets.source')}：</Text>{selectedTicket.source}<br />
+              <Text strong>{t('integration.tickets.columnCreatedAt')}：</Text>{selectedTicket.createdAt}<br />
+              <Text strong>{t('integration.tickets.dueDate')}：</Text>{selectedTicket.dueDate || t('common.none')}
             </Paragraph>
 
-            <Divider orientation="left">描述</Divider>
+            <Divider orientation="left">{t('common.description')}</Divider>
             <Paragraph>{selectedTicket.description}</Paragraph>
 
             {selectedTicket.tags.length > 0 && (
               <>
-                <Divider orientation="left">标签</Divider>
+                <Divider orientation="left">{t('integration.tickets.tags')}</Divider>
                 <Space wrap>
                   {selectedTicket.tags.map(tag => (
                     <Tag key={tag}>{tag}</Tag>

@@ -6,16 +6,17 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import enCommon from './locales/en.json';
-import zhCommon from './locales/zh.json';
+// Import merged translation files (all batches combined)
+import enTranslations from './locales/en.json';
+import zhTranslations from './locales/zh.json';
 
 // Translation resources
 const resources = {
   en: {
-    translation: enCommon,
+    translation: enTranslations,
   },
   zh: {
-    translation: zhCommon,
+    translation: zhTranslations,
   },
 };
 

@@ -17,7 +17,6 @@ import {
   Select,
   Statistic,
   Divider,
-  Tooltip,
   Avatar,
 } from 'antd';
 import {
@@ -31,9 +30,9 @@ import {
   SettingOutlined,
   ClockCircleOutlined,
   TrophyOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AIAgent } from '../types/ai-agents';
 import { aiAgents } from '../mock/aiAgentsData';
 
@@ -41,6 +40,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const AIAgents: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -48,20 +48,20 @@ const AIAgents: React.FC = () => {
 
   // Agent 类型映射
   const typeMap: Record<string, { text: string; color: string }> = {
-    predictive: { text: '预测型', color: 'blue' },
-    generative: { text: '生成型', color: 'purple' },
-    analytical: { text: '分析型', color: 'cyan' },
-    conversational: { text: '对话型', color: 'green' },
-    automation: { text: '自动化', color: 'orange' },
-    recommendation: { text: '推荐型', color: 'magenta' },
+    predictive: { text: t('ai.agents.typePredictive'), color: 'blue' },
+    generative: { text: t('ai.agents.typeGenerative'), color: 'purple' },
+    analytical: { text: t('ai.agents.typeAnalytical'), color: 'cyan' },
+    conversational: { text: t('ai.agents.typeConversational'), color: 'green' },
+    automation: { text: t('ai.agents.typeAutomation'), color: 'orange' },
+    recommendation: { text: t('ai.agents.typeRecommendation'), color: 'magenta' },
   };
 
   // Agent 状态映射
   const statusMap: Record<string, { text: string; icon: React.ReactNode; color: string }> = {
-    active: { text: '运行中', icon: <CheckCircleOutlined />, color: '#52c41a' },
-    inactive: { text: '已停用', icon: <CloseCircleOutlined />, color: '#d9d9d9' },
-    training: { text: '训练中', icon: <SyncOutlined spin />, color: '#1890ff' },
-    error: { text: '异常', icon: <CloseCircleOutlined />, color: '#ff4d4f' },
+    active: { text: t('ai.agents.statusActive'), icon: <CheckCircleOutlined />, color: '#52c41a' },
+    inactive: { text: t('ai.agents.statusInactive'), icon: <CloseCircleOutlined />, color: '#d9d9d9' },
+    training: { text: t('ai.agents.statusTraining'), icon: <SyncOutlined spin />, color: '#1890ff' },
+    error: { text: t('ai.agents.statusError'), icon: <CloseCircleOutlined />, color: '#ff4d4f' },
   };
 
   // 筛选 Agent
@@ -89,10 +89,10 @@ const AIAgents: React.FC = () => {
       {/* 页面头部 */}
       <div style={{ background: '#fff', padding: '16px 24px', marginBottom: 16 }}>
         <Title level={2} style={{ margin: 0 }}>
-          <RobotOutlined /> AI 智能体
+          <RobotOutlined /> {t('ai.agents.title')}
         </Title>
         <Text type="secondary">
-          管理和监控所有 AI Agent 的运行状态、性能和效果
+          {t('ai.agents.subtitle')}
         </Text>
       </div>
 
@@ -101,50 +101,50 @@ const AIAgents: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="AI Agent 总数"
+              title={t('ai.agents.totalAgents')}
               value={totalAgents}
-              suffix="个"
+              suffix={t('ai.agents.count')}
               prefix={<RobotOutlined />}
             />
             <Divider style={{ margin: '12px 0' }} />
-            <Text type="secondary">已创建的 AI Agent 数量</Text>
+            <Text type="secondary">{t('ai.agents.totalAgentsDesc')}</Text>
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="运行中"
+              title={t('ai.agents.activeAgents')}
               value={activeAgents}
               suffix={`/${totalAgents}`}
               prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
               valueStyle={{ color: '#52c41a' }}
             />
             <Divider style={{ margin: '12px 0' }} />
-            <Text type="secondary">当前活跃运行的 Agent</Text>
+            <Text type="secondary">{t('ai.agents.activeAgentsDesc')}</Text>
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="平均成功率"
+              title={t('ai.agents.avgSuccessRate')}
               value={avgSuccessRate.toFixed(1)}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               prefix={<TrophyOutlined style={{ color: '#faad14' }} />}
               valueStyle={{ color: '#faad14' }}
             />
             <Divider style={{ margin: '12px 0' }} />
-            <Text type="secondary">所有 Agent 的平均成功率</Text>
+            <Text type="secondary">{t('ai.agents.avgSuccessRateDesc')}</Text>
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="总执行次数"
+              title={t('ai.agents.totalExecutions')}
               value={totalExecutions.toLocaleString()}
               prefix={<ThunderboltOutlined />}
             />
             <Divider style={{ margin: '12px 0' }} />
-            <Text type="secondary">累计执行任务次数</Text>
+            <Text type="secondary">{t('ai.agents.totalExecutionsDesc')}</Text>
           </Card>
         </Col>
       </Row>
@@ -153,7 +153,7 @@ const AIAgents: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space wrap>
           <Input
-            placeholder="搜索 Agent 名称或描述"
+            placeholder={t('ai.agents.searchPlaceholder')}
             prefix={<SearchOutlined />}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -161,35 +161,35 @@ const AIAgents: React.FC = () => {
             allowClear
           />
           <Select
-            placeholder="Agent 类型"
+            placeholder={t('ai.agents.filterType')}
             value={typeFilter}
             onChange={(value) => setTypeFilter(value)}
             style={{ width: 150 }}
             allowClear
           >
-            <Option value="all">全部类型</Option>
-            <Option value="predictive">预测型</Option>
-            <Option value="generative">生成型</Option>
-            <Option value="analytical">分析型</Option>
-            <Option value="conversational">对话型</Option>
-            <Option value="automation">自动化</Option>
-            <Option value="recommendation">推荐型</Option>
+            <Option value="all">{t('ai.agents.allTypes')}</Option>
+            <Option value="predictive">{t('ai.agents.typePredictive')}</Option>
+            <Option value="generative">{t('ai.agents.typeGenerative')}</Option>
+            <Option value="analytical">{t('ai.agents.typeAnalytical')}</Option>
+            <Option value="conversational">{t('ai.agents.typeConversational')}</Option>
+            <Option value="automation">{t('ai.agents.typeAutomation')}</Option>
+            <Option value="recommendation">{t('ai.agents.typeRecommendation')}</Option>
           </Select>
           <Select
-            placeholder="运行状态"
+            placeholder={t('ai.agents.filterStatus')}
             value={statusFilter}
             onChange={(value) => setStatusFilter(value)}
             style={{ width: 150 }}
             allowClear
           >
-            <Option value="all">全部状态</Option>
-            <Option value="active">运行中</Option>
-            <Option value="inactive">已停用</Option>
-            <Option value="training">训练中</Option>
-            <Option value="error">异常</Option>
+            <Option value="all">{t('ai.agents.allStatuses')}</Option>
+            <Option value="active">{t('ai.agents.statusActive')}</Option>
+            <Option value="inactive">{t('ai.agents.statusInactive')}</Option>
+            <Option value="training">{t('ai.agents.statusTraining')}</Option>
+            <Option value="error">{t('ai.agents.statusError')}</Option>
           </Select>
           <Text type="secondary">
-            共 {filteredAgents.length} 个 Agent
+            {t('ai.agents.totalMatching')} {filteredAgents.length} {t('ai.agents.agents')}
           </Text>
         </Space>
       </Card>
@@ -219,7 +219,7 @@ const AIAgents: React.FC = () => {
                       handleViewDetail(agent.id);
                     }}
                   >
-                    详情
+                    {t('ai.agents.details')}
                   </Button>,
                   <Button
                     key="settings"
@@ -227,7 +227,7 @@ const AIAgents: React.FC = () => {
                     icon={<SettingOutlined />}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    配置
+                    {t('ai.agents.config')}
                   </Button>,
                 ]}
               >
@@ -287,7 +287,7 @@ const AIAgents: React.FC = () => {
                 <Row gutter={8}>
                   <Col span={8}>
                     <div style={{ textAlign: 'center' }}>
-                      <Text type="secondary" style={{ fontSize: 11 }}>成功率</Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>{t('ai.agents.successRate')}</Text>
                       <br />
                       <Text strong style={{ color: successRate >= 95 ? '#52c41a' : successRate >= 90 ? '#1890ff' : '#faad14' }}>
                         {successRate}%
@@ -296,14 +296,14 @@ const AIAgents: React.FC = () => {
                   </Col>
                   <Col span={8}>
                     <div style={{ textAlign: 'center' }}>
-                      <Text type="secondary" style={{ fontSize: 11 }}>响应时间</Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>{t('ai.agents.responseTime')}</Text>
                       <br />
                       <Text strong>{(agent.metrics.avgResponseTime / 1000).toFixed(1)}s</Text>
                     </div>
                   </Col>
                   <Col span={8}>
                     <div style={{ textAlign: 'center' }}>
-                      <Text type="secondary" style={{ fontSize: 11 }}>满意度</Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>{t('ai.agents.satisfaction')}</Text>
                       <br />
                       <Text strong style={{ color: '#faad14' }}>
                         {'★'.repeat(Math.floor(agent.metrics.userSatisfaction))}
@@ -317,7 +317,7 @@ const AIAgents: React.FC = () => {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                     <Text type="secondary" style={{ fontSize: 12 }}>
-                      <ClockCircleOutlined /> 任务完成
+                      <ClockCircleOutlined /> {t('ai.agents.taskCompleted')}
                     </Text>
                     <Text type="secondary" style={{ fontSize: 12 }}>
                       {completedTasks}/{totalTasks}
@@ -338,7 +338,7 @@ const AIAgents: React.FC = () => {
                 {agent.lastActiveAt && (
                   <div style={{ marginTop: 12, textAlign: 'right' }}>
                     <Text type="secondary" style={{ fontSize: 11 }}>
-                      <ClockCircleOutlined /> 最后活跃：{agent.lastActiveAt.split(' ')[1]}
+                      <ClockCircleOutlined /> {t('ai.agents.lastActive')}：{agent.lastActiveAt.split(' ')[1]}
                     </Text>
                   </div>
                 )}
@@ -352,8 +352,8 @@ const AIAgents: React.FC = () => {
       {filteredAgents.length === 0 && (
         <Card style={{ textAlign: 'center', padding: '60px 0' }}>
           <RobotOutlined style={{ fontSize: 64, color: '#d9d9d9', marginBottom: 16 }} />
-          <Title level={4}>未找到匹配的 AI Agent</Title>
-          <Text type="secondary">尝试调整筛选条件或搜索关键词</Text>
+          <Title level={4}>{t('ai.agents.noMatching')}</Title>
+          <Text type="secondary">{t('ai.agents.tryAdjust')}</Text>
         </Card>
       )}
     </div>

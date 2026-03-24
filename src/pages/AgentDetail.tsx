@@ -33,9 +33,9 @@ import {
   InfoCircleOutlined,
   ArrowLeftOutlined,
   DownloadOutlined,
-  SyncOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { AIAgent, AgentExecutionLog, AgentDetailStats } from '../types/ai-agents';
 import { getAgentDetailStats, aiAgents } from '../mock/aiAgentsData';
@@ -44,6 +44,7 @@ const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
 
 const AgentDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { agentId } = useParams<{ agentId: string }>();
   
@@ -56,40 +57,40 @@ const AgentDetail: React.FC = () => {
 
   // Agent 类型映射
   const typeMap: Record<string, { text: string; color: string }> = {
-    predictive: { text: '预测型', color: 'blue' },
-    generative: { text: '生成型', color: 'purple' },
-    analytical: { text: '分析型', color: 'cyan' },
-    conversational: { text: '对话型', color: 'green' },
-    automation: { text: '自动化', color: 'orange' },
-    recommendation: { text: '推荐型', color: 'magenta' },
+    predictive: { text: t('ai.agents.typePredictive'), color: 'blue' },
+    generative: { text: t('ai.agents.typeGenerative'), color: 'purple' },
+    analytical: { text: t('ai.agents.typeAnalytical'), color: 'cyan' },
+    conversational: { text: t('ai.agents.typeConversational'), color: 'green' },
+    automation: { text: t('ai.agents.typeAutomation'), color: 'orange' },
+    recommendation: { text: t('ai.agents.typeRecommendation'), color: 'magenta' },
   };
 
   // Agent 状态映射
   const statusMap: Record<string, { text: string; color: string }> = {
-    active: { text: '运行中', color: '#52c41a' },
-    inactive: { text: '已停用', color: '#d9d9d9' },
-    training: { text: '训练中', color: '#1890ff' },
-    error: { text: '异常', color: '#ff4d4f' },
+    active: { text: t('ai.agents.statusActive'), color: '#52c41a' },
+    inactive: { text: t('ai.agents.statusInactive'), color: '#d9d9d9' },
+    training: { text: t('ai.agents.statusTraining'), color: '#1890ff' },
+    error: { text: t('ai.agents.statusError'), color: '#ff4d4f' },
   };
 
   // 执行日志表格列
   const logColumns = [
     {
-      title: '时间',
+      title: t('ai.agentDetail.timestamp'),
       dataIndex: 'timestamp',
       key: 'timestamp',
       width: 160,
       render: (text: string) => <Text type="secondary">{text}</Text>,
     },
     {
-      title: '操作',
+      title: t('ai.agentDetail.action'),
       dataIndex: 'action',
       key: 'action',
       width: 180,
       render: (text: string) => <Text strong>{text}</Text>,
     },
     {
-      title: '输入',
+      title: t('ai.agentDetail.input'),
       dataIndex: 'input',
       key: 'input',
       ellipsis: { showTitle: false },
@@ -100,7 +101,7 @@ const AgentDetail: React.FC = () => {
       ),
     },
     {
-      title: '输出',
+      title: t('ai.agentDetail.output'),
       dataIndex: 'output',
       key: 'output',
       ellipsis: { showTitle: false },
@@ -111,20 +112,20 @@ const AgentDetail: React.FC = () => {
       ),
     },
     {
-      title: '耗时',
+      title: t('ai.agentDetail.duration'),
       dataIndex: 'duration',
       key: 'duration',
       width: 100,
       render: (ms: number) => `${ms}ms`,
     },
     {
-      title: '状态',
+      title: t('ai.agentDetail.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: string, record: AgentExecutionLog) => (
+      render: (status: string) => (
         <Badge
-          count={status === 'success' ? '成功' : status === 'failed' ? '失败' : '超时'}
+          count={status === 'success' ? t('ai.agentDetail.success') : status === 'failed' ? t('ai.agentDetail.failed') : t('ai.agentDetail.timeout')}
           style={{ 
             backgroundColor: status === 'success' ? '#52c41a' : status === 'failed' ? '#ff4d4f' : '#faad14' 
           }}
@@ -132,7 +133,7 @@ const AgentDetail: React.FC = () => {
       ),
     },
     {
-      title: '置信度',
+      title: t('ai.agentDetail.confidence'),
       dataIndex: 'confidence',
       key: 'confidence',
       width: 100,
@@ -144,9 +145,9 @@ const AgentDetail: React.FC = () => {
     return (
       <div style={{ padding: 48, textAlign: 'center' }}>
         <RobotOutlined style={{ fontSize: 64, color: '#d9d9d9', marginBottom: 16 }} />
-        <Title level={4}>未找到该 AI Agent</Title>
+        <Title level={4}>{t('ai.agentDetail.notFound')}</Title>
         <Button type="primary" onClick={() => navigate('/ai/agents')}>
-          返回列表
+          {t('ai.agentDetail.backToList')}
         </Button>
       </div>
     );
@@ -162,7 +163,7 @@ const AgentDetail: React.FC = () => {
       <div style={{ background: '#fff', padding: '16px 24px', marginBottom: 16 }}>
         <Space>
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/ai/agents')}>
-            返回
+            {t('ai.agentDetail.back')}
           </Button>
           <Title level={2} style={{ margin: 0 }}>
             {basicInfo.avatar || <RobotOutlined />} {basicInfo.name}
@@ -178,19 +179,19 @@ const AgentDetail: React.FC = () => {
         <Col span={4}>
           <Card>
             <Statistic
-              title="总执行次数"
+              title={t('ai.agentDetail.totalExecutions')}
               value={metrics.totalExecutions}
               prefix={<ThunderboltOutlined />}
-              suffix="次"
+              suffix={t('ai.agentDetail.times')}
             />
           </Card>
         </Col>
         <Col span={4}>
           <Card>
             <Statistic
-              title="成功率"
+              title={t('ai.agentDetail.successRate')}
               value={metrics.successRate}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               valueStyle={{ color: metrics.successRate >= 95 ? '#52c41a' : '#1890ff' }}
             />
           </Card>
@@ -198,18 +199,18 @@ const AgentDetail: React.FC = () => {
         <Col span={4}>
           <Card>
             <Statistic
-              title="平均响应"
+              title={t('ai.agentDetail.avgResponse')}
               value={(metrics.avgResponseTime / 1000).toFixed(2)}
-              suffix="秒"
+              suffix={t('ai.agentDetail.seconds')}
             />
           </Card>
         </Col>
         <Col span={4}>
           <Card>
             <Statistic
-              title="准确率"
+              title={t('ai.agentDetail.accuracyRate')}
               value={metrics.accuracyRate}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               valueStyle={{ color: '#faad14' }}
             />
           </Card>
@@ -217,7 +218,7 @@ const AgentDetail: React.FC = () => {
         <Col span={4}>
           <Card>
             <Statistic
-              title="满意度"
+              title={t('ai.agentDetail.satisfaction')}
               value={metrics.userSatisfaction}
               suffix="/5.0"
               valueStyle={{ color: '#722ed1' }}
@@ -227,7 +228,7 @@ const AgentDetail: React.FC = () => {
         <Col span={4}>
           <Card>
             <Statistic
-              title="错误次数"
+              title={t('ai.agentDetail.errorCount')}
               value={metrics.errorsCount}
               valueStyle={{ color: metrics.errorsCount < 100 ? '#52c41a' : '#ff4d4f' }}
             />
@@ -242,31 +243,31 @@ const AgentDetail: React.FC = () => {
           tab={
             <span>
               <InfoCircleOutlined />
-              概览
+              {t('ai.agentDetail.overview')}
             </span>
           }
           key="overview"
         >
           <Row gutter={16}>
             <Col span={16}>
-              <Card title="基本信息" style={{ marginBottom: 16 }}>
+              <Card title={t('ai.agentDetail.basicInfo')} style={{ marginBottom: 16 }}>
                 <Descriptions column={2}>
-                  <Descriptions.Item label="Agent ID">{basicInfo.id}</Descriptions.Item>
-                  <Descriptions.Item label="版本">{basicInfo.version}</Descriptions.Item>
-                  <Descriptions.Item label="使用模型">{basicInfo.config.model}</Descriptions.Item>
-                  <Descriptions.Item label="创建时间">{basicInfo.createdAt}</Descriptions.Item>
-                  <Descriptions.Item label="更新时间">{basicInfo.updatedAt}</Descriptions.Item>
-                  <Descriptions.Item label="最后活跃">{basicInfo.lastActiveAt || '-'}</Descriptions.Item>
-                  <Descriptions.Item label="公开范围">
-                    {basicInfo.isPublic ? '所有人可见' : '仅指定用户'}
+                  <Descriptions.Item label={t('ai.agentDetail.agentId')}>{basicInfo.id}</Descriptions.Item>
+                  <Descriptions.Item label={t('ai.agentDetail.version')}>{basicInfo.version}</Descriptions.Item>
+                  <Descriptions.Item label={t('ai.agentDetail.model')}>{basicInfo.config.model}</Descriptions.Item>
+                  <Descriptions.Item label={t('ai.agentDetail.createdAt')}>{basicInfo.createdAt}</Descriptions.Item>
+                  <Descriptions.Item label={t('ai.agentDetail.updatedAt')}>{basicInfo.updatedAt}</Descriptions.Item>
+                  <Descriptions.Item label={t('ai.agentDetail.lastActive')}>{basicInfo.lastActiveAt || '-'}</Descriptions.Item>
+                  <Descriptions.Item label={t('ai.agentDetail.publicScope')}>
+                    {basicInfo.isPublic ? t('ai.agentDetail.visibleToAll') : t('ai.agentDetail.specifiedUsers')}
                   </Descriptions.Item>
-                  <Descriptions.Item label="允许用户">
+                  <Descriptions.Item label={t('ai.agentDetail.allowedUsers')}>
                     {basicInfo.allowedUsers.join(', ')}
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
 
-              <Card title="配置参数" style={{ marginBottom: 16 }}>
+              <Card title={t('ai.agentDetail.configParams')} style={{ marginBottom: 16 }}>
                 <Descriptions column={2}>
                   <Descriptions.Item label="Temperature">{basicInfo.config.temperature}</Descriptions.Item>
                   <Descriptions.Item label="Max Tokens">{basicInfo.config.maxTokens}</Descriptions.Item>
@@ -276,7 +277,7 @@ const AgentDetail: React.FC = () => {
                 </Descriptions>
                 {basicInfo.config.customInstructions && (
                   <>
-                    <Divider>自定义指令</Divider>
+                    <Divider>{t('ai.agentDetail.customInstructions')}</Divider>
                     <Paragraph style={{ background: '#f5f5f5', padding: 12, borderRadius: 4 }}>
                       {basicInfo.config.customInstructions}
                     </Paragraph>
@@ -284,7 +285,7 @@ const AgentDetail: React.FC = () => {
                 )}
               </Card>
 
-              <Card title="能力列表" style={{ marginBottom: 16 }}>
+              <Card title={t('ai.agentDetail.capabilityList')} style={{ marginBottom: 16 }}>
                 <Space wrap>
                   {basicInfo.capabilities.map((cap) => (
                     <Tag
@@ -309,7 +310,7 @@ const AgentDetail: React.FC = () => {
             </Col>
 
             <Col span={8}>
-              <Card title="触发条件" style={{ marginBottom: 16 }}>
+              <Card title={t('ai.agentDetail.triggers')} style={{ marginBottom: 16 }}>
                 <Timeline
                   items={basicInfo.triggers.map((trigger, idx) => ({
                     key: idx,
@@ -319,7 +320,7 @@ const AgentDetail: React.FC = () => {
                 />
               </Card>
 
-              <Card title="关联数据模型">
+              <Card title={t('ai.agentDetail.relatedModels')}>
                 <Space wrap>
                   {basicInfo.relatedModels.map((model) => (
                     <Tag key={model} color="geekblue">
@@ -337,7 +338,7 @@ const AgentDetail: React.FC = () => {
           tab={
             <span>
               <FileTextOutlined />
-              执行日志
+              {t('ai.agentDetail.executionLogs')}
               <Badge count={executionLogs.length} style={{ marginLeft: 8 }} />
             </span>
           }
@@ -359,14 +360,14 @@ const AgentDetail: React.FC = () => {
           tab={
             <span>
               <BarChartOutlined />
-              效果统计
+              {t('ai.agentDetail.effectStats')}
             </span>
           }
           key="metrics"
         >
           <Row gutter={16} style={{ marginBottom: 16 }}>
             <Col span={12}>
-              <Card title="近 7 天执行趋势">
+              <Card title={t('ai.agentDetail.last7DaysTrend')}>
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={metrics.last7Days}>
                     <defs>
@@ -383,7 +384,7 @@ const AgentDetail: React.FC = () => {
                     <Area
                       type="monotone"
                       dataKey="executions"
-                      name="执行次数"
+                      name={t('ai.agentDetail.executions')}
                       stroke="#1890ff"
                       fillOpacity={1}
                       fill="url(#colorExec)"
@@ -391,7 +392,7 @@ const AgentDetail: React.FC = () => {
                     <Line
                       type="monotone"
                       dataKey="successRate"
-                      name="成功率"
+                      name={t('ai.agentDetail.successRate')}
                       stroke="#52c41a"
                       yAxisId={1}
                     />
@@ -400,18 +401,18 @@ const AgentDetail: React.FC = () => {
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="预测准确率对比">
+              <Card title={t('ai.agentDetail.accuracyCompare')}>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={accuracy}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="metric" tick={{ fontSize: 11 }} interval={0} />
                     <YAxis domain={[0, 100]} />
-                    <RechartsTooltip formatter={(value: number) => [value + '%', '准确率']} />
+                    <RechartsTooltip formatter={(value: number) => [value + '%', t('ai.agentDetail.accuracy')]} />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="accuracy"
-                      name="准确率"
+                      name={t('ai.agentDetail.accuracy')}
                       stroke="#1890ff"
                       strokeWidth={2}
                       dot={{ r: 4 }}
@@ -422,7 +423,7 @@ const AgentDetail: React.FC = () => {
             </Col>
           </Row>
 
-          <Card title="详细指标">
+          <Card title={t('ai.agentDetail.detailMetrics')}>
             <Row gutter={16}>
               {accuracy.map((acc) => (
                 <Col span={8} key={acc.metric}>
@@ -430,7 +431,7 @@ const AgentDetail: React.FC = () => {
                     <Title level={5} style={{ marginBottom: 12 }}>{acc.metric}</Title>
                     <div style={{ marginBottom: 8 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <Text type="secondary">准确率</Text>
+                        <Text type="secondary">{t('ai.agentDetail.accuracy')}</Text>
                         <Text strong style={{ color: acc.accuracy >= 90 ? '#52c41a' : '#1890ff' }}>
                           {acc.accuracy}%
                         </Text>
@@ -440,12 +441,12 @@ const AgentDetail: React.FC = () => {
                     <Divider style={{ margin: '8px 0' }} />
                     <div style={{ fontSize: 12 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <Text type="secondary">总预测</Text>
-                        <Text>{acc.totalPredictions}次</Text>
+                        <Text type="secondary">{t('ai.agentDetail.totalPredictions')}</Text>
+                        <Text>{acc.totalPredictions}{t('ai.agentDetail.times')}</Text>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <Text type="secondary">正确预测</Text>
-                        <Text type="success">{acc.correctPredictions}次</Text>
+                        <Text type="secondary">{t('ai.agentDetail.correctPredictions')}</Text>
+                        <Text type="success">{acc.correctPredictions}{t('ai.agentDetail.times')}</Text>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <Text type="secondary">MAE</Text>

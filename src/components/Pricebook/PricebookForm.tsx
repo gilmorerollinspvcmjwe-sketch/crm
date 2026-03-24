@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Input, Select, DatePicker, Switch, Divider, Button, Space, message, InputNumber, Card, Spin } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { Pricebook, PricebookType, PricebookStatus } from '../../types/pricebook';
 import { getPricebookById, createPricebook, updatePricebook } from '../../services/pricebookService';
 import dayjs from 'dayjs';
@@ -33,6 +34,7 @@ export const PricebookForm: React.FC<PricebookFormProps> = ({
   isEdit = false,
   standalone = false,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   const [form] = Form.useForm();
@@ -61,7 +63,7 @@ export const PricebookForm: React.FC<PricebookFormProps> = ({
             setIsCustomerPricebook(data.type === PricebookType.CUSTOMER);
           }
         } catch (error) {
-          message.error('加载价格表数据失败');
+          message.error(t('pricebook.form.loadFailed'));
         } finally {
           setInitialLoading(false);
         }
@@ -101,20 +103,20 @@ export const PricebookForm: React.FC<PricebookFormProps> = ({
         try {
           if (isEdit && params.id) {
             await updatePricebook(params.id, submitValues);
-            message.success('价格表更新成功');
+            message.success(t('pricebook.form.updateSuccess'));
           } else {
             await createPricebook(submitValues);
-            message.success('价格表创建成功');
+            message.success(t('pricebook.form.createSuccess'));
           }
           navigate('/pricebooks/list');
         } catch (error) {
-          message.error(isEdit ? '更新价格表失败' : '创建价格表失败');
+          message.error(isEdit ? t('pricebook.form.updateFailed') : t('pricebook.form.createFailed'));
         } finally {
           setInternalLoading(false);
         }
       }
     } catch (error) {
-      console.error('表单验证失败:', error);
+      console.error(t('pricebook.form.validationFailed'), error);
     }
   };
 
@@ -137,107 +139,107 @@ export const PricebookForm: React.FC<PricebookFormProps> = ({
           ...initialValues,
         }}
       >
-        <Divider orientation="left" orientationMargin="0">基本信息</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('pricebook.form.basicInfo')}</Divider>
 
         <Form.Item
           name="name"
-          label="价格表名称"
-          rules={[{ required: true, message: '请输入价格表名称' }]}
+          label={t('pricebook.form.name')}
+          rules={[{ required: true, message: t('pricebook.form.nameRequired') }]}
         >
-          <Input placeholder="例如：2026 年标准价格表" disabled={isEdit} />
+          <Input placeholder={t('pricebook.form.namePlaceholder')} disabled={isEdit} />
         </Form.Item>
 
         <Form.Item
           name="type"
-          label="价格表类型"
-          rules={[{ required: true, message: '请选择价格表类型' }]}
+          label={t('pricebook.form.type')}
+          rules={[{ required: true, message: t('pricebook.form.typeRequired') }]}
         >
           <Select 
-            placeholder="请选择价格表类型" 
+            placeholder={t('pricebook.form.typePlaceholder')} 
             onChange={handleTypeChange}
             disabled={isEdit}
           >
-            <Option value={PricebookType.STANDARD}>标准价格表</Option>
-            <Option value={PricebookType.CUSTOMER}>客户专属价格表</Option>
-            <Option value={PricebookType.PARTNER}>合作伙伴价格表</Option>
-            <Option value={PricebookType.PROMOTION}>促销价格表</Option>
+            <Option value={PricebookType.STANDARD}>{t('pricebook.type.standard')}</Option>
+            <Option value={PricebookType.CUSTOMER}>{t('pricebook.type.customer')}</Option>
+            <Option value={PricebookType.PARTNER}>{t('pricebook.type.partner')}</Option>
+            <Option value={PricebookType.PROMOTION}>{t('pricebook.type.promotion')}</Option>
           </Select>
         </Form.Item>
 
         {isCustomerPricebook && (
           <Form.Item
             name="customerId"
-            label="关联客户"
-            rules={[{ required: true, message: '请选择客户' }]}
+            label={t('pricebook.form.relatedCustomer')}
+            rules={[{ required: true, message: t('pricebook.form.relatedCustomerRequired') }]}
           >
-            <Select placeholder="请选择客户" showSearch allowClear>
-              <Option value="CUST001">北京科技创新有限公司</Option>
-              <Option value="CUST002">上海智能制造有限公司</Option>
-              <Option value="CUST003">广州金融服务有限公司</Option>
+            <Select placeholder={t('pricebook.form.selectCustomer')} showSearch allowClear>
+              <Option value="CUST001">{t('pricebook.form.mockCustomer1')}</Option>
+              <Option value="CUST002">{t('pricebook.form.mockCustomer2')}</Option>
+              <Option value="CUST003">{t('pricebook.form.mockCustomer3')}</Option>
             </Select>
           </Form.Item>
         )}
 
-        <Form.Item name="description" label="价格表描述">
-          <TextArea rows={3} placeholder="请输入价格表描述" />
+        <Form.Item name="description" label={t('pricebook.form.description')}>
+          <TextArea rows={3} placeholder={t('pricebook.form.descriptionPlaceholder')} />
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin="0">有效期</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('pricebook.form.validPeriod')}</Divider>
 
         <Form.Item
           name="validFrom"
-          label="生效日期"
-          rules={[{ required: true, message: '请选择生效日期' }]}
+          label={t('pricebook.form.validFrom')}
+          rules={[{ required: true, message: t('pricebook.form.validFromRequired') }]}
         >
-          <DatePicker style={{ width: '100%' }} placeholder="请选择生效日期" disabled={isEdit} />
+          <DatePicker style={{ width: '100%' }} placeholder={t('pricebook.form.validFromPlaceholder')} disabled={isEdit} />
         </Form.Item>
 
-        <Form.Item name="validTo" label="失效日期">
-          <DatePicker style={{ width: '100%' }} placeholder="请选择失效日期（留空表示长期有效）" />
+        <Form.Item name="validTo" label={t('pricebook.form.validTo')}>
+          <DatePicker style={{ width: '100%' }} placeholder={t('pricebook.form.validToPlaceholder')} />
         </Form.Item>
 
         <Form.Item
           name="currency"
-          label="币种"
-          rules={[{ required: true, message: '请选择币种' }]}
+          label={t('pricebook.form.currency')}
+          rules={[{ required: true, message: t('pricebook.form.currencyRequired') }]}
         >
-          <Select placeholder="请选择币种" disabled>
-            <Option value="CNY">人民币 (CNY)</Option>
-            <Option value="USD">美元 (USD)</Option>
-            <Option value="EUR">欧元 (EUR)</Option>
+          <Select placeholder={t('pricebook.form.currencyPlaceholder')} disabled>
+            <Option value="CNY">{t('pricebook.form.currencyCNY')}</Option>
+            <Option value="USD">{t('pricebook.form.currencyUSD')}</Option>
+            <Option value="EUR">{t('pricebook.form.currencyEUR')}</Option>
           </Select>
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin="0">状态设置</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('pricebook.form.statusSettings')}</Divider>
 
         <Form.Item
           name="status"
-          label="价格表状态"
-          rules={[{ required: true, message: '请选择状态' }]}
+          label={t('pricebook.form.status')}
+          rules={[{ required: true, message: t('pricebook.form.statusRequired') }]}
         >
-          <Select placeholder="请选择状态">
-            <Option value={PricebookStatus.DRAFT}>草稿</Option>
-            <Option value={PricebookStatus.ACTIVE}>启用</Option>
-            <Option value={PricebookStatus.INACTIVE}>停用</Option>
+          <Select placeholder={t('pricebook.form.statusPlaceholder')}>
+            <Option value={PricebookStatus.DRAFT}>{t('pricebook.status.draft')}</Option>
+            <Option value={PricebookStatus.ACTIVE}>{t('pricebook.status.active')}</Option>
+            <Option value={PricebookStatus.INACTIVE}>{t('pricebook.status.inactive')}</Option>
           </Select>
         </Form.Item>
 
         <Form.Item
           name="isSystem"
-          label="系统价格表"
+          label={t('pricebook.form.isSystem')}
           valuePropName="checked"
-          tooltip="系统价格表不可删除"
+          tooltip={t('pricebook.form.isSystemTooltip')}
         >
-          <Switch checkedChildren="是" unCheckedChildren="否" disabled={isEdit} />
+          <Switch checkedChildren={t('common.yes')} unCheckedChildren={t('common.no')} disabled={isEdit} />
         </Form.Item>
       </Form>
 
       <Divider />
 
       <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button onClick={handleCancel}>取消</Button>
+        <Button onClick={handleCancel}>{t('common.cancel')}</Button>
         <Button type="primary" onClick={handleSubmit} loading={loading || internalLoading}>
-          {isEdit ? '保存' : '创建'}
+          {isEdit ? t('common.save') : t('common.create')}
         </Button>
       </Space>
     </>

@@ -4,6 +4,7 @@
 import React, { Suspense } from 'react';
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
+import SettingsLayout from '../components/Settings/SettingsLayout';
 
 const LoadingFallback = () => <div style={{ padding: 24 }}>加载中...</div>;
 
@@ -42,8 +43,14 @@ const PaymentReport = React.lazy(() => import('../pages/PaymentReport'));
 const Roles = React.lazy(() => import('../pages/Roles'));
 const Users = React.lazy(() => import('../pages/Users'));
 const PermissionSettings = React.lazy(() => import('../pages/PermissionSettings'));
-const SystemSettings = React.lazy(() => import('../pages/SystemSettings'));
+const SystemConfig = React.lazy(() => import('../pages/settings/SystemConfig'));
 const CustomFields = React.lazy(() => import('../pages/settings/CustomFields'));
+const Profile = React.lazy(() => import('../pages/settings/Profile'));
+const ChangePassword = React.lazy(() => import('../pages/settings/ChangePassword'));
+const NotificationPreferences = React.lazy(() => import('../pages/settings/NotificationPreferences'));
+const DisplayPreferences = React.lazy(() => import('../pages/settings/DisplayPreferences'));
+const AuditLog = React.lazy(() => import('../pages/settings/AuditLog'));
+const LoginLog = React.lazy(() => import('../pages/settings/LoginLog'));
 const TestPage = React.lazy(() => import('../pages/TestPage'));
 const LeadAssignment = React.lazy(() => import('../pages/LeadAssignment'));
 const LeadScoring = React.lazy(() => import('../pages/LeadScoring'));
@@ -73,6 +80,13 @@ const PricebookDetail = React.lazy(() => import('../pages/pricebooks/PricebookDe
 const PricebookForm = React.lazy(() => import('../components/Pricebook/PricebookForm'));
 // Phase 8: 权限系统
 // 使用现有的 Roles 和 Users 页面
+// Custom Objects
+const CustomObjects = React.lazy(() => import('../pages/settings/CustomObjects'));
+const CreateCustomObject = React.lazy(() => import('../pages/settings/CreateCustomObject'));
+const ObjectFields = React.lazy(() => import('../pages/settings/ObjectFields'));
+const FormDesigner = React.lazy(() => import('../pages/settings/FormDesigner'));
+const ObjectData = React.lazy(() => import('../pages/settings/ObjectData'));
+const ObjectRelationships = React.lazy(() => import('../pages/settings/ObjectRelationships'));
 // 对接 Demo
 const TicketList = React.lazy(() => import('../pages/tickets/TicketList'));
 const KnowledgeSearch = React.lazy(() => import('../pages/knowledge/KnowledgeSearch'));
@@ -294,26 +308,88 @@ const router = createBrowserRouter([
         path: 'report/payment',
         element: <Suspense fallback={<LoadingFallback />}><PaymentReport /></Suspense>,
       },
-      // 系统设置
-      {
-        path: 'settings/roles',
-        element: <Suspense fallback={<LoadingFallback />}><Roles /></Suspense>,
-      },
-      {
-        path: 'settings/users',
-        element: <Suspense fallback={<LoadingFallback />}><Users /></Suspense>,
-      },
-      {
-        path: 'settings/permissions',
-        element: <Suspense fallback={<LoadingFallback />}><PermissionSettings /></Suspense>,
-      },
+      // 系统设置 - 使用嵌套路由
       {
         path: 'settings',
-        element: <Suspense fallback={<LoadingFallback />}><SystemSettings /></Suspense>,
-      },
-      {
-        path: 'settings/custom-fields',
-        element: <Suspense fallback={<LoadingFallback />}><CustomFields /></Suspense>,
+        element: <SettingsLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/settings/profile" replace />,
+          },
+          {
+            path: 'profile',
+            element: <Suspense fallback={<LoadingFallback />}><Profile /></Suspense>,
+          },
+          {
+            path: 'change-password',
+            element: <Suspense fallback={<LoadingFallback />}><ChangePassword /></Suspense>,
+          },
+          {
+            path: 'notifications',
+            element: <Suspense fallback={<LoadingFallback />}><NotificationPreferences /></Suspense>,
+          },
+          {
+            path: 'display',
+            element: <Suspense fallback={<LoadingFallback />}><DisplayPreferences /></Suspense>,
+          },
+          {
+            path: 'roles',
+            element: <Suspense fallback={<LoadingFallback />}><Roles /></Suspense>,
+          },
+          {
+            path: 'users',
+            element: <Suspense fallback={<LoadingFallback />}><Users /></Suspense>,
+          },
+          {
+            path: 'permissions',
+            element: <Suspense fallback={<LoadingFallback />}><PermissionSettings /></Suspense>,
+          },
+          {
+            path: 'custom-fields',
+            element: <Suspense fallback={<LoadingFallback />}><CustomFields /></Suspense>,
+          },
+          {
+            path: 'custom-objects',
+            element: <Suspense fallback={<LoadingFallback />}><CustomObjects /></Suspense>,
+          },
+          {
+            path: 'custom-objects/create',
+            element: <Suspense fallback={<LoadingFallback />}><CreateCustomObject /></Suspense>,
+          },
+          {
+            path: 'custom-objects/:objectId/edit',
+            element: <Suspense fallback={<LoadingFallback />}><CreateCustomObject /></Suspense>,
+          },
+          {
+            path: 'custom-objects/:objectId/fields',
+            element: <Suspense fallback={<LoadingFallback />}><ObjectFields /></Suspense>,
+          },
+          {
+            path: 'custom-objects/:objectId/form',
+            element: <Suspense fallback={<LoadingFallback />}><FormDesigner /></Suspense>,
+          },
+          {
+            path: 'custom-objects/:objectId/data',
+            element: <Suspense fallback={<LoadingFallback />}><ObjectData /></Suspense>,
+          },
+          {
+            path: 'custom-objects/:objectId/relationships',
+            element: <Suspense fallback={<LoadingFallback />}><ObjectRelationships /></Suspense>,
+          },
+          {
+            path: 'audit-log',
+            element: <Suspense fallback={<LoadingFallback />}><AuditLog /></Suspense>,
+          },
+          {
+            path: 'login-log',
+            element: <Suspense fallback={<LoadingFallback />}><LoginLog /></Suspense>,
+          },
+          {
+            path: 'system-config',
+            element: <Suspense fallback={<LoadingFallback />}><SystemConfig /></Suspense>,
+          },
+        ],
       },
       // 测试页面
       {

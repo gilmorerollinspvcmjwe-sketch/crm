@@ -5,6 +5,7 @@
 import React from 'react';
 import { Form, Input, Select, Space, Button } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
@@ -54,6 +55,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
   onReset,
   loading = false,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
 
   /** 处理搜索 */
@@ -85,7 +87,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
     if (type === 'select') {
       return (
         <Form.Item key={name} name={name} label={label}>
-          <Select placeholder={placeholder || `请选择${label}`} allowClear>
+          <Select placeholder={placeholder || t('searchFilter.selectPlaceholder', { label })} allowClear>
             {options?.map((opt) => (
               <Option key={opt.value} value={opt.value}>
                 {opt.label}
@@ -98,7 +100,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
 
     return (
       <Form.Item key={name} name={name} label={label}>
-        <Input placeholder={placeholder || `请输入${label}`} allowClear />
+        <Input placeholder={placeholder || t('searchFilter.inputPlaceholder', { label })} allowClear />
       </Form.Item>
     );
   };
@@ -114,10 +116,10 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
             onClick={handleSearch}
             loading={loading}
           >
-            搜索
+            {t('searchFilter.search')}
           </Button>
           <Button icon={<ReloadOutlined />} onClick={handleReset}>
-            重置
+            {t('searchFilter.reset')}
           </Button>
         </Space>
       </Form.Item>

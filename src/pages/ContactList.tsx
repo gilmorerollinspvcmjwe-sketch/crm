@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button, Space, message, Modal, Form, Input, Select, Radio } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ContactTable } from '../components/Customer/ContactTable';
 import { SearchFilter, FilterField } from '../components/Customer/SearchFilter';
 import { getContactList } from '../mock/contactData';
@@ -18,6 +19,7 @@ import { Contact } from '../types/contact';
  * 联系人列表页组件
  */
 export const ContactList: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [contactList, setContactList] = useState<Contact[]>([]);
@@ -42,7 +44,7 @@ export const ContactList: React.FC = () => {
       setContactList(list);
       setTotal(total);
     } catch (error) {
-      message.error('加载联系人列表失败');
+      message.error(t('contact.list.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -86,13 +88,13 @@ export const ContactList: React.FC = () => {
   /** 删除联系人 */
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除该联系人吗？删除后无法恢复。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t('contact.list.confirmDelete'),
+      content: t('contact.list.confirmDeleteContent'),
+      okText: t('contact.list.confirmDeleteBtn'),
+      cancelText: t('contact.form.cancel'),
       okType: 'danger',
       onOk: () => {
-        message.success('删除联系人成功');
+        message.success(t('contact.list.deleteSuccess'));
         loadContactList();
       },
     });
@@ -107,7 +109,7 @@ export const ContactList: React.FC = () => {
   /** 处理新建联系人提交 */
   const handleCreateSubmit = (values: any) => {
     console.log('新建联系人:', values);
-    message.success('新建联系人成功');
+    message.success(t('contact.list.createSuccess'));
     setCreateModalVisible(false);
     loadContactList();
   };
@@ -115,7 +117,7 @@ export const ContactList: React.FC = () => {
   /** 处理编辑联系人提交 */
   const handleEditSubmit = (values: any) => {
     console.log('编辑联系人:', values);
-    message.success('编辑联系人成功');
+    message.success(t('contact.list.editSuccess'));
     setEditModalVisible(false);
     setEditingContactId(null);
     loadContactList();
@@ -124,13 +126,13 @@ export const ContactList: React.FC = () => {
   /** 处理删除联系人确认 */
   const handleDeleteConfirm = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除该联系人吗？删除后无法恢复。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t('contact.list.confirmDelete'),
+      content: t('contact.list.confirmDeleteContent'),
+      okText: t('contact.list.confirmDeleteBtn'),
+      cancelText: t('contact.form.cancel'),
       okType: 'danger',
       onOk: () => {
-        message.success('删除联系人成功');
+        message.success(t('contact.list.deleteSuccess'));
         loadContactList();
       },
     });
@@ -140,31 +142,31 @@ export const ContactList: React.FC = () => {
   const filterFields: FilterField[] = [
     {
       name: 'name',
-      label: '姓名',
+      label: t('contact.filter.name'),
       type: 'text',
-      placeholder: '请输入姓名',
+      placeholder: t('contact.filter.namePlaceholder'),
     },
     {
       name: 'customerName',
-      label: '所属客户',
+      label: t('contact.filter.customerName'),
       type: 'text',
-      placeholder: '请输入客户名称',
+      placeholder: t('contact.filter.customerNamePlaceholder'),
     },
     {
       name: 'position',
-      label: '职位',
+      label: t('contact.filter.position'),
       type: 'text',
-      placeholder: '请输入职位',
+      placeholder: t('contact.filter.positionPlaceholder'),
     },
   ];
 
   return (
     <div style={{ padding: 24 }}>
       <Card
-        title="联系人管理"
+        title={t('contact.list.title')}
         extra={
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建联系人
+            {t('contact.list.createContact')}
           </Button>
         }
       >
@@ -194,12 +196,12 @@ export const ContactList: React.FC = () => {
 
       {/* 新建联系人弹窗 */}
       <Modal
-        title="新建联系人"
+        title={t('contact.form.createTitle')}
         open={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('contact.form.confirm')}
+        cancelText={t('contact.form.cancel')}
         width={600}
       >
         <Form
@@ -212,52 +214,52 @@ export const ContactList: React.FC = () => {
         >
           <Form.Item
             name="name"
-            label="姓名"
-            rules={[{ required: true, message: '请输入姓名' }]}
+            label={t('contact.form.name')}
+            rules={[{ required: true, message: t('contact.form.nameRequired') }]}
           >
-            <Input placeholder="请输入姓名" />
+            <Input placeholder={t('contact.form.namePlaceholder')} />
           </Form.Item>
-          <Form.Item name="gender" label="性别">
+          <Form.Item name="gender" label={t('contact.form.gender')}>
             <Radio.Group>
-              <Radio value="男">男</Radio>
-              <Radio value="女">女</Radio>
+              <Radio value="男">{t('contact.form.male')}</Radio>
+              <Radio value="女">{t('contact.form.female')}</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item name="mobile" label="手机号码">
-            <Input placeholder="请输入手机号码" />
+          <Form.Item name="mobile" label={t('contact.form.mobile')}>
+            <Input placeholder={t('contact.form.mobilePlaceholder')} />
           </Form.Item>
-          <Form.Item name="email" label="邮箱">
-            <Input placeholder="请输入邮箱" />
+          <Form.Item name="email" label={t('contact.form.email')}>
+            <Input placeholder={t('contact.form.emailPlaceholder')} />
           </Form.Item>
-          <Form.Item name="position" label="职位">
-            <Input placeholder="请输入职位" />
+          <Form.Item name="position" label={t('contact.form.position')}>
+            <Input placeholder={t('contact.form.positionPlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerId" label="所属客户">
-            <Select placeholder="请选择所属客户">
+          <Form.Item name="customerId" label={t('contact.form.customer')}>
+            <Select placeholder={t('contact.form.customerPlaceholder')}>
               <Select.Option value="1">示例客户 1</Select.Option>
               <Select.Option value="2">示例客户 2</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="wechat" label="微信">
-            <Input placeholder="请输入微信号" />
+          <Form.Item name="wechat" label={t('contact.form.wechat')}>
+            <Input placeholder={t('contact.form.wechatPlaceholder')} />
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('contact.form.remark')}>
+            <Input.TextArea rows={3} placeholder={t('contact.form.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
 
       {/* 编辑联系人弹窗 */}
       <Modal
-        title="编辑联系人"
+        title={t('contact.form.editTitle')}
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
           setEditingContactId(null);
         }}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('contact.form.confirm')}
+        cancelText={t('contact.form.cancel')}
         width={600}
       >
         <Form
@@ -267,37 +269,37 @@ export const ContactList: React.FC = () => {
         >
           <Form.Item
             name="name"
-            label="姓名"
-            rules={[{ required: true, message: '请输入姓名' }]}
+            label={t('contact.form.name')}
+            rules={[{ required: true, message: t('contact.form.nameRequired') }]}
           >
-            <Input placeholder="请输入姓名" />
+            <Input placeholder={t('contact.form.namePlaceholder')} />
           </Form.Item>
-          <Form.Item name="gender" label="性别">
+          <Form.Item name="gender" label={t('contact.form.gender')}>
             <Radio.Group>
-              <Radio value="男">男</Radio>
-              <Radio value="女">女</Radio>
+              <Radio value="男">{t('contact.form.male')}</Radio>
+              <Radio value="女">{t('contact.form.female')}</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item name="mobile" label="手机号码">
-            <Input placeholder="请输入手机号码" />
+          <Form.Item name="mobile" label={t('contact.form.mobile')}>
+            <Input placeholder={t('contact.form.mobilePlaceholder')} />
           </Form.Item>
-          <Form.Item name="email" label="邮箱">
-            <Input placeholder="请输入邮箱" />
+          <Form.Item name="email" label={t('contact.form.email')}>
+            <Input placeholder={t('contact.form.emailPlaceholder')} />
           </Form.Item>
-          <Form.Item name="position" label="职位">
-            <Input placeholder="请输入职位" />
+          <Form.Item name="position" label={t('contact.form.position')}>
+            <Input placeholder={t('contact.form.positionPlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerId" label="所属客户">
-            <Select placeholder="请选择所属客户">
+          <Form.Item name="customerId" label={t('contact.form.customer')}>
+            <Select placeholder={t('contact.form.customerPlaceholder')}>
               <Select.Option value="1">示例客户 1</Select.Option>
               <Select.Option value="2">示例客户 2</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="wechat" label="微信">
-            <Input placeholder="请输入微信号" />
+          <Form.Item name="wechat" label={t('contact.form.wechat')}>
+            <Input placeholder={t('contact.form.wechatPlaceholder')} />
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('contact.form.remark')}>
+            <Input.TextArea rows={3} placeholder={t('contact.form.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>

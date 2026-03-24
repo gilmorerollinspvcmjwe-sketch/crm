@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Typography, Tooltip, Progress, Popconfirm } from 'antd';
 import { EyeOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { PaymentPlan, PaymentStatus, PaymentMethod } from '../../types/payment';
 
 const { Text } = Typography;
@@ -58,10 +59,23 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
   onReject,
   loading = false
 }) => {
+  const { t } = useTranslation();
+
+  // 获取状态文本
+  const getStatusText = (status: PaymentStatus) => {
+    const statusMap: Record<PaymentStatus, string> = {
+      [PaymentStatus.PENDING]: t('payment.status.pending'),
+      [PaymentStatus.PARTIAL]: t('payment.status.partial'),
+      [PaymentStatus.COMPLETED]: t('payment.status.completed'),
+      [PaymentStatus.OVERDUE]: t('payment.status.overdue')
+    };
+    return statusMap[status] || status;
+  };
+
   // 表格列定义
   const columns = [
     {
-      title: '合同信息',
+      title: t('payment.table.contractInfo'),
       dataIndex: 'contractName',
       key: 'contractName',
       width: 250,
@@ -75,14 +89,14 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
       )
     },
     {
-      title: '期数',
+      title: t('payment.table.installment'),
       dataIndex: 'installmentNumber',
       key: 'installmentNumber',
       width: 80,
-      render: (num: number) => `第${num}期`
+      render: (num: number) => t('payment.table.installmentFormat', { num })
     },
     {
-      title: '计划金额',
+      title: t('payment.table.plannedAmount'),
       dataIndex: 'plannedAmount',
       key: 'plannedAmount',
       width: 100,
@@ -92,7 +106,7 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
       )
     },
     {
-      title: '实际金额',
+      title: t('payment.table.actualAmount'),
       dataIndex: 'actualAmount',
       key: 'actualAmount',
       width: 100,
@@ -102,7 +116,7 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
       )
     },
     {
-      title: '计划日期',
+      title: t('payment.table.plannedDate'),
       dataIndex: 'plannedDate',
       key: 'plannedDate',
       width: 100,
@@ -111,14 +125,14 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
       render: (date: string) => formatDate(date)
     },
     {
-      title: '实际日期',
+      title: t('payment.table.actualDate'),
       dataIndex: 'actualDate',
       key: 'actualDate',
       width: 100,
       render: (date?: string) => (date ? formatDate(date) : '-')
     },
     {
-      title: '付款方式',
+      title: t('payment.table.paymentMethod'),
       dataIndex: 'paymentMethod',
       key: 'paymentMethod',
       width: 100,
@@ -127,37 +141,37 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
       )
     },
     {
-      title: '状态',
+      title: t('payment.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
       filters: Object.values(PaymentStatus).map(status => ({
-        text: status,
+        text: getStatusText(status),
         value: status
       })),
       onFilter: (value: any, record: PaymentPlan) => record.status === value,
       render: (status: PaymentStatus) => (
-        <Tag color={STATUS_COLORS[status]}>{status}</Tag>
+        <Tag color={STATUS_COLORS[status]}>{getStatusText(status)}</Tag>
       )
     },
     {
-      title: '逾期天数',
+      title: t('payment.table.overdueDays'),
       dataIndex: 'overdueDays',
       key: 'overdueDays',
       width: 80,
       sorter: (a: PaymentPlan, b: PaymentPlan) => (a.overdueDays || 0) - (b.overdueDays || 0),
       render: (days?: number) => (
-        days && days > 0 ? <Text type="danger">{days}天</Text> : '-'
+        days && days > 0 ? <Text type="danger">{days}{t('payment.table.daysUnit')}</Text> : '-'
       )
     },
     {
-      title: '操作',
+      title: t('payment.table.actions'),
       key: 'action',
       width: 150,
       fixed: 'right' as const,
       render: (_: any, record: PaymentPlan) => (
         <Space size="small">
-          <Tooltip title="查看详情">
+          <Tooltip title={t('payment.table.viewDetail')}>
             <Button
               type="link"
               icon={<EyeOutlined />}
@@ -168,7 +182,7 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
           {record.actualAmount && record.status !== PaymentStatus.COMPLETED && (
             <>
               {onVerify && (
-                <Tooltip title="核销">
+                <Tooltip title={t('payment.table.verify')}>
                   <Button
                     type="link"
                     icon={<CheckOutlined />}
@@ -179,7 +193,7 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
                 </Tooltip>
               )}
               {onReject && (
-                <Tooltip title="驳回">
+                <Tooltip title={t('payment.table.reject')}>
                   <Button
                     type="link"
                     icon={<CloseOutlined />}
@@ -207,7 +221,7 @@ export const PaymentTable: React.FC<PaymentTableProps> = ({
         pageSize: 20,
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条`,
+        showTotal: (total) => t('payment.table.total', { total }),
         pageSizeOptions: ['10', '20', '50', '100']
       }}
       size="middle"

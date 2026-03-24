@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, Space, Button, message, Row, Col, Statistic, Tabs, Modal, Form, Input, InputNumber, Select } from 'antd';
 import { PlusOutlined, DollarOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PaymentPlan, PaymentStatus, PaymentFilter } from '../types/payment';
 import {
   paymentPlanData,
@@ -23,6 +24,7 @@ import { SearchFilter } from '../components/Opportunity/SearchFilter';
  * - 搜索筛选
  */
 export const PaymentList: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('plan');
@@ -56,7 +58,7 @@ export const PaymentList: React.FC = () => {
     setFilter(values);
     setTimeout(() => {
       setLoading(false);
-      message.success('搜索完成');
+      message.success(t('common.messages.searchComplete'));
     }, 500);
   };
 
@@ -78,12 +80,12 @@ export const PaymentList: React.FC = () => {
   // 处理驳回
   const handleReject = (id: string) => {
     Modal.confirm({
-      title: '确认驳回',
-      content: '确定要驳回这笔回款吗？请说明驳回原因。',
-      okText: '确认驳回',
-      cancelText: '取消',
+      title: t('payment.list.rejectConfirm'),
+      content: t('payment.list.rejectContent'),
+      okText: t('payment.list.rejectConfirm'),
+      cancelText: t('common.actions.cancel'),
       onOk: () => {
-        message.info('回款已驳回');
+        message.info(t('common.messages.operationSuccess'));
       },
     });
   };
@@ -97,14 +99,14 @@ export const PaymentList: React.FC = () => {
   // 处理新建提交
   const handleCreateSubmit = (values: any) => {
     console.log('新建回款:', values);
-    message.success('新建回款成功');
+    message.success(t('common.messages.createSuccess'));
     setCreateModalVisible(false);
   };
 
   // 处理核销提交
   const handleVerifySubmit = (values: any) => {
     console.log('核销回款:', values);
-    message.success('回款已核销');
+    message.success(t('common.messages.operationSuccess'));
     setVerifyModalVisible(false);
   };
 
@@ -118,7 +120,7 @@ export const PaymentList: React.FC = () => {
   const tabItems = [
     {
       key: 'plan',
-      label: '回款计划',
+      label: t('payment.list.planTab'),
       children: (
         <PaymentTable
           data={filteredPlans}
@@ -131,7 +133,7 @@ export const PaymentList: React.FC = () => {
     },
     {
       key: 'record',
-      label: `回款记录 (${paymentRecordData.length})`,
+      label: `${t('payment.list.recordTab')} (${paymentRecordData.length})`,
       children: (
         <PaymentTable
           data={filteredRecords as any}
@@ -154,9 +156,9 @@ export const PaymentList: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="计划回款总额"
+              title={t('payment.list.plannedTotal')}
               value={formatAmount(stats.totalPlanned)}
-              suffix="万元"
+              suffix={t('common.unit.tenThousand')}
               prefix={<DollarOutlined />}
               valueStyle={{ color: '#1890ff' }}
               precision={0}
@@ -166,9 +168,9 @@ export const PaymentList: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="实际回款总额"
+              title={t('payment.list.actualTotal')}
               value={formatAmount(stats.totalActual)}
-              suffix="万元"
+              suffix={t('common.unit.tenThousand')}
               prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#52c41a' }}
               precision={0}
@@ -178,9 +180,9 @@ export const PaymentList: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="回款完成率"
+              title={t('payment.list.completionRate')}
               value={stats.completionRate}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               valueStyle={{
                 color: stats.completionRate >= 80 ? '#52c41a' : stats.completionRate >= 50 ? '#faad14' : '#ff4d4f'
               }}
@@ -190,9 +192,9 @@ export const PaymentList: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="逾期金额"
+              title={t('payment.list.overdueAmount')}
               value={formatAmount(stats.overdueAmount)}
-              suffix="万元"
+              suffix={t('common.unit.tenThousand')}
               prefix={<ExclamationCircleOutlined />}
               valueStyle={{ color: stats.overdueAmount > 0 ? '#ff4d4f' : '#52c41a' }}
               precision={0}
@@ -205,13 +207,13 @@ export const PaymentList: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 24 }}>回款管理</h1>
+            <h1 style={{ margin: 0, fontSize: 24 }}>{t('payment.list.title')}</h1>
             <p style={{ margin: '8px 0 0', color: '#666' }}>
-              管理回款计划和回款记录，跟踪回款进度
+              {t('payment.list.subtitle')}
             </p>
           </div>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建回款
+            {t('payment.list.newPayment')}
           </Button>
         </Space>
       </Card>
@@ -239,12 +241,12 @@ export const PaymentList: React.FC = () => {
 
       {/* 新建回款弹窗 */}
       <Modal
-        title="新建回款计划"
+        title={t('payment.list.createModal.title')}
         open={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('common.actions.confirm')}
+        cancelText={t('common.actions.cancel')}
         width={600}
       >
         <Form
@@ -254,38 +256,38 @@ export const PaymentList: React.FC = () => {
         >
           <Form.Item
             name="contractNumber"
-            label="合同编号"
-            rules={[{ required: true, message: '请输入合同编号' }]}
+            label={t('payment.list.createModal.contractNumber')}
+            rules={[{ required: true, message: t('payment.list.createModal.contractNumberPlaceholder') }]}
           >
-            <Input placeholder="请输入合同编号" />
+            <Input placeholder={t('payment.list.createModal.contractNumberPlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerName" label="客户名称">
-            <Input placeholder="请输入客户名称" />
+          <Form.Item name="customerName" label={t('payment.list.createModal.customerName')}>
+            <Input placeholder={t('payment.list.createModal.customerNamePlaceholder')} />
           </Form.Item>
           <Form.Item
             name="plannedAmount"
-            label="计划金额 (元)"
-            rules={[{ required: true, message: '请输入金额' }]}
+            label={t('payment.list.createModal.plannedAmount')}
+            rules={[{ required: true, message: t('common.validation.pleaseEnter') }]}
           >
-            <InputNumber style={{ width: '100%' }} placeholder="请输入金额" min={0} />
+            <InputNumber style={{ width: '100%' }} placeholder={t('payment.list.createModal.plannedAmountPlaceholder')} min={0} />
           </Form.Item>
-          <Form.Item name="installmentNumber" label="期数">
-            <InputNumber placeholder="请输入期数" min={1} />
+          <Form.Item name="installmentNumber" label={t('payment.list.createModal.installmentNumber')}>
+            <InputNumber placeholder={t('payment.list.createModal.installmentNumberPlaceholder')} min={1} />
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('payment.list.createModal.remark')}>
+            <Input.TextArea rows={3} placeholder={t('payment.list.createModal.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
 
       {/* 回款核销弹窗 */}
       <Modal
-        title="回款核销"
+        title={t('payment.list.verifyModal.title')}
         open={verifyModalVisible}
         onCancel={() => setVerifyModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('common.actions.confirm')}
+        cancelText={t('common.actions.cancel')}
         width={500}
       >
         <Form
@@ -295,22 +297,22 @@ export const PaymentList: React.FC = () => {
         >
           <Form.Item
             name="actualAmount"
-            label="实际金额 (元)"
-            rules={[{ required: true, message: '请输入实际金额' }]}
+            label={t('payment.list.verifyModal.actualAmount')}
+            rules={[{ required: true, message: t('common.validation.pleaseEnter') }]}
           >
-            <InputNumber style={{ width: '100%' }} placeholder="请输入实际金额" min={0} />
+            <InputNumber style={{ width: '100%' }} placeholder={t('payment.list.verifyModal.actualAmountPlaceholder')} min={0} />
           </Form.Item>
-          <Form.Item name="paymentMethod" label="付款方式">
-            <Select placeholder="请选择付款方式">
-              <Select.Option value="银行转账">银行转账</Select.Option>
-              <Select.Option value="支付宝">支付宝</Select.Option>
-              <Select.Option value="微信">微信</Select.Option>
-              <Select.Option value="现金">现金</Select.Option>
-              <Select.Option value="支票">支票</Select.Option>
+          <Form.Item name="paymentMethod" label={t('payment.list.verifyModal.paymentMethod')}>
+            <Select placeholder={t('payment.list.verifyModal.paymentMethodPlaceholder')}>
+              <Select.Option value="银行转账">{t('payment.list.verifyModal.methodBankTransfer')}</Select.Option>
+              <Select.Option value="支付宝">{t('payment.list.verifyModal.methodAlipay')}</Select.Option>
+              <Select.Option value="微信">{t('payment.list.verifyModal.methodWechat')}</Select.Option>
+              <Select.Option value="现金">{t('payment.list.verifyModal.methodCash')}</Select.Option>
+              <Select.Option value="支票">{t('payment.list.verifyModal.methodCheck')}</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="remark" label="核销说明">
-            <Input.TextArea rows={3} placeholder="请输入核销说明" />
+          <Form.Item name="remark" label={t('payment.list.verifyModal.verifyNote')}>
+            <Input.TextArea rows={3} placeholder={t('payment.list.verifyModal.verifyNotePlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>

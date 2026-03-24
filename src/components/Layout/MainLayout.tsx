@@ -31,6 +31,11 @@ import {
   LogoutOutlined,
   QuestionCircleOutlined,
   MenuOutlined,
+  LockOutlined,
+  SafetyOutlined,
+  FormOutlined,
+  AppstoreOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 import type { MenuProps, BreadcrumbProps } from 'antd';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -58,125 +63,144 @@ function getItem(
   } as MenuItem;
 }
 
-// 菜单配置（移除 emoji）
-const menuItems: MenuItem[] = [
-  getItem('工作台', 'workplace', <HomeOutlined />, [
-    getItem('销售工作台', '/workbench'),
-    getItem('仪表盘', '/dashboard'),
+// 菜单配置 - 使用函数以支持 i18n
+const getMenuItems = (t: (key: string) => string): MenuItem[] => [
+  getItem(t('nav.workplace'), 'workplace', <HomeOutlined />, [
+    getItem(t('nav.salesWorkbench'), '/workbench'),
+    getItem(t('nav.dashboard'), '/dashboard'),
   ]),
-  getItem('客户管理', 'customer', <TeamOutlined />, [
-    getItem('客户列表', '/customer/list'),
-    getItem('联系人列表', '/contact/list'),
+  getItem(t('nav.customerManagement'), 'customer', <TeamOutlined />, [
+    getItem(t('nav.customerList'), '/customer/list'),
+    getItem(t('nav.contactList'), '/contact/list'),
   ]),
-  getItem('销售管理', 'sales', <BulbOutlined />, [
-    getItem('线索管理', '/lead/list'),
-    getItem('商机管理', '/opportunity/list'),
-    getItem('跟进记录', '/activity/list'),
+  getItem(t('nav.salesManagement'), 'sales', <BulbOutlined />, [
+    getItem(t('nav.leadManagement'), '/lead/list'),
+    getItem(t('nav.opportunityManagement'), '/opportunity/list'),
+    getItem(t('nav.activityRecords'), '/activity/list'),
   ]),
-  getItem('订单管理', 'order', <FileTextOutlined />, [
-    getItem('报价单', '/quote/list'),
-    getItem('合同管理', '/contract/list'),
-    getItem('回款管理', '/payment/list'),
+  getItem(t('nav.orderManagement'), 'order', <FileTextOutlined />, [
+    getItem(t('nav.quotes'), '/quote/list'),
+    getItem(t('nav.contractManagement'), '/contract/list'),
+    getItem(t('nav.paymentManagement'), '/payment/list'),
   ]),
-  getItem('产品与定价', 'product', <ShopOutlined />, [
-    getItem('产品库', '/products/list'),
-    getItem('价格表', '/pricebooks/list'),
+  getItem(t('nav.productAndPricing'), 'product', <ShopOutlined />, [
+    getItem(t('nav.productLibrary'), '/products/list'),
+    getItem(t('nav.priceList'), '/pricebooks/list'),
   ]),
-  getItem('报表中心', 'report', <BarChartOutlined />, [
-    getItem('销售漏斗', '/report/funnel'),
-    getItem('业绩统计', '/report/performance'),
-    getItem('客户分析', '/report/customer'),
-    getItem('跟进活动', '/report/activity'),
-    getItem('线索转化', '/report/lead-conversion'),
-    getItem('回款分析', '/report/payment'),
+  getItem(t('nav.reportCenter'), 'report', <BarChartOutlined />, [
+    getItem(t('nav.salesFunnel'), '/report/funnel'),
+    getItem(t('nav.performanceStats'), '/report/performance'),
+    getItem(t('nav.customerAnalysis'), '/report/customer'),
+    getItem(t('nav.activityReports'), '/report/activity'),
+    getItem(t('nav.leadConversion'), '/report/lead-conversion'),
+    getItem(t('nav.paymentAnalysis'), '/report/payment'),
   ]),
-  getItem('智能 AI', 'ai', <RobotOutlined />, [
-    getItem('智能线索分配', '/ai/lead-assignment'),
-    getItem('线索评分 AI', '/ai/lead-scoring'),
-    getItem('销售预测 AI', '/ai/sales-forecast'),
-    getItem('客户分群 AI', '/ai/customer-segmentation'),
-    getItem('客户流失预警', '/ai/churn-warning'),
-    getItem('会议助手', '/ai/meeting-assistant'),
-    getItem('预测性 AI', '/ai/predictive'),
-    getItem('AI 智能体', '/ai/agents'),
+  getItem(t('nav.intelligentAI'), 'ai', <RobotOutlined />, [
+    getItem(t('nav.intelligentLeadAssignment'), '/ai/lead-assignment'),
+    getItem(t('nav.leadScoringAI'), '/ai/lead-scoring'),
+    getItem(t('nav.salesForecastAI'), '/ai/sales-forecast'),
+    getItem(t('nav.customerSegmentationAI'), '/ai/customer-segmentation'),
+    getItem(t('nav.churnWarning'), '/ai/churn-warning'),
+    getItem(t('nav.meetingAssistant'), '/ai/meeting-assistant'),
+    getItem(t('nav.predictiveAI'), '/ai/predictive'),
+    getItem(t('nav.aiAgents'), '/ai/agents'),
   ]),
-  getItem('营销自动化', 'marketing', <MailOutlined />, [
-    getItem('营销活动', '/marketing/campaigns'),
-    getItem('邮件模板', '/marketing/email-templates'),
-    getItem('目标列表', '/marketing/target-lists'),
+  getItem(t('nav.marketingAutomation'), 'marketing', <MailOutlined />, [
+    getItem(t('nav.marketingCampaigns'), '/marketing/campaigns'),
+    getItem(t('nav.emailTemplates'), '/marketing/email-templates'),
+    getItem(t('nav.targetLists'), '/marketing/target-lists'),
   ]),
-  getItem('集成对接', 'integration', <CustomerServiceOutlined />, [
-    getItem('工单系统', '/integration/tickets'),
-    getItem('知识库', '/integration/knowledge'),
-    getItem('呼叫中心', '/integration/callcenter'),
+  getItem(t('nav.integration'), 'integration', <CustomerServiceOutlined />, [
+    getItem(t('nav.ticketSystem'), '/integration/tickets'),
+    getItem(t('nav.knowledgeBase'), '/integration/knowledge'),
+    getItem(t('nav.callCenter'), '/integration/callcenter'),
   ]),
-  getItem('系统设置', 'settings', <SettingOutlined />, [
-    getItem('角色管理', '/settings/roles'),
-    getItem('用户管理', '/settings/users'),
-    getItem('权限配置', '/settings/permissions'),
-    getItem('系统配置', '/settings'),
+  getItem(t('nav.systemSettings'), 'settings', <SettingOutlined />, [
+    getItem(t('nav.profile'), '/settings/profile'),
+    getItem(t('nav.changePassword'), '/settings/change-password'),
+    getItem(t('nav.notificationPreferences'), '/settings/notifications'),
+    getItem(t('nav.displayPreferences'), '/settings/display'),
+    getItem(t('nav.roleManagement'), '/settings/roles'),
+    getItem(t('nav.userManagement'), '/settings/users'),
+    getItem(t('nav.permissionConfiguration'), '/settings/permissions'),
+    getItem(t('nav.customFields'), '/settings/custom-fields'),
+    getItem(t('nav.customObjects'), '/settings/custom-objects'),
+    getItem(t('nav.operationLog'), '/settings/audit-log'),
+    getItem(t('nav.loginLog'), '/settings/login-log'),
+    getItem(t('nav.systemConfiguration'), '/settings/system-config'),
   ]),
 ];
 
-// 面包屑映射
-const breadcrumbNameMap: Record<string, string> = {
-  '/workbench': '销售工作台',
-  '/dashboard': '仪表盘',
-  '/customer': '客户管理',
-  '/customer/list': '客户列表',
-  '/contact': '联系人',
-  '/contact/list': '联系人列表',
-  '/lead': '线索管理',
-  '/lead/list': '线索列表',
-  '/opportunity': '商机管理',
-  '/opportunity/list': '商机列表',
-  '/activity': '跟进记录',
-  '/activity/list': '跟进记录列表',
-  '/quote': '报价单',
-  '/quote/list': '报价单列表',
-  '/contract': '合同管理',
-  '/contract/list': '合同列表',
-  '/payment': '回款管理',
-  '/payment/list': '回款列表',
-  '/products': '产品库',
-  '/products/list': '产品列表',
-  '/pricebooks': '价格表',
-  '/pricebooks/list': '价格表列表',
-  '/report': '报表中心',
-  '/report/funnel': '销售漏斗',
-  '/report/performance': '业绩统计',
-  '/report/customer': '客户分析',
-  '/report/activity': '跟进活动',
-  '/report/lead-conversion': '线索转化',
-  '/report/payment': '回款分析',
-  '/ai': '智能 AI',
-  '/ai/lead-assignment': '智能线索分配',
-  '/ai/lead-scoring': '线索评分 AI',
-  '/ai/sales-forecast': '销售预测 AI',
-  '/ai/customer-segmentation': '客户分群 AI',
-  '/ai/churn-warning': '客户流失预警',
-  '/ai/meeting-assistant': '会议助手',
-  '/ai/predictive': '预测性 AI',
-  '/ai/agents': 'AI 智能体',
-  '/marketing': '营销自动化',
-  '/marketing/campaigns': '营销活动',
-  '/marketing/email-templates': '邮件模板',
-  '/marketing/target-lists': '目标列表',
-  '/integration': '集成对接',
-  '/integration/tickets': '工单系统',
-  '/integration/knowledge': '知识库',
-  '/integration/callcenter': '呼叫中心',
-  '/settings': '系统设置',
-  '/settings/roles': '角色管理',
-  '/settings/users': '用户管理',
-  '/settings/permissions': '权限配置',
-};
+// 面包屑映射 - 使用函数以支持 i18n
+const getBreadcrumbNameMap = (t: (key: string) => string): Record<string, string> => ({
+  '/workbench': t('breadcrumb.salesWorkbench'),
+  '/dashboard': t('breadcrumb.dashboard'),
+  '/customer': t('breadcrumb.customer'),
+  '/customer/list': t('breadcrumb.customerList'),
+  '/contact': t('breadcrumb.contact'),
+  '/contact/list': t('breadcrumb.contactList'),
+  '/lead': t('breadcrumb.lead'),
+  '/lead/list': t('breadcrumb.leadList'),
+  '/opportunity': t('breadcrumb.opportunity'),
+  '/opportunity/list': t('breadcrumb.opportunityList'),
+  '/activity': t('breadcrumb.activity'),
+  '/activity/list': t('breadcrumb.activityList'),
+  '/quote': t('breadcrumb.quote'),
+  '/quote/list': t('breadcrumb.quoteList'),
+  '/contract': t('breadcrumb.contract'),
+  '/contract/list': t('breadcrumb.contractList'),
+  '/payment': t('breadcrumb.payment'),
+  '/payment/list': t('breadcrumb.paymentList'),
+  '/products': t('breadcrumb.products'),
+  '/products/list': t('breadcrumb.productsList'),
+  '/pricebooks': t('breadcrumb.pricebooks'),
+  '/pricebooks/list': t('breadcrumb.pricebooksList'),
+  '/report': t('breadcrumb.report'),
+  '/report/funnel': t('breadcrumb.reportFunnel'),
+  '/report/performance': t('breadcrumb.reportPerformance'),
+  '/report/customer': t('breadcrumb.reportCustomer'),
+  '/report/activity': t('breadcrumb.reportActivity'),
+  '/report/lead-conversion': t('breadcrumb.reportLeadConversion'),
+  '/report/payment': t('breadcrumb.reportPayment'),
+  '/ai': t('breadcrumb.ai'),
+  '/ai/lead-assignment': t('breadcrumb.aiLeadAssignment'),
+  '/ai/lead-scoring': t('breadcrumb.aiLeadScoring'),
+  '/ai/sales-forecast': t('breadcrumb.aiSalesForecast'),
+  '/ai/customer-segmentation': t('breadcrumb.aiCustomerSegmentation'),
+  '/ai/churn-warning': t('breadcrumb.aiChurnWarning'),
+  '/ai/meeting-assistant': t('breadcrumb.aiMeetingAssistant'),
+  '/ai/predictive': t('breadcrumb.aiPredictive'),
+  '/ai/agents': t('breadcrumb.aiAgents'),
+  '/marketing': t('breadcrumb.marketing'),
+  '/marketing/campaigns': t('breadcrumb.marketingCampaigns'),
+  '/marketing/email-templates': t('breadcrumb.marketingEmailTemplates'),
+  '/marketing/target-lists': t('breadcrumb.marketingTargetLists'),
+  '/integration': t('breadcrumb.integration'),
+  '/integration/tickets': t('breadcrumb.integrationTickets'),
+  '/integration/knowledge': t('breadcrumb.integrationKnowledge'),
+  '/integration/callcenter': t('breadcrumb.integrationCallcenter'),
+  '/settings': t('breadcrumb.settings'),
+  '/settings/roles': t('breadcrumb.settingsRoles'),
+  '/settings/users': t('breadcrumb.settingsUsers'),
+  '/settings/permissions': t('breadcrumb.settingsPermissions'),
+  '/settings/profile': t('breadcrumb.settingsProfile'),
+  '/settings/change-password': t('breadcrumb.settingsChangePassword'),
+  '/settings/notifications': t('breadcrumb.settingsNotifications'),
+  '/settings/display': t('breadcrumb.settingsDisplay'),
+  '/settings/custom-fields': t('breadcrumb.settingsCustomFields'),
+  '/settings/custom-objects': t('breadcrumb.settingsCustomObjects'),
+  '/settings/audit-log': t('breadcrumb.settingsAuditLog'),
+  '/settings/login-log': t('breadcrumb.settingsLoginLog'),
+  '/settings/system-config': t('breadcrumb.settingsSystemConfig'),
+});
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const { t } = useTranslation();
+  
   // 从 localStorage 读取折叠状态
   const getStoredCollapsed = (): boolean => {
     try {
@@ -198,6 +222,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  // 获取国际化的菜单项
+  const menuItems = getMenuItems(t);
+  const breadcrumbNameMap = getBreadcrumbNameMap(t);
 
   // 判断是否是移动端
   const isMobileView = isMobile(windowWidth);
@@ -300,12 +328,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     {
       key: 'profile',
       icon: <UserOutlined />,
-      label: '个人中心',
+      label: t('nav.userCenter'),
     },
     {
       key: 'settings',
       icon: <SettingOutlined />,
-      label: '账户设置',
+      label: t('nav.accountSettings'),
     },
     {
       type: 'divider',
@@ -313,7 +341,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: '退出登录',
+      label: t('nav.logout'),
       danger: true,
     },
   ];
@@ -324,7 +352,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       key: '1',
       label: (
         <div style={{ maxWidth: 280 }}>
-          <div style={{ fontWeight: 500 }}>合同审批待处理</div>
+          <div style={{ fontWeight: 500 }}>{t('nav.contractApprovalPending')}</div>
           <div style={{ fontSize: 12, color: colors.text.secondary, marginTop: 4 }}>
             深圳未来科技 - 合同编号 CONT2026001
           </div>
@@ -335,7 +363,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       key: '2',
       label: (
         <div style={{ maxWidth: 280 }}>
-          <div style={{ fontWeight: 500 }}>商机即将过期</div>
+          <div style={{ fontWeight: 500 }}>{t('nav.opportunityExpiringSoon')}</div>
           <div style={{ fontSize: 12, color: colors.text.secondary, marginTop: 4 }}>
             北京科技创新 - 预计成交日期：03-31
           </div>
@@ -347,7 +375,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     },
     {
       key: 'viewAll',
-      label: <a style={{ color: colors.primary }}>查看全部通知</a>,
+      label: <a style={{ color: colors.primary }}>{t('nav.viewAllNotifications')}</a>,
     },
   ];
 
@@ -368,7 +396,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {collapsed ? (
           <Text strong style={{ fontSize: 18, color: colors.primary }}>C</Text>
         ) : (
-          <Text strong style={{ fontSize: 18 }}>CRM 系统</Text>
+          <Text strong style={{ fontSize: 18 }}>{t('nav.crmSystem')}</Text>
         )}
       </div>
       <Menu
@@ -405,7 +433,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             onClick={() => setMobileDrawerVisible(true)}
           />
         ) : (
-          <Tooltip title={collapsed ? '展开侧边栏' : '收起侧边栏'}>
+          <Tooltip title={collapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')}>
             {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
               className: 'trigger',
               onClick: () => setCollapsed(!collapsed),
@@ -421,7 +449,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* 中间：全局搜索 */}
       <div style={{ flex: 1, maxWidth: 400, margin: '0 24px' }}>
         <Input
-          placeholder="搜索客户、商机、合同..."
+          placeholder={t('nav.searchPlaceholder')}
           prefix={<SearchOutlined style={{ color: colors.text.tertiary }} />}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
@@ -442,7 +470,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
             <Avatar size={32} icon={<UserOutlined />} style={{ background: colors.primary }} />
             {!isMobileView && (
-              <Text style={{ fontSize: 13 }}>管理员</Text>
+              <Text style={{ fontSize: 13 }}>{t('nav.administrator')}</Text>
             )}
           </div>
         </Dropdown>

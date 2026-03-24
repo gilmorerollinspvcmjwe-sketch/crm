@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Card, Table, Button, Space, Modal, Form, Input, Tag, message, Popconfirm, Tree, Checkbox, Divider } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SettingOutlined, CopyOutlined } from '@ant-design/icons';
 import type { DataNode } from 'antd/es/tree';
+import { useTranslation } from 'react-i18next';
 import { RoleForm } from '../components/Permission/RoleForm';
 import { PermissionTree } from '../components/Permission/PermissionTree';
 import { Permission, PermissionType, DataScope, Role as RoleType } from '../types/permission';
@@ -173,6 +174,7 @@ interface RoleFormValues {
 }
 
 const Roles: React.FC = () => {
+  const { t } = useTranslation();
   const [roles, setRoles] = useState<RoleType[]>(mockRoles);
   const [roleModalVisible, setRoleModalVisible] = useState(false);
   const [permissionModalVisible, setPermissionModalVisible] = useState(false);
@@ -181,30 +183,30 @@ const Roles: React.FC = () => {
 
   const columns = [
     {
-      title: '角色名称',
+      title: t('permission.roles.columnName'),
       dataIndex: 'name',
       key: 'name',
       render: (name: string, record: RoleType) => (
         <Space>
           <span style={{ fontWeight: 500 }}>{name}</span>
-          {record.isSystem && <Tag color="purple">系统</Tag>}
+          {record.isSystem && <Tag color="purple">{t('permission.roles.systemTag')}</Tag>}
         </Space>
       ),
     },
     {
-      title: '角色代码',
+      title: t('permission.roles.columnCode'),
       dataIndex: 'code',
       key: 'code',
       render: (code: string) => <code>{code}</code>,
     },
     {
-      title: '描述',
+      title: t('permission.roles.columnDescription'),
       dataIndex: 'description',
       key: 'description',
       ellipsis: true,
     },
     {
-      title: '数据范围',
+      title: t('permission.roles.columnDataScope'),
       dataIndex: 'dataScope',
       key: 'dataScope',
       render: (scope: DataScope) => {
@@ -218,7 +220,7 @@ const Roles: React.FC = () => {
       },
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       render: (_: any, record: RoleType) => (
         <Space>
@@ -227,7 +229,7 @@ const Roles: React.FC = () => {
             icon={<SettingOutlined />}
             onClick={() => handleConfigPermissions(record)}
           >
-            配置权限
+            {t('permission.roles.configPermission')}
           </Button>
           {!record.isSystem && (
             <>
@@ -236,23 +238,23 @@ const Roles: React.FC = () => {
                 icon={<EditOutlined />}
                 onClick={() => handleEdit(record)}
               >
-                编辑
+                {t('permission.roles.edit')}
               </Button>
               <Button
                 type="link"
                 icon={<CopyOutlined />}
                 onClick={() => handleCopy(record)}
               >
-                复制
+                {t('permission.roles.copy')}
               </Button>
               <Popconfirm
-                title="确定删除此角色？"
+                title={t('permission.roles.deleteConfirm')}
                 onConfirm={() => handleDelete(record.id)}
-                okText="确定"
-                cancelText="取消"
+                okText={t('common.confirm')}
+                cancelText={t('common.cancel')}
               >
                 <Button type="link" danger icon={<DeleteOutlined />}>
-                  删除
+                  {t('permission.roles.delete')}
                 </Button>
               </Popconfirm>
             </>
@@ -276,12 +278,12 @@ const Roles: React.FC = () => {
   const handleCopy = (role: RoleType) => {
     setEditingRole(null);
     setRoleModalVisible(true);
-    message.info(`已复制角色"${role.name}"，请修改角色名称和代码`);
+    message.info(t('permission.roles.copiedInfo', { name: role.name }));
   };
 
   const handleDelete = (id: string) => {
     setRoles(roles.filter((r) => r.id !== id));
-    message.success('角色删除成功');
+    message.success(t('permission.roles.deleteSuccess'));
   };
 
   const handleRoleSubmit = async (values: RoleFormValues) => {
@@ -294,7 +296,7 @@ const Roles: React.FC = () => {
             : r
         )
       );
-      message.success('角色更新成功');
+      message.success(t('permission.roles.updateSuccess'));
     } else {
       // 新建角色
       const newRole: RoleType = {
@@ -306,7 +308,7 @@ const Roles: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
       setRoles([...roles, newRole]);
-      message.success('角色创建成功');
+      message.success(t('permission.roles.createSuccess'));
     }
     setRoleModalVisible(false);
     setEditingRole(null);
@@ -321,7 +323,7 @@ const Roles: React.FC = () => {
             : r
         )
       );
-      message.success('权限配置已保存');
+      message.success(t('permission.roles.permissionSaved'));
     }
     setPermissionModalVisible(false);
     setEditingRole(null);
@@ -337,7 +339,7 @@ const Roles: React.FC = () => {
   return (
     <div style={{ background: '#f0f2f5', minHeight: '100vh', padding: 16 }}>
       <Card
-        title="🔐 角色管理"
+        title={`🔐 ${t('permission.roles.title')}`}
         extra={
           <Button 
             type="primary" 
@@ -347,12 +349,12 @@ const Roles: React.FC = () => {
               setRoleModalVisible(true); 
             }}
           >
-            新建角色
+            {t('permission.roles.newRole')}
           </Button>
         }
       >
         <p style={{ color: '#999', marginBottom: 16 }}>
-          管理系统角色和权限配置，支持菜单权限、按钮权限和数据权限
+          {t('permission.roles.subtitle')}
         </p>
         <Table
           columns={columns}
@@ -364,7 +366,7 @@ const Roles: React.FC = () => {
 
       {/* 角色表单 Modal */}
       <Modal
-        title={editingRole ? `编辑角色 - ${editingRole.name}` : '新建角色'}
+        title={editingRole ? t('permission.roles.editRoleTitle', { name: editingRole.name }) : t('permission.roles.newRoleTitle')}
         open={roleModalVisible}
         onCancel={handleModalClose}
         footer={null}
@@ -380,18 +382,18 @@ const Roles: React.FC = () => {
 
       {/* 权限配置 Modal */}
       <Modal
-        title={`配置权限 - ${editingRole?.name}`}
+        title={t('permission.roles.configPermissionTitle', { name: editingRole?.name })}
         open={permissionModalVisible}
         onCancel={handleModalClose}
         onOk={handlePermissionSubmit}
         width={800}
-        okText="保存"
-        cancelText="取消"
+        okText={t('common.save')}
+        cancelText={t('common.cancel')}
       >
         <div style={{ marginBottom: 16 }}>
           <Tag color="blue">{editingRole?.dataScope}</Tag>
           <span style={{ marginLeft: 8, color: '#666' }}>
-            当前角色的数据权限范围
+            {t('permission.roles.currentDataScope')}
           </span>
         </div>
         <PermissionTree

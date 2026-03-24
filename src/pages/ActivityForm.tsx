@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Select, DatePicker, Button, Upload, message, Typography, Space, Divider } from 'antd';
 import { ArrowLeftOutlined, UploadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { ActivityType, RelatedObjectType } from '../types/activity';
 import dayjs from 'dayjs';
 
@@ -9,7 +10,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 // 富文本编辑器占位组件（使用 TextArea 替代）
-const RichTextEditor: React.FC<{ value?: string; onChange?: (value: string) => void }> = ({ value, onChange }) => {
+const RichTextEditor: React.FC<{ value?: string; onChange?: (value: string) => void; t: (key: string, options?: any) => string }> = ({ value, onChange, t }) => {
   return (
     <div>
       <div style={{ marginBottom: 8, padding: 8, background: '#f5f5f5', borderRadius: 4 }}>
@@ -17,18 +18,18 @@ const RichTextEditor: React.FC<{ value?: string; onChange?: (value: string) => v
           <Button size="small">B</Button>
           <Button size="small">I</Button>
           <Button size="small">U</Button>
-          <Button size="small">列表</Button>
-          <Button size="small">链接</Button>
+          <Button size="small">{t('activity.form.list')}</Button>
+          <Button size="small">{t('activity.form.link')}</Button>
         </Space>
       </div>
       <TextArea
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         rows={8}
-        placeholder="请输入跟进内容（支持简单的 HTML 格式）..."
+        placeholder={t('activity.form.contentRichPlaceholder')}
       />
       <div style={{ marginTop: 4, fontSize: 12, color: '#999' }}>
-        提示：可以使用 &lt;b&gt;加粗&lt;/b&gt;、&lt;ul&gt;&lt;li&gt;列表&lt;/li&gt;&lt;/ul&gt; 等简单 HTML 标签
+        {t('activity.form.richTextHint')}
       </div>
     </div>
   );
@@ -44,6 +45,7 @@ const RichTextEditor: React.FC<{ value?: string; onChange?: (value: string) => v
  * - 附件上传：支持图片、文件
  */
 export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState('');
@@ -57,7 +59,7 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         // 模拟提交
         setTimeout(() => {
           setLoading(false);
-          message.success('跟进记录创建成功');
+          message.success(t('activity.list.createSuccess'));
           onBack?.();
         }, 1000);
       })
@@ -73,42 +75,42 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
   // 跟进类型选项
   const activityTypeOptions = [
-    { value: ActivityType.PHONE, label: '电话' },
-    { value: ActivityType.VISIT, label: '拜访' },
-    { value: ActivityType.EMAIL, label: '邮件' },
-    { value: ActivityType.WECHAT, label: '微信' },
-    { value: ActivityType.MEETING, label: '会议' },
-    { value: ActivityType.OTHER, label: '其他' }
+    { value: ActivityType.PHONE, label: t('activity.type.phone') },
+    { value: ActivityType.VISIT, label: t('activity.type.visit') },
+    { value: ActivityType.EMAIL, label: t('activity.type.email') },
+    { value: ActivityType.WECHAT, label: t('activity.type.wechat') },
+    { value: ActivityType.MEETING, label: t('activity.type.meeting') },
+    { value: ActivityType.OTHER, label: t('activity.type.other') }
   ];
 
   // 对象类型选项
   const objectTypeOptions = [
-    { value: RelatedObjectType.CUSTOMER, label: '客户' },
-    { value: RelatedObjectType.CONTACT, label: '联系人' },
-    { value: RelatedObjectType.OPPORTUNITY, label: '商机' },
-    { value: RelatedObjectType.LEAD, label: '线索' }
+    { value: RelatedObjectType.CUSTOMER, label: t('activity.relatedObjectType.customer') },
+    { value: RelatedObjectType.CONTACT, label: t('activity.relatedObjectType.contact') },
+    { value: RelatedObjectType.OPPORTUNITY, label: t('activity.relatedObjectType.opportunity') },
+    { value: RelatedObjectType.LEAD, label: t('activity.relatedObjectType.lead') }
   ];
 
   // 跟进方式选项
   const methodOptions = [
-    { value: '呼入', label: '呼入' },
-    { value: '呼出', label: '呼出' },
-    { value: '上门', label: '上门' },
-    { value: '在线', label: '在线' }
+    { value: '呼入', label: t('activity.method.inbound') },
+    { value: '呼出', label: t('activity.method.outbound') },
+    { value: '上门', label: t('activity.method.onSite') },
+    { value: '在线', label: t('activity.method.online') }
   ];
 
   // 跟进结果选项
   const resultOptions = [
-    { value: '有进展', label: '有进展' },
-    { value: '无进展', label: '无进展' },
-    { value: '需跟进', label: '需跟进' }
+    { value: '有进展', label: t('activity.result.progress') },
+    { value: '无进展', label: t('activity.result.noProgress') },
+    { value: '需跟进', label: t('activity.result.needFollowUp') }
   ];
 
   // 意向度选项
   const interestOptions = [
-    { value: '高', label: '高' },
-    { value: '中', label: '中' },
-    { value: '低', label: '低' }
+    { value: '高', label: t('activity.interestLevel.high') },
+    { value: '中', label: t('activity.interestLevel.medium') },
+    { value: '低', label: t('activity.interestLevel.low') }
   ];
 
   // 附件上传配置
@@ -121,11 +123,11 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       const isImage = file.type.startsWith('image/');
       const isLt5M = file.size / 1024 / 1024 < 5;
       if (!isImage) {
-        message.error('只能上传图片文件！');
+        message.error(t('activity.form.uploadImageOnly'));
         return false;
       }
       if (!isLt5M) {
-        message.error('图片大小不能超过 5MB！');
+        message.error(t('activity.form.uploadSizeLimit'));
         return false;
       }
       return true;
@@ -138,9 +140,9 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         {/* 头部 */}
         <Space style={{ marginBottom: 24 }}>
           <Button onClick={handleCancel} icon={<ArrowLeftOutlined />}>
-            返回
+            {t('activity.form.back')}
           </Button>
-          <Title level={3} style={{ margin: 0 }}>新建跟进记录</Title>
+          <Title level={3} style={{ margin: 0 }}>{t('activity.form.createTitle')}</Title>
         </Space>
 
         <Form
@@ -149,15 +151,15 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           style={{ maxWidth: 800 }}
         >
           {/* 基本信息 */}
-          <Title level={5}>基本信息</Title>
+          <Title level={5}>{t('activity.form.basicInfo')}</Title>
           <Divider style={{ margin: '12px 0' }} />
 
           <Form.Item
             name="relatedObjectType"
-            label="跟进对象类型"
-            rules={[{ required: true, message: '请选择跟进对象类型' }]}
+            label={t('activity.form.relatedObjectType')}
+            rules={[{ required: true, message: t('activity.form.relatedObjectTypeRequired') }]}
           >
-            <Select placeholder="请选择">
+            <Select placeholder={t('activity.form.typePlaceholder')}>
               {objectTypeOptions.map(option => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
@@ -168,11 +170,11 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <Form.Item
             name="relatedObjectId"
-            label="跟进对象"
-            rules={[{ required: true, message: '请选择跟进对象' }]}
-            extra="选择要关联的客户、联系人、商机或线索"
+            label={t('activity.form.relatedObject')}
+            rules={[{ required: true, message: t('activity.form.relatedObjectRequired') }]}
+            extra={t('activity.form.relatedObjectExtra')}
           >
-            <Select placeholder="请先选择对象类型" showSearch>
+            <Select placeholder={t('activity.form.relatedObjectSelectPlaceholder')} showSearch>
               {/* 这里应该根据 selectedType 动态加载选项 */}
               <Option value="OPP20260312001">某某科技有限公司 CRM 系统采购项目</Option>
               <Option value="CUST001">某某科技有限公司</Option>
@@ -182,10 +184,10 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <Form.Item
             name="type"
-            label="跟进类型"
-            rules={[{ required: true, message: '请选择跟进类型' }]}
+            label={t('activity.form.type')}
+            rules={[{ required: true, message: t('activity.form.typeRequired') }]}
           >
-            <Select placeholder="请选择">
+            <Select placeholder={t('activity.form.typePlaceholder')}>
               {activityTypeOptions.map(option => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
@@ -196,32 +198,32 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <Form.Item
             name="subject"
-            label="跟进主题"
-            rules={[{ required: true, message: '请输入跟进主题' }]}
+            label={t('activity.form.subject')}
+            rules={[{ required: true, message: t('activity.form.subjectRequired') }]}
           >
-            <Input placeholder="例如：沟通 CRM 需求细节" maxLength={100} showCount />
+            <Input placeholder={t('activity.form.subjectPlaceholder')} maxLength={100} showCount />
           </Form.Item>
 
           {/* 跟进内容 */}
-          <Title level={5}>跟进内容</Title>
+          <Title level={5}>{t('activity.form.activityContent')}</Title>
           <Divider style={{ margin: '12px 0' }} />
 
           <Form.Item
             name="content"
-            label="跟进内容"
-            rules={[{ required: true, message: '请输入跟进内容' }]}
+            label={t('activity.form.content')}
+            rules={[{ required: true, message: t('activity.form.contentRequired') }]}
           >
-            <RichTextEditor value={content} onChange={setContent} />
+            <RichTextEditor value={content} onChange={setContent} t={t} />
           </Form.Item>
 
           {/* 跟进详情 */}
-          <Title level={5}>跟进详情</Title>
+          <Title level={5}>{t('activity.form.activityDetails')}</Title>
           <Divider style={{ margin: '12px 0' }} />
 
           <Form.Item
             name="activityTime"
-            label="跟进时间"
-            rules={[{ required: true, message: '请选择跟进时间' }]}
+            label={t('activity.form.activityTime')}
+            rules={[{ required: true, message: t('activity.form.activityTimeRequired') }]}
             initialValue={dayjs()}
           >
             <DatePicker showTime style={{ width: '100%' }} />
@@ -229,9 +231,9 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <Form.Item
             name="method"
-            label="跟进方式"
+            label={t('activity.form.method')}
           >
-            <Select placeholder="请选择" allowClear>
+            <Select placeholder={t('activity.form.methodPlaceholder')} allowClear>
               {methodOptions.map(option => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
@@ -242,30 +244,30 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <Form.Item
             name="duration"
-            label="跟进时长（分钟）"
+            label={t('activity.form.duration')}
           >
-            <Input type="number" placeholder="例如：30" min={1} max={1440} />
+            <Input type="number" placeholder={t('activity.form.durationPlaceholder')} min={1} max={1440} />
           </Form.Item>
 
           <Form.Item
             name="nextFollowupTime"
-            label="下次跟进时间"
+            label={t('activity.form.nextFollowUpTime')}
           >
             <DatePicker showTime style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
             name="nextFollowupContent"
-            label="下次跟进内容"
+            label={t('activity.form.nextFollowupContent')}
           >
-            <Input placeholder="例如：发送方案书" maxLength={200} />
+            <Input placeholder={t('activity.form.nextFollowupContentPlaceholder')} maxLength={200} />
           </Form.Item>
 
           <Form.Item
             name="result"
-            label="跟进结果"
+            label={t('activity.form.result')}
           >
-            <Select placeholder="请选择" allowClear>
+            <Select placeholder={t('activity.form.resultPlaceholder')} allowClear>
               {resultOptions.map(option => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
@@ -276,9 +278,9 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <Form.Item
             name="interestLevel"
-            label="客户意向度"
+            label={t('activity.form.interestLevel')}
           >
-            <Select placeholder="请选择" allowClear>
+            <Select placeholder={t('activity.form.interestLevelPlaceholder')} allowClear>
               {interestOptions.map(option => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
@@ -288,15 +290,15 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           </Form.Item>
 
           {/* 附件上传 */}
-          <Title level={5}>附件</Title>
+          <Title level={5}>{t('activity.form.attachments')}</Title>
           <Divider style={{ margin: '12px 0' }} />
 
-          <Form.Item label="上传图片/文件">
+          <Form.Item label={t('activity.form.uploadImages')}>
             <Upload {...uploadProps}>
-              <Button icon={<UploadOutlined />}>点击上传</Button>
+              <Button icon={<UploadOutlined />}>{t('activity.form.uploadButton')}</Button>
             </Upload>
             <div style={{ marginTop: 8, fontSize: 12, color: '#999' }}>
-              支持图片格式，单个文件不超过 5MB，最多上传 10 个文件
+              {t('activity.form.uploadHint')}
             </div>
           </Form.Item>
 
@@ -305,10 +307,10 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           <Form.Item>
             <Space>
               <Button type="primary" onClick={handleSubmit} loading={loading}>
-                提交
+                {t('activity.form.submit')}
               </Button>
               <Button onClick={handleCancel}>
-                取消
+                {t('activity.form.cancel')}
               </Button>
             </Space>
           </Form.Item>

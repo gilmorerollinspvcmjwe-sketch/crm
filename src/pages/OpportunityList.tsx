@@ -14,6 +14,7 @@ import {
   BarChartOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Opportunity, OpportunityStage, OpportunityFilter } from '../types/opportunity';
 import { opportunityData, generateSalesFunnelStats, filterOpportunities } from '../mock/opportunityData';
 import { OpportunityTable } from '../components/Opportunity/OpportunityTable';
@@ -27,12 +28,6 @@ import type { ColumnsType } from 'antd/es/table';
 
 const { Text, Title } = Typography;
 
-/** 阶段选项 */
-const stageOptions = Object.values(OpportunityStage).map(stage => ({
-  value: stage,
-  label: stage,
-}));
-
 /** 阶段颜色 */
 const stageColors: Record<string, string> = {
   [OpportunityStage.LEAD_CONFIRMATION]: '#1890ff',
@@ -44,21 +39,22 @@ const stageColors: Record<string, string> = {
   [OpportunityStage.CLOSED_LOST]: '#ff4d4f',
 };
 
-/** 阶段显示名称 */
-const stageDisplayNames: Record<string, string> = {
-  [OpportunityStage.LEAD_CONFIRMATION]: '线索确认',
-  [OpportunityStage.INITIAL_CONTACT]: '初步接触',
-  [OpportunityStage.REQUIREMENT_CONFIRMATION]: '需求确认',
-  [OpportunityStage.PROPOSAL_QUOTATION]: '方案报价',
-  [OpportunityStage.NEGOTIATION_APPROVAL]: '谈判审批',
-  [OpportunityStage.CLOSED_WON]: '赢单',
-  [OpportunityStage.CLOSED_LOST]: '输单',
-};
+/** 获取阶段显示名称 */
+const getStageDisplayNames = (t: (key: string) => string): Record<string, string> => ({
+  [OpportunityStage.LEAD_CONFIRMATION]: t('opportunity.stage.leadConfirmation'),
+  [OpportunityStage.INITIAL_CONTACT]: t('opportunity.stage.initialContact'),
+  [OpportunityStage.REQUIREMENT_CONFIRMATION]: t('opportunity.stage.requirementConfirmation'),
+  [OpportunityStage.PROPOSAL_QUOTATION]: t('opportunity.stage.proposalQuotation'),
+  [OpportunityStage.NEGOTIATION_APPROVAL]: t('opportunity.stage.negotiationApproval'),
+  [OpportunityStage.CLOSED_WON]: t('opportunity.stage.closedWon'),
+  [OpportunityStage.CLOSED_LOST]: t('opportunity.stage.closedLost'),
+});
 
 /**
  * 商机列表页组件
  */
 export const OpportunityList: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<OpportunityFilter>({});
@@ -68,6 +64,12 @@ export const OpportunityList: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null);
   const [form] = Form.useForm();
+
+  const stageDisplayNames = getStageDisplayNames(t);
+  const stageOptions = Object.values(OpportunityStage).map(stage => ({
+    value: stage,
+    label: stageDisplayNames[stage],
+  }));
 
   // 筛选后的商机数据
   const filteredData = useMemo(() => {
@@ -136,13 +138,13 @@ export const OpportunityList: React.FC = () => {
   // 处理删除
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除该商机吗？删除后无法恢复。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t('opportunity.list.confirmDelete'),
+      content: t('opportunity.list.confirmDeleteContent'),
+      okText: t('opportunity.form.confirm'),
+      cancelText: t('opportunity.form.cancel'),
       okType: 'danger',
       onOk: () => {
-        message.success('删除商机成功');
+        message.success(t('opportunity.list.deleteSuccess'));
       },
     });
   };
@@ -154,7 +156,7 @@ export const OpportunityList: React.FC = () => {
 
   // 处理卡片移动（看板）
   const handleCardMove = (cardId: string, fromColumn: string, toColumn: string) => {
-    message.success(`商机已从「${stageDisplayNames[fromColumn]}」移动到「${stageDisplayNames[toColumn]}」`);
+    message.success(t('opportunity.list.moveSuccess', { from: stageDisplayNames[fromColumn], to: stageDisplayNames[toColumn] }));
   };
 
   // 处理新建商机
@@ -166,14 +168,14 @@ export const OpportunityList: React.FC = () => {
   // 处理新建提交
   const handleCreateSubmit = (values: any) => {
     console.log('新建商机:', values);
-    message.success('新建商机成功');
+    message.success(t('opportunity.list.createSuccess'));
     setCreateModalVisible(false);
   };
 
   // 处理编辑提交
   const handleEditSubmit = (values: any) => {
     console.log('编辑商机:', values);
-    message.success('编辑商机成功');
+    message.success(t('opportunity.list.editSuccess'));
     setEditModalVisible(false);
     setEditingOpportunity(null);
   };
@@ -181,35 +183,35 @@ export const OpportunityList: React.FC = () => {
   // 处理阶段点击（从漏斗图）
   const handleStageClick = (stage: OpportunityStage) => {
     setFilter({ ...filter, stage });
-    message.info(`已筛选阶段：${stageDisplayNames[stage]}`);
+    message.info(t('opportunity.list.filterStage', { stage: stageDisplayNames[stage] }));
   };
 
   // 筛选字段配置
   const filterFields: FilterItem[] = [
     {
       name: 'name',
-      label: '商机名称',
+      label: t('opportunity.filter.name'),
       type: 'text',
-      placeholder: '请输入商机名称',
+      placeholder: t('opportunity.filter.namePlaceholder'),
     },
     {
       name: 'customerName',
-      label: '客户',
+      label: t('opportunity.filter.customer'),
       type: 'text',
-      placeholder: '请输入客户名称',
+      placeholder: t('opportunity.filter.customerPlaceholder'),
     },
     {
       name: 'stage',
-      label: '阶段',
+      label: t('opportunity.filter.stage'),
       type: 'select',
-      placeholder: '请选择阶段',
+      placeholder: t('opportunity.filter.stagePlaceholder'),
       options: stageOptions,
     },
     {
       name: 'ownerName',
-      label: '负责人',
+      label: t('opportunity.filter.owner'),
       type: 'select',
-      placeholder: '请选择负责人',
+      placeholder: t('opportunity.filter.ownerPlaceholder'),
       options: Array.from(new Set(opportunityData.map(item => item.ownerName))).map(name => ({
         label: name,
         value: name,
@@ -220,7 +222,7 @@ export const OpportunityList: React.FC = () => {
   // 表格列配置
   const columns: ColumnsType<Opportunity> = [
     {
-      title: '商机名称',
+      title: t('opportunity.table.name'),
       dataIndex: 'name',
       key: 'name',
       width: 180,
@@ -230,25 +232,25 @@ export const OpportunityList: React.FC = () => {
       ),
     },
     {
-      title: '客户',
+      title: t('opportunity.table.customer'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 150,
     },
     {
-      title: '金额',
+      title: t('opportunity.table.amount'),
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
       render: (amount: number) => (
         <Text strong style={{ color: colors.primary }}>
-          ¥{(amount / 10000).toFixed(0)}万
+          ¥{(amount / 10000).toFixed(0)}{t('opportunity.table.tenThousand')}
         </Text>
       ),
       sorter: (a, b) => a.amount - b.amount,
     },
     {
-      title: '阶段',
+      title: t('opportunity.table.stage'),
       dataIndex: 'stage',
       key: 'stage',
       width: 100,
@@ -259,42 +261,42 @@ export const OpportunityList: React.FC = () => {
       ),
     },
     {
-      title: '概率',
+      title: t('opportunity.table.probability'),
       dataIndex: 'probability',
       key: 'probability',
       width: 70,
       render: (prob: number) => `${prob}%`,
     },
     {
-      title: '预计成交',
+      title: t('opportunity.table.closeDate'),
       dataIndex: 'closeDate',
       key: 'closeDate',
       width: 100,
     },
     {
-      title: '负责人',
+      title: t('opportunity.table.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 90,
     },
     {
-      title: '创建时间',
+      title: t('opportunity.table.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 140,
     },
     {
-      title: '操作',
+      title: t('opportunity.table.actions'),
       key: 'action',
       width: 100,
       fixed: 'right',
       render: (_, record) => (
         <Space size="small">
           <Button type="link" size="small" onClick={() => handleViewDetail(record.id)}>
-            详情
+            {t('opportunity.table.viewDetail')}
           </Button>
           <Button type="link" size="small" onClick={() => handleEdit(record)}>
-            编辑
+            {t('opportunity.table.edit')}
           </Button>
         </Space>
       ),
@@ -318,9 +320,9 @@ export const OpportunityList: React.FC = () => {
         marginBottom: 16,
       }}>
         <div>
-          <Title level={4} style={{ margin: 0 }}>商机管理</Title>
+          <Title level={4} style={{ margin: 0 }}>{t('opportunity.list.title')}</Title>
           <Text type="secondary" style={{ marginLeft: 8 }}>
-            共 {stats.total} 个商机 · 预计总金额 ¥{(stats.totalAmount / 10000).toFixed(0)}万
+            {t('opportunity.list.totalOpportunities', { count: stats.total })} · {t('opportunity.list.totalAmount', { amount: (stats.totalAmount / 10000).toFixed(0) })}
           </Text>
         </div>
         <Space>
@@ -328,18 +330,18 @@ export const OpportunityList: React.FC = () => {
             icon={<BarChartOutlined />}
             onClick={() => setShowFunnel(!showFunnel)}
           >
-            {showFunnel ? '隐藏漏斗' : '显示漏斗'}
+            {showFunnel ? t('opportunity.list.hideFunnel') : t('opportunity.list.showFunnel')}
           </Button>
           <Segmented
             value={viewMode}
             onChange={(value) => setViewMode(value as 'list' | 'kanban')}
             options={[
-              { value: 'list', icon: <UnorderedListOutlined />, label: '列表' },
-              { value: 'kanban', icon: <AppstoreOutlined />, label: '看板' },
+              { value: 'list', icon: <UnorderedListOutlined />, label: t('opportunity.list.createView') },
+              { value: 'kanban', icon: <AppstoreOutlined />, label: t('opportunity.list.kanbanView') },
             ]}
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建商机
+            {t('opportunity.list.createOpportunity')}
           </Button>
         </Space>
       </div>
@@ -398,12 +400,12 @@ export const OpportunityList: React.FC = () => {
 
       {/* 新建商机弹窗 */}
       <Modal
-        title="新建商机"
+        title={t('opportunity.form.createTitle')}
         open={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('opportunity.form.confirm')}
+        cancelText={t('opportunity.form.cancel')}
         width={600}
         destroyOnClose
       >
@@ -416,79 +418,79 @@ export const OpportunityList: React.FC = () => {
             probability: 50,
           }}
         >
-          <Form.Item name="name" label="商机名称" rules={[{ required: true }]}>
-            <Input placeholder="请输入商机名称" />
+          <Form.Item name="name" label={t('opportunity.form.name')} rules={[{ required: true }]}>
+            <Input placeholder={t('opportunity.form.namePlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerName" label="所属客户">
-            <Input placeholder="请输入客户名称" />
+          <Form.Item name="customerName" label={t('opportunity.form.customer')}>
+            <Input placeholder={t('opportunity.form.customerPlaceholder')} />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="amount" label="商机金额 (元)" rules={[{ required: true }]}>
-                <InputNumber style={{ width: '100%' }} min={0} placeholder="请输入金额" />
+              <Form.Item name="amount" label={t('opportunity.form.amount')} rules={[{ required: true }]}>
+                <InputNumber style={{ width: '100%' }} min={0} placeholder={t('opportunity.form.amountPlaceholder')} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="probability" label="成交概率 (%)">
-                <InputNumber style={{ width: '100%' }} min={0} max={100} placeholder="请输入概率" />
+              <Form.Item name="probability" label={t('opportunity.form.probability')}>
+                <InputNumber style={{ width: '100%' }} min={0} max={100} placeholder={t('opportunity.form.probabilityPlaceholder')} />
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="stage" label="商机阶段" rules={[{ required: true }]}>
-            <Select placeholder="请选择商机阶段">
+          <Form.Item name="stage" label={t('opportunity.form.stage')} rules={[{ required: true }]}>
+            <Select placeholder={t('opportunity.form.stagePlaceholder')}>
               {Object.entries(stageDisplayNames).map(([key, name]) => (
                 <Select.Option key={key} value={key}>{name}</Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('opportunity.form.remark')}>
+            <Input.TextArea rows={3} placeholder={t('opportunity.form.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
 
       {/* 编辑商机弹窗 */}
       <Modal
-        title="编辑商机"
+        title={t('opportunity.form.editTitle')}
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
           setEditingOpportunity(null);
         }}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('opportunity.form.confirm')}
+        cancelText={t('opportunity.form.cancel')}
         width={600}
         destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
-          <Form.Item name="name" label="商机名称" rules={[{ required: true }]}>
-            <Input placeholder="请输入商机名称" />
+          <Form.Item name="name" label={t('opportunity.form.name')} rules={[{ required: true }]}>
+            <Input placeholder={t('opportunity.form.namePlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerName" label="所属客户">
-            <Input placeholder="请输入客户名称" />
+          <Form.Item name="customerName" label={t('opportunity.form.customer')}>
+            <Input placeholder={t('opportunity.form.customerPlaceholder')} />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="amount" label="商机金额 (元)">
+              <Form.Item name="amount" label={t('opportunity.form.amount')}>
                 <InputNumber style={{ width: '100%' }} min={0} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="probability" label="成交概率 (%)">
+              <Form.Item name="probability" label={t('opportunity.form.probability')}>
                 <InputNumber style={{ width: '100%' }} min={0} max={100} />
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="stage" label="商机阶段">
-            <Select placeholder="请选择商机阶段">
+          <Form.Item name="stage" label={t('opportunity.form.stage')}>
+            <Select placeholder={t('opportunity.form.stagePlaceholder')}>
               {Object.entries(stageDisplayNames).map(([key, name]) => (
                 <Select.Option key={key} value={key}>{name}</Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('opportunity.form.remark')}>
+            <Input.TextArea rows={3} placeholder={t('opportunity.form.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>

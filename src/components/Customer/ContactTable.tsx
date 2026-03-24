@@ -5,6 +5,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { Contact, Gender, DecisionRole } from '../../types/contact';
 
@@ -55,10 +56,12 @@ export const ContactTable: React.FC<ContactTableProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { t } = useTranslation();
+
   /** 表格列配置 */
   const columns: ColumnsType<Contact> = [
     {
-      title: '姓名',
+      title: t('contact.table.name'),
       dataIndex: 'name',
       key: 'name',
       width: 120,
@@ -70,26 +73,26 @@ export const ContactTable: React.FC<ContactTableProps> = ({
       ),
     },
     {
-      title: '职位',
+      title: t('contact.table.position'),
       dataIndex: 'position',
       key: 'position',
       width: 120,
     },
     {
-      title: '职级',
+      title: t('contact.table.jobLevel'),
       dataIndex: 'jobLevel',
       key: 'jobLevel',
       width: 80,
       filters: [
-        { text: '高管', value: '高管' },
-        { text: '中层', value: '中层' },
-        { text: '基层', value: '基层' },
-        { text: '其他', value: '其他' },
+        { text: t('contact.jobLevel.executive'), value: '高管' },
+        { text: t('contact.jobLevel.middle'), value: '中层' },
+        { text: t('contact.jobLevel.junior'), value: '基层' },
+        { text: t('contact.jobLevel.other'), value: '其他' },
       ],
       onFilter: (value, record) => record.jobLevel === value,
     },
     {
-      title: '决策角色',
+      title: t('contact.table.decisionRole'),
       dataIndex: 'decisionRole',
       key: 'decisionRole',
       width: 100,
@@ -98,46 +101,46 @@ export const ContactTable: React.FC<ContactTableProps> = ({
       ),
     },
     {
-      title: '所属客户',
+      title: t('contact.table.customerName'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 200,
       ellipsis: true,
     },
     {
-      title: '手机',
+      title: t('contact.table.mobile'),
       dataIndex: 'mobile',
       key: 'mobile',
       width: 130,
     },
     {
-      title: '邮箱',
+      title: t('contact.table.email'),
       dataIndex: 'email',
       key: 'email',
       width: 180,
       ellipsis: true,
     },
     {
-      title: '微信',
+      title: t('contact.table.wechat'),
       dataIndex: 'wechat',
       key: 'wechat',
       width: 120,
     },
     {
-      title: '负责人',
+      title: t('contact.table.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '创建时间',
+      title: t('contact.table.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
       sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
     {
-      title: '操作',
+      title: t('contact.table.actions'),
       key: 'action',
       width: 150,
       fixed: 'right',
@@ -148,7 +151,7 @@ export const ContactTable: React.FC<ContactTableProps> = ({
             size="small"
             onClick={() => onViewDetail(record.id)}
           >
-            详情
+            {t('contact.table.viewDetail')}
           </Button>
           {onEdit && (
             <Button
@@ -157,15 +160,15 @@ export const ContactTable: React.FC<ContactTableProps> = ({
               icon={<EditOutlined />}
               onClick={() => onEdit(record.id)}
             >
-              编辑
+              {t('contact.table.edit')}
             </Button>
           )}
           {onDelete && (
             <Popconfirm
-              title="确定要删除该联系人吗？"
+              title={t('contact.table.confirmDelete')}
               onConfirm={() => onDelete(record.id)}
-              okText="确定"
-              cancelText="取消"
+              okText={t('commonBatch.confirm')}
+              cancelText={t('commonBatch.cancel')}
             >
               <Button
                 type="link"
@@ -173,7 +176,7 @@ export const ContactTable: React.FC<ContactTableProps> = ({
                 danger
                 icon={<DeleteOutlined />}
               >
-                删除
+                {t('contact.table.delete')}
               </Button>
             </Popconfirm>
           )}

@@ -5,6 +5,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Input, Select, InputNumber, Switch, Divider, Button, Space, message, Spin, Card } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { Product, ProductCategory } from '../../types/cpq';
 import { getProductById, createProduct, updateProduct } from '../../services/productService';
 
@@ -32,6 +33,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   isEdit = false,
   standalone = false,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   const [form] = Form.useForm();
@@ -52,7 +54,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             });
           }
         } catch (error) {
-          message.error('加载产品数据失败');
+          message.error(t('product.form.loadFailed'));
         } finally {
           setInitialLoading(false);
         }
@@ -78,20 +80,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         try {
           if (isEdit && params.id) {
             await updateProduct(params.id, values);
-            message.success('产品更新成功');
+            message.success(t('product.form.updateSuccess'));
           } else {
             await createProduct(values);
-            message.success('产品创建成功');
+            message.success(t('product.form.createSuccess'));
           }
           navigate('/products/list');
         } catch (error) {
-          message.error(isEdit ? '更新产品失败' : '创建产品失败');
+          message.error(isEdit ? t('product.form.updateFailed') : t('product.form.createFailed'));
         } finally {
           setInternalLoading(false);
         }
       }
     } catch (error) {
-      console.error('表单验证失败:', error);
+      console.error(t('product.form.validationFailed'), error);
     }
   };
 
@@ -114,140 +116,140 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           ...initialValues,
         }}
       >
-        <Divider orientation="left" orientationMargin="0">基本信息</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('product.form.basicInfo')}</Divider>
 
         <Form.Item
           name="name"
-          label="产品名称"
-          rules={[{ required: true, message: '请输入产品名称' }]}
+          label={t('product.form.name')}
+          rules={[{ required: true, message: t('product.form.nameRequired') }]}
         >
-          <Input placeholder="请输入产品名称" disabled={isEdit} />
+          <Input placeholder={t('product.form.namePlaceholder')} disabled={isEdit} />
         </Form.Item>
 
         <Form.Item
           name="sku"
-          label="产品编码"
+          label={t('product.form.sku')}
           rules={[
-            { required: true, message: '请输入产品编码' },
-            { pattern: /^[A-Z0-9-]+$/, message: '只能包含大写字母、数字和短横线' },
+            { required: true, message: t('product.form.skuRequired') },
+            { pattern: /^[A-Z0-9-]+$/, message: t('product.form.skuPatternError') },
           ]}
         >
-          <Input placeholder="例如：CRM-ENT-001" disabled={isEdit} />
+          <Input placeholder={t('product.form.skuPlaceholder')} disabled={isEdit} />
         </Form.Item>
 
         <Form.Item
           name="category"
-          label="产品分类"
-          rules={[{ required: true, message: '请选择产品分类' }]}
+          label={t('product.form.category')}
+          rules={[{ required: true, message: t('product.form.categoryRequired') }]}
         >
-          <Select placeholder="请选择产品分类" disabled={isEdit}>
-            <Option value={ProductCategory.SOFTWARE}>软件</Option>
-            <Option value={ProductCategory.HARDWARE}>硬件</Option>
-            <Option value={ProductCategory.SERVICE}>服务</Option>
-            <Option value={ProductCategory.TRAINING}>培训</Option>
-            <Option value={ProductCategory.MAINTENANCE}>维护</Option>
+          <Select placeholder={t('product.form.categoryPlaceholder')} disabled={isEdit}>
+            <Option value={ProductCategory.SOFTWARE}>{t('product.category.software')}</Option>
+            <Option value={ProductCategory.HARDWARE}>{t('product.category.hardware')}</Option>
+            <Option value={ProductCategory.SERVICE}>{t('product.category.service')}</Option>
+            <Option value={ProductCategory.TRAINING}>{t('product.category.training')}</Option>
+            <Option value={ProductCategory.MAINTENANCE}>{t('product.category.maintenance')}</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item name="description" label="产品描述">
-          <TextArea rows={3} placeholder="请输入产品描述" />
+        <Form.Item name="description" label={t('product.form.description')}>
+          <TextArea rows={3} placeholder={t('product.form.descriptionPlaceholder')} />
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin="0">规格参数</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('product.form.specs')}</Divider>
 
-        <Form.Item name="specification" label="规格">
-          <Input placeholder="例如：企业版/专业版/标准版" />
+        <Form.Item name="specification" label={t('product.form.specification')}>
+          <Input placeholder={t('product.form.specificationPlaceholder')} />
         </Form.Item>
 
-        <Form.Item name="model" label="型号">
-          <Input placeholder="例如：V2026.1" />
+        <Form.Item name="model" label={t('product.form.model')}>
+          <Input placeholder={t('product.form.modelPlaceholder')} />
         </Form.Item>
 
         <Form.Item
           name="unit"
-          label="单位"
-          rules={[{ required: true, message: '请选择单位' }]}
+          label={t('product.form.unit')}
+          rules={[{ required: true, message: t('product.form.unitRequired') }]}
         >
-          <Select placeholder="请选择单位">
-            <Option value="套">套</Option>
-            <Option value="台">台</Option>
-            <Option value="个">个</Option>
-            <Option value="项目">项目</Option>
-            <Option value="人天">人天</Option>
-            <Option value="场">场</Option>
-            <Option value="账号">账号</Option>
-            <Option value="人次">人次</Option>
-            <Option value="年">年</Option>
-            <Option value="次">次</Option>
+          <Select placeholder={t('product.form.unitPlaceholder')}>
+            <Option value="套">{t('product.unit.set')}</Option>
+            <Option value="台">{t('product.unit.device')}</Option>
+            <Option value="个">{t('product.unit.piece')}</Option>
+            <Option value="项目">{t('product.unit.project')}</Option>
+            <Option value="人天">{t('product.unit.manDay')}</Option>
+            <Option value="场">{t('product.unit.session')}</Option>
+            <Option value="账号">{t('product.unit.account')}</Option>
+            <Option value="人次">{t('product.unit.personTime')}</Option>
+            <Option value="年">{t('product.unit.year')}</Option>
+            <Option value="次">{t('product.unit.time')}</Option>
           </Select>
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin="0">价格信息</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('product.form.priceInfo')}</Divider>
 
         <Form.Item
           name="unitPrice"
-          label="标准价格"
-          rules={[{ required: true, message: '请输入标准价格' }]}
+          label={t('product.form.unitPrice')}
+          rules={[{ required: true, message: t('product.form.unitPriceRequired') }]}
         >
           <InputNumber
             style={{ width: '100%' }}
-            placeholder="请输入标准价格"
+            placeholder={t('product.form.unitPricePlaceholder')}
             min={0}
             precision={2}
             prefix="¥"
           />
         </Form.Item>
 
-        <Form.Item name="costPrice" label="成本价">
+        <Form.Item name="costPrice" label={t('product.form.costPrice')}>
           <InputNumber
             style={{ width: '100%' }}
-            placeholder="请输入成本价"
+            placeholder={t('product.form.costPricePlaceholder')}
             min={0}
             precision={2}
             prefix="¥"
           />
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin="0">库存信息</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('product.form.stockInfo')}</Divider>
 
-        <Form.Item name="stockQuantity" label="库存数量">
+        <Form.Item name="stockQuantity" label={t('product.form.stockQuantity')}>
           <InputNumber
             style={{ width: '100%' }}
-            placeholder="请输入库存数量"
+            placeholder={t('product.form.stockQuantityPlaceholder')}
             min={0}
           />
         </Form.Item>
 
-        <Form.Item name="stockWarning" label="库存预警阈值">
+        <Form.Item name="stockWarning" label={t('product.form.stockWarning')}>
           <InputNumber
             style={{ width: '100%' }}
-            placeholder="库存低于此值时发出预警"
+            placeholder={t('product.form.stockWarningPlaceholder')}
             min={0}
           />
         </Form.Item>
 
-        <Form.Item name="inStock" label="库存状态" valuePropName="checked">
-          <Switch checkedChildren="有货" unCheckedChildren="缺货" />
+        <Form.Item name="inStock" label={t('product.form.stockStatus')} valuePropName="checked">
+          <Switch checkedChildren={t('product.stock.inStock')} unCheckedChildren={t('product.stock.outOfStock')} />
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin="0">销售状态</Divider>
+        <Divider orientation="left" orientationMargin="0">{t('product.form.salesStatus')}</Divider>
 
         <Form.Item
           name="status"
-          label="上架状态"
+          label={t('product.form.listingStatus')}
           valuePropName="checked"
           rules={[{ required: true }]}
         >
-          <Switch checkedChildren="上架" unCheckedChildren="下架" />
+          <Switch checkedChildren={t('product.status.onShelf')} unCheckedChildren={t('product.status.offShelf')} />
         </Form.Item>
       </Form>
 
       <Divider />
 
       <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button onClick={handleCancel}>取消</Button>
+        <Button onClick={handleCancel}>{t('common.cancel')}</Button>
         <Button type="primary" onClick={handleSubmit} loading={loading || internalLoading}>
-          {isEdit ? '保存' : '创建'}
+          {isEdit ? t('common.save') : t('common.create')}
         </Button>
       </Space>
     </>

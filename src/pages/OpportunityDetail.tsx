@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Tag, Space, Button, Typography, Timeline, Divider, Modal, message, Table, Tabs, Progress, Steps } from 'antd';
 import { ArrowLeftOutlined, EditOutlined, ThunderboltOutlined, DeleteOutlined, PlusOutlined, TrophyOutlined, BulbOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Opportunity, OpportunityStage, Competitor } from '../types/opportunity';
 import { opportunityData } from '../mock/opportunityData';
 import { activityData } from '../mock/activityData';
@@ -9,38 +10,6 @@ import { ActivityType } from '../types/activity';
 
 const { Title, Text, Paragraph } = Typography;
 // Descriptions.Meta 在较新版本的 antd 中已移除，使用 Descriptions.Item 替代
-
-// 阶段颜色配置
-const STAGE_COLORS: Record<OpportunityStage, string> = {
-  [OpportunityStage.LEAD_CONFIRMATION]: 'default',
-  [OpportunityStage.INITIAL_CONTACT]: 'blue',
-  [OpportunityStage.REQUIREMENT_CONFIRMATION]: 'cyan',
-  [OpportunityStage.PROPOSAL_QUOTATION]: 'geekblue',
-  [OpportunityStage.NEGOTIATION_APPROVAL]: 'orange',
-  [OpportunityStage.CLOSED_WON]: 'green',
-  [OpportunityStage.CLOSED_LOST]: 'red'
-};
-
-// 阶段顺序映射
-const STAGE_ORDER: OpportunityStage[] = [
-  OpportunityStage.LEAD_CONFIRMATION,
-  OpportunityStage.INITIAL_CONTACT,
-  OpportunityStage.REQUIREMENT_CONFIRMATION,
-  OpportunityStage.PROPOSAL_QUOTATION,
-  OpportunityStage.NEGOTIATION_APPROVAL,
-  OpportunityStage.CLOSED_WON,
-];
-
-// 阶段中文名称
-const STAGE_LABELS: Record<OpportunityStage, string> = {
-  [OpportunityStage.LEAD_CONFIRMATION]: '线索确认',
-  [OpportunityStage.INITIAL_CONTACT]: '初步接触',
-  [OpportunityStage.REQUIREMENT_CONFIRMATION]: '需求确认',
-  [OpportunityStage.PROPOSAL_QUOTATION]: '方案报价',
-  [OpportunityStage.NEGOTIATION_APPROVAL]: '谈判审批',
-  [OpportunityStage.CLOSED_WON]: '赢单',
-  [OpportunityStage.CLOSED_LOST]: '输单',
-};
 
 /**
  * 商机详情页
@@ -51,9 +20,42 @@ const STAGE_LABELS: Record<OpportunityStage, string> = {
  * - 操作按钮：编辑、变更阶段、删除
  */
 export const OpportunityDetail: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  // 阶段颜色配置
+  const STAGE_COLORS: Record<OpportunityStage, string> = {
+    [OpportunityStage.LEAD_CONFIRMATION]: 'default',
+    [OpportunityStage.INITIAL_CONTACT]: 'blue',
+    [OpportunityStage.REQUIREMENT_CONFIRMATION]: 'cyan',
+    [OpportunityStage.PROPOSAL_QUOTATION]: 'geekblue',
+    [OpportunityStage.NEGOTIATION_APPROVAL]: 'orange',
+    [OpportunityStage.CLOSED_WON]: 'green',
+    [OpportunityStage.CLOSED_LOST]: 'red'
+  };
+
+  // 阶段顺序映射
+  const STAGE_ORDER: OpportunityStage[] = [
+    OpportunityStage.LEAD_CONFIRMATION,
+    OpportunityStage.INITIAL_CONTACT,
+    OpportunityStage.REQUIREMENT_CONFIRMATION,
+    OpportunityStage.PROPOSAL_QUOTATION,
+    OpportunityStage.NEGOTIATION_APPROVAL,
+    OpportunityStage.CLOSED_WON,
+  ];
+
+  // 阶段中文名称
+  const STAGE_LABELS: Record<OpportunityStage, string> = {
+    [OpportunityStage.LEAD_CONFIRMATION]: t('opportunity.stage.leadConfirmation'),
+    [OpportunityStage.INITIAL_CONTACT]: t('opportunity.stage.initialContact'),
+    [OpportunityStage.REQUIREMENT_CONFIRMATION]: t('opportunity.stage.requirementConfirmation'),
+    [OpportunityStage.PROPOSAL_QUOTATION]: t('opportunity.stage.proposalQuotation'),
+    [OpportunityStage.NEGOTIATION_APPROVAL]: t('opportunity.stage.negotiationApproval'),
+    [OpportunityStage.CLOSED_WON]: t('opportunity.stage.closedWon'),
+    [OpportunityStage.CLOSED_LOST]: t('opportunity.stage.closedLost'),
+  };
 
   // 查找商机数据
   const opportunity = useMemo(() => {
@@ -68,7 +70,7 @@ export const OpportunityDetail: React.FC = () => {
 
   // 格式化金额
   const formatAmount = (amount: number) => {
-    return `¥${(amount / 10000).toFixed(1)}万`;
+    return `¥${(amount / 10000).toFixed(1)}${t('opportunity.table.tenThousand')}`;
   };
 
   // 格式化日期
@@ -83,25 +85,25 @@ export const OpportunityDetail: React.FC = () => {
 
   // 处理编辑
   const handleEdit = () => {
-    message.info(`编辑商机：${id}`);
+    message.info(`${t('opportunity.detail.editInfo')}：${id}`);
     // TODO: 打开编辑表单
   };
 
   // 处理变更阶段
   const handleChangeStage = () => {
-    message.info(`变更阶段：${id}`);
+    message.info(`${t('opportunity.detail.changeStageInfo')}：${id}`);
     // TODO: 打开阶段变更弹窗
   };
 
   // 处理删除
   const handleDelete = () => {
     Modal.confirm({
-      title: '确定要删除这个商机吗？',
-      content: '删除后无法恢复',
-      okText: '确定',
-      cancelText: '取消',
+      title: t('opportunity.detail.confirmDelete'),
+      content: t('opportunity.detail.confirmDeleteContent'),
+      okText: t('commonBatch.confirm'),
+      cancelText: t('commonBatch.cancel'),
       onOk: () => {
-        message.success('删除成功');
+        message.success(t('opportunity.detail.deleteSuccess'));
         // TODO: 调用删除 API
       }
     });
@@ -112,9 +114,9 @@ export const OpportunityDetail: React.FC = () => {
     return (
       <div style={{ padding: 24 }}>
         <Card>
-          <Title level={3}>商机不存在</Title>
+          <Title level={3}>{t('opportunity.detail.notFound')}</Title>
           <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-            返回
+            {t('opportunity.detail.back')}
           </Button>
         </Card>
       </div>
@@ -124,21 +126,21 @@ export const OpportunityDetail: React.FC = () => {
   // 跟进记录表格列
   const activityColumns = [
     {
-      title: '跟进时间',
+      title: t('activity.table.activityTime'),
       dataIndex: 'activityTime',
       key: 'activityTime',
       width: 160,
       render: (time: string) => new Date(time).toLocaleString('zh-CN')
     },
     {
-      title: '跟进类型',
+      title: t('activity.table.type'),
       dataIndex: 'type',
       key: 'type',
       width: 100,
       render: (type: ActivityType) => <Tag>{type}</Tag>
     },
     {
-      title: '跟进内容',
+      title: t('activity.table.content'),
       dataIndex: 'content',
       key: 'content',
       ellipsis: true,
@@ -148,7 +150,7 @@ export const OpportunityDetail: React.FC = () => {
       }
     },
     {
-      title: '跟进人',
+      title: t('activity.table.createdBy'),
       dataIndex: 'createdByName',
       key: 'createdByName',
       width: 100
@@ -173,7 +175,7 @@ export const OpportunityDetail: React.FC = () => {
         <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
           <Space>
             <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-              返回
+              {t('opportunity.detail.back')}
             </Button>
             <div>
               <Title level={3} style={{ margin: 0 }}>{opportunity.name}</Title>
@@ -182,13 +184,13 @@ export const OpportunityDetail: React.FC = () => {
           </Space>
           <Space>
             <Button icon={<EditOutlined />} onClick={handleEdit}>
-              编辑
+              {t('opportunity.detail.edit')}
             </Button>
             <Button icon={<ThunderboltOutlined />} onClick={handleChangeStage}>
-              变更阶段
+              {t('opportunity.detail.changeStage')}
             </Button>
             <Button danger icon={<DeleteOutlined />} onClick={handleDelete}>
-              删除
+              {t('opportunity.detail.delete')}
             </Button>
           </Space>
         </Space>
@@ -204,13 +206,13 @@ export const OpportunityDetail: React.FC = () => {
               </Tag>
             </div>
             <div style={{ color: '#666', fontSize: 14 }}>
-              <span>商机编号：{opportunity.id}</span>
+              <span>{t('opportunity.detail.opportunityId')}：{opportunity.id}</span>
               <span style={{ margin: '0 16px' }}>|</span>
-              <span>金额：<Text strong style={{ color: '#faad14' }}>{formatAmount(opportunity.amount)}</Text></span>
+              <span>{t('opportunity.detail.amount')}：<Text strong style={{ color: '#faad14' }}>{formatAmount(opportunity.amount)}</Text></span>
               <span style={{ margin: '0 16px' }}>|</span>
-              <span>预计成交：{formatDate(opportunity.estimatedCloseDate)}</span>
+              <span>{t('opportunity.detail.estimatedCloseDate')}：{formatDate(opportunity.estimatedCloseDate)}</span>
               <span style={{ margin: '0 16px' }}>|</span>
-              <span>负责人：{opportunity.ownerName}</span>
+              <span>{t('opportunity.detail.owner')}：{opportunity.ownerName}</span>
             </div>
           </div>
         </div>
@@ -218,7 +220,7 @@ export const OpportunityDetail: React.FC = () => {
 
       {/* 阶段进度条 + AI 预测分析 */}
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16, marginBottom: 16 }}>
-        <Card title="📊 阶段进度">
+        <Card title={`📊 ${t('opportunity.detail.stageProgress')}`}>
           <Steps
             current={currentStageIndex}
             items={stageSteps}
@@ -231,7 +233,7 @@ export const OpportunityDetail: React.FC = () => {
                 key={stage}
                 size="small"
                 type={index <= currentStageIndex ? 'primary' : 'default'}
-                onClick={() => index <= currentStageIndex && message.info(`切换到阶段：${STAGE_LABELS[stage]}`)}
+                onClick={() => index <= currentStageIndex && message.info(`${t('opportunity.detail.switchToStage')}：${STAGE_LABELS[stage]}`)}
                 disabled={index > currentStageIndex}
               >
                 {STAGE_LABELS[stage]}
@@ -240,9 +242,9 @@ export const OpportunityDetail: React.FC = () => {
           </div>
         </Card>
 
-        <Card title="🤖 预测分析">
+        <Card title={`🤖 ${t('opportunity.detail.predictionAnalysis')}`}>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>赢单概率</div>
+            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>{t('opportunity.detail.winProbability')}</div>
             <Progress
               percent={opportunity.probability}
               strokeColor={
@@ -253,24 +255,24 @@ export const OpportunityDetail: React.FC = () => {
             />
           </div>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>预计成交日期</div>
+            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>{t('opportunity.detail.estimatedCloseDate')}</div>
             <div style={{ fontSize: 16, fontWeight: 600 }}>{formatDate(opportunity.estimatedCloseDate)}</div>
           </div>
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>
               <BulbOutlined style={{ marginRight: 4 }} />
-              推荐动作
+              {t('opportunity.detail.recommendedAction')}
             </div>
             <div style={{ fontSize: 14, color: '#1890ff' }}>
-              {opportunity.probability >= 80 ? '安排商务谈判，准备合同' :
-               opportunity.probability >= 50 ? '安排产品演示，解决客户疑虑' :
-               '深入了解客户需求，建立信任'}
+              {opportunity.probability >= 80 ? t('opportunity.detail.recommendHigh') :
+               opportunity.probability >= 50 ? t('opportunity.detail.recommendMedium') :
+               t('opportunity.detail.recommendLow')}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>趋势分析</div>
+            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>{t('opportunity.detail.trendAnalysis')}</div>
             <div style={{ fontSize: 14 }}>
-              本周跟进 <Text strong>2</Text> 次，客户意向度 <Text strong type="success">上升</Text>
+              {t('opportunity.detail.weeklyFollowUps')} <Text strong>2</Text> {t('opportunity.detail.times')}，{t('opportunity.detail.customerIntention')} <Text strong type="success">{t('opportunity.detail.rising')}</Text>
             </div>
           </div>
         </Card>
@@ -282,29 +284,29 @@ export const OpportunityDetail: React.FC = () => {
           items={[
             {
               key: 'basic',
-              label: '基本信息',
+              label: t('opportunity.detail.basicInfo'),
               children: (
                 <Descriptions column={3} bordered>
-                  <Descriptions.Item label="商机名称">{opportunity.name}</Descriptions.Item>
-                  <Descriptions.Item label="所属客户">{opportunity.customerName}</Descriptions.Item>
-                  <Descriptions.Item label="商机金额">
+                  <Descriptions.Item label={t('opportunity.form.name')}>{opportunity.name}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.detail.customer')}>{opportunity.customerName}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.form.amount')}>
                     <Text strong style={{ color: '#faad14' }}>{formatAmount(opportunity.amount)}</Text>
                   </Descriptions.Item>
-                  <Descriptions.Item label="商机来源">{opportunity.source}</Descriptions.Item>
-                  <Descriptions.Item label="负责人">{opportunity.ownerName}</Descriptions.Item>
-                  <Descriptions.Item label="状态">
+                  <Descriptions.Item label={t('opportunity.detail.source')}>{opportunity.source}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.detail.owner')}>{opportunity.ownerName}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.detail.status')}>
                     <Tag>{opportunity.status}</Tag>
                   </Descriptions.Item>
-                  <Descriptions.Item label="预算情况">{opportunity.budget}</Descriptions.Item>
-                  <Descriptions.Item label="创建时间">{formatDate(opportunity.createdAt)}</Descriptions.Item>
-                  <Descriptions.Item label="最后更新">{formatDate(opportunity.updatedAt)}</Descriptions.Item>
-                  <Descriptions.Item label="下次跟进" span={3}>
+                  <Descriptions.Item label={t('opportunity.detail.budget')}>{opportunity.budget}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.detail.createdAt')}>{formatDate(opportunity.createdAt)}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.detail.updatedAt')}>{formatDate(opportunity.updatedAt)}</Descriptions.Item>
+                  <Descriptions.Item label={t('opportunity.detail.nextFollowup')} span={3}>
                     {opportunity.nextFollowupTime ? formatDate(opportunity.nextFollowupTime) : '-'}
                   </Descriptions.Item>
-                  <Descriptions.Item label="客户需求" span={3}>
+                  <Descriptions.Item label={t('opportunity.detail.customerNeeds')} span={3}>
                     <Paragraph style={{ marginBottom: 0 }}>{opportunity.description}</Paragraph>
                   </Descriptions.Item>
-                  <Descriptions.Item label="决策流程" span={3}>
+                  <Descriptions.Item label={t('opportunity.detail.decisionProcess')} span={3}>
                     <Paragraph style={{ marginBottom: 0 }}>{opportunity.decisionProcess}</Paragraph>
                   </Descriptions.Item>
                 </Descriptions>
@@ -312,7 +314,7 @@ export const OpportunityDetail: React.FC = () => {
             },
             {
               key: 'competitors',
-              label: `竞争对手 (${opportunity.competitors.length})`,
+              label: `${t('opportunity.detail.competitors')} (${opportunity.competitors.length})`,
               children: opportunity.competitors.length > 0 ? (
                 <Table
                   dataSource={opportunity.competitors}
@@ -321,32 +323,32 @@ export const OpportunityDetail: React.FC = () => {
                   size="small"
                   columns={[
                     {
-                      title: '竞争对手',
+                      title: t('opportunity.detail.competitorName'),
                       dataIndex: 'name',
                       key: 'name',
                       width: 200,
                       render: (name: string) => <Text strong>{name}</Text>
                     },
                     {
-                      title: '产品/方案',
+                      title: t('opportunity.detail.productOrSolution'),
                       dataIndex: 'product',
                       key: 'product',
                       width: 150,
                     },
                     {
-                      title: '竞争优势',
+                      title: t('opportunity.detail.competitiveAdvantage'),
                       dataIndex: 'advantage',
                       key: 'advantage',
                       render: (text: string) => <Text type="success">{text}</Text>
                     },
                     {
-                      title: '竞争劣势',
+                      title: t('opportunity.detail.competitiveDisadvantage'),
                       dataIndex: 'disadvantage',
                       key: 'disadvantage',
                       render: (text: string) => <Text type="danger">{text}</Text>
                     },
                     {
-                      title: '我方对策',
+                      title: t('opportunity.detail.ourStrategy'),
                       dataIndex: 'strategy',
                       key: 'strategy',
                       render: (text: string) => text || '-',
@@ -355,13 +357,13 @@ export const OpportunityDetail: React.FC = () => {
                 />
               ) : (
                 <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>
-                  <Button type="primary" icon={<PlusOutlined />}>+ 添加竞争对手</Button>
+                  <Button type="primary" icon={<PlusOutlined />}>+ {t('opportunity.detail.addCompetitor')}</Button>
                 </div>
               ),
             },
             {
               key: 'followups',
-              label: `跟进记录 (${relatedActivities.length})`,
+              label: `${t('opportunity.detail.followUpRecords')} (${relatedActivities.length})`,
               children: relatedActivities.length > 0 ? (
                 <Table
                   columns={activityColumns}
@@ -372,23 +374,23 @@ export const OpportunityDetail: React.FC = () => {
                 />
               ) : (
                 <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>
-                  <Button type="primary" icon={<PlusOutlined />}>+ 新建跟进</Button>
+                  <Button type="primary" icon={<PlusOutlined />}>+ {t('opportunity.detail.addFollowUp')}</Button>
                 </div>
               ),
             },
             {
               key: 'quotes',
-              label: '报价记录',
-              children: <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>暂无报价记录</div>,
+              label: t('opportunity.detail.quoteRecords'),
+              children: <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>{t('opportunity.detail.noQuoteRecords')}</div>,
             },
             {
               key: 'contracts',
-              label: '关联合同',
-              children: <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>暂无关联合同</div>,
+              label: t('opportunity.detail.relatedContracts'),
+              children: <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>{t('opportunity.detail.noRelatedContracts')}</div>,
             },
             {
               key: 'logs',
-              label: '操作日志',
+              label: t('opportunity.detail.operationLog'),
               children: (
                 <Timeline
                   items={[
@@ -396,7 +398,7 @@ export const OpportunityDetail: React.FC = () => {
                       color: 'blue',
                       children: (
                         <div>
-                          <p>李四 修改了商机信息</p>
+                          <p>{t('opportunity.detail.logModifiedInfo')}</p>
                           <p style={{ fontSize: 12, color: '#999' }}>2026-03-15 10:30</p>
                         </div>
                       ),
@@ -405,7 +407,7 @@ export const OpportunityDetail: React.FC = () => {
                       color: 'green',
                       children: (
                         <div>
-                          <p>系统 自动创建商机</p>
+                          <p>{t('opportunity.detail.logAutoCreated')}</p>
                           <p style={{ fontSize: 12, color: '#999' }}>2026-03-01 09:00</p>
                         </div>
                       ),

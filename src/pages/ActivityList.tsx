@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, Space, Button, message, Switch, Typography, Modal, Form, Input, Select, Radio, DatePicker } from 'antd';
 import { PlusOutlined, TableOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Activity, ActivityType, ActivityFilter, RelatedObjectType } from '../types/activity';
 import { activityData, filterActivities } from '../mock/activityData';
 import { ActivityTable } from '../components/Opportunity/ActivityTable';
@@ -11,15 +12,16 @@ const { Title } = Typography;
 
 // 日历视图占位组件
 const CalendarView: React.FC<{ data: Activity[] }> = ({ data }) => {
+  const { t } = useTranslation();
   return (
     <div style={{ padding: 40, textAlign: 'center', background: '#fafafa', borderRadius: 4 }}>
       <CalendarOutlined style={{ fontSize: 48, color: '#1890ff', marginBottom: 16 }} />
-      <Title level={4}>日历视图</Title>
+      <Title level={4}>{t('activity.list.calendarView')}</Title>
       <p style={{ color: '#666' }}>
-        当前共有 {data.length} 条跟进记录
+        {t('activity.list.totalRecords', { count: data.length })}
       </p>
       <p style={{ color: '#999', fontSize: 14 }}>
-        （日历视图功能开发中...）
+        {t('activity.list.calendarViewDeveloping')}
       </p>
     </div>
   );
@@ -33,6 +35,7 @@ const CalendarView: React.FC<{ data: Activity[] }> = ({ data }) => {
  * - 视图切换：列表视图/日历视图
  */
 export const ActivityList: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<ActivityFilter>({});
@@ -54,7 +57,7 @@ export const ActivityList: React.FC = () => {
     // 模拟异步加载
     setTimeout(() => {
       setLoading(false);
-      message.success('搜索完成');
+      message.success(t('activity.list.searchComplete'));
     }, 500);
   };
 
@@ -72,7 +75,7 @@ export const ActivityList: React.FC = () => {
   // 处理新建提交
   const handleCreateSubmit = (values: any) => {
     console.log('新建跟进:', values);
-    message.success('新建跟进记录成功');
+    message.success(t('activity.list.createSuccess'));
     setCreateModalVisible(false);
   };
 
@@ -85,7 +88,7 @@ export const ActivityList: React.FC = () => {
   // 处理编辑提交
   const handleEditSubmit = (values: any) => {
     console.log('编辑跟进:', values);
-    message.success('编辑跟进记录成功');
+    message.success(t('activity.list.editSuccess'));
     setEditModalVisible(false);
     setEditingActivityId(null);
   };
@@ -93,13 +96,13 @@ export const ActivityList: React.FC = () => {
   // 处理删除跟进
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除该跟进记录吗？删除后无法恢复。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t('activity.list.confirmDelete'),
+      content: t('activity.list.confirmDeleteContent'),
+      okText: t('activity.form.confirm'),
+      cancelText: t('activity.form.cancel'),
       okType: 'danger',
       onOk: () => {
-        message.success('删除跟进记录成功');
+        message.success(t('activity.list.deleteSuccess'));
       },
     });
   };
@@ -107,13 +110,13 @@ export const ActivityList: React.FC = () => {
   // 跟进类型选项
   const typeOptions = Object.values(ActivityType).map(type => ({
     value: type,
-    label: type
+    label: t(`activity.type.${type.toLowerCase()}`)
   }));
 
   // 对象类型选项
   const objectTypeOptions = Object.values(RelatedObjectType).map(type => ({
     value: type,
-    label: type
+    label: t(`activity.relatedObjectType.${type.toLowerCase()}`)
   }));
 
   // 跟进人选项
@@ -128,9 +131,9 @@ export const ActivityList: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
           <div>
-            <Title level={3} style={{ margin: 0 }}>跟进记录</Title>
+            <Title level={3} style={{ margin: 0 }}>{t('activity.list.title')}</Title>
             <p style={{ margin: '8px 0 0', color: '#666' }}>
-              当前共 {filteredData.length} 条跟进记录
+              {t('activity.list.totalRecords', { count: filteredData.length })}
             </p>
           </div>
           <Space>
@@ -145,7 +148,7 @@ export const ActivityList: React.FC = () => {
               <CalendarOutlined />
             </Space>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleNewActivity}>
-              新建跟进
+              {t('activity.list.createActivity')}
             </Button>
           </Space>
         </Space>
@@ -163,7 +166,7 @@ export const ActivityList: React.FC = () => {
         />
         {/* 额外的对象类型筛选 */}
         <Space style={{ marginTop: 8, flexWrap: 'wrap' }}>
-          <span style={{ color: '#666' }}>对象类型：</span>
+          <span style={{ color: '#666' }}>{t('activity.list.objectType')}：</span>
           {objectTypeOptions.map(option => (
             <Button
               key={option.value}
@@ -200,12 +203,12 @@ export const ActivityList: React.FC = () => {
 
       {/* 新建跟进弹窗 */}
       <Modal
-        title="新建跟进记录"
+        title={t('activity.form.createTitle')}
         open={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('activity.form.confirm')}
+        cancelText={t('activity.form.cancel')}
         width={600}
       >
         <Form
@@ -215,60 +218,60 @@ export const ActivityList: React.FC = () => {
         >
           <Form.Item
             name="type"
-            label="跟进类型"
-            rules={[{ required: true, message: '请选择跟进类型' }]}
+            label={t('activity.form.type')}
+            rules={[{ required: true, message: t('activity.form.typeRequired') }]}
           >
-            <Select placeholder="请选择跟进类型">
-              <Select.Option value={ActivityType.PHONE}>电话</Select.Option>
-              <Select.Option value={ActivityType.MEETING}>会议</Select.Option>
-              <Select.Option value={ActivityType.VISIT}>拜访</Select.Option>
-              <Select.Option value={ActivityType.EMAIL}>邮件</Select.Option>
-              <Select.Option value={ActivityType.WECHAT}>微信</Select.Option>
-              <Select.Option value={ActivityType.OTHER}>其他</Select.Option>
+            <Select placeholder={t('activity.form.typePlaceholder')}>
+              <Select.Option value={ActivityType.PHONE}>{t('activity.type.phone')}</Select.Option>
+              <Select.Option value={ActivityType.MEETING}>{t('activity.type.meeting')}</Select.Option>
+              <Select.Option value={ActivityType.VISIT}>{t('activity.type.visit')}</Select.Option>
+              <Select.Option value={ActivityType.EMAIL}>{t('activity.type.email')}</Select.Option>
+              <Select.Option value={ActivityType.WECHAT}>{t('activity.type.wechat')}</Select.Option>
+              <Select.Option value={ActivityType.OTHER}>{t('activity.type.other')}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item
             name="relatedObjectType"
-            label="关联对象类型"
-            rules={[{ required: true, message: '请选择关联对象' }]}
+            label={t('activity.form.relatedObjectType')}
+            rules={[{ required: true, message: t('activity.form.relatedObjectTypeRequired') }]}
           >
-            <Select placeholder="请选择关联对象类型">
-              <Select.Option value={RelatedObjectType.OPPORTUNITY}>商机</Select.Option>
-              <Select.Option value={RelatedObjectType.CUSTOMER}>客户</Select.Option>
-              <Select.Option value={RelatedObjectType.LEAD}>线索</Select.Option>
-              <Select.Option value={RelatedObjectType.CONTACT}>联系人</Select.Option>
+            <Select placeholder={t('activity.form.relatedObjectTypePlaceholder')}>
+              <Select.Option value={RelatedObjectType.OPPORTUNITY}>{t('activity.relatedObjectType.opportunity')}</Select.Option>
+              <Select.Option value={RelatedObjectType.CUSTOMER}>{t('activity.relatedObjectType.customer')}</Select.Option>
+              <Select.Option value={RelatedObjectType.LEAD}>{t('activity.relatedObjectType.lead')}</Select.Option>
+              <Select.Option value={RelatedObjectType.CONTACT}>{t('activity.relatedObjectType.contact')}</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="relatedObjectId" label="关联对象">
-            <Input placeholder="请输入关联对象名称" />
+          <Form.Item name="relatedObjectId" label={t('activity.form.relatedObject')}>
+            <Input placeholder={t('activity.form.relatedObjectPlaceholder')} />
           </Form.Item>
           <Form.Item
             name="content"
-            label="跟进内容"
-            rules={[{ required: true, message: '请输入跟进内容' }]}
+            label={t('activity.form.content')}
+            rules={[{ required: true, message: t('activity.form.contentRequired') }]}
           >
-            <Input.TextArea rows={4} placeholder="请输入跟进内容" />
+            <Input.TextArea rows={4} placeholder={t('activity.form.contentPlaceholder')} />
           </Form.Item>
-          <Form.Item name="nextFollowUpTime" label="下次跟进时间">
+          <Form.Item name="nextFollowUpTime" label={t('activity.form.nextFollowUpTime')}>
             <DatePicker showTime style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={2} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('activity.form.remark')}>
+            <Input.TextArea rows={2} placeholder={t('activity.form.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
 
       {/* 编辑跟进弹窗 */}
       <Modal
-        title="编辑跟进记录"
+        title={t('activity.form.editTitle')}
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
           setEditingActivityId(null);
         }}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('activity.form.confirm')}
+        cancelText={t('activity.form.cancel')}
         width={600}
       >
         <Form
@@ -278,45 +281,45 @@ export const ActivityList: React.FC = () => {
         >
           <Form.Item
             name="type"
-            label="跟进类型"
-            rules={[{ required: true, message: '请选择跟进类型' }]}
+            label={t('activity.form.type')}
+            rules={[{ required: true, message: t('activity.form.typeRequired') }]}
           >
-            <Select placeholder="请选择跟进类型">
-              <Select.Option value={ActivityType.PHONE}>电话</Select.Option>
-              <Select.Option value={ActivityType.MEETING}>会议</Select.Option>
-              <Select.Option value={ActivityType.VISIT}>拜访</Select.Option>
-              <Select.Option value={ActivityType.EMAIL}>邮件</Select.Option>
-              <Select.Option value={ActivityType.WECHAT}>微信</Select.Option>
-              <Select.Option value={ActivityType.OTHER}>其他</Select.Option>
+            <Select placeholder={t('activity.form.typePlaceholder')}>
+              <Select.Option value={ActivityType.PHONE}>{t('activity.type.phone')}</Select.Option>
+              <Select.Option value={ActivityType.MEETING}>{t('activity.type.meeting')}</Select.Option>
+              <Select.Option value={ActivityType.VISIT}>{t('activity.type.visit')}</Select.Option>
+              <Select.Option value={ActivityType.EMAIL}>{t('activity.type.email')}</Select.Option>
+              <Select.Option value={ActivityType.WECHAT}>{t('activity.type.wechat')}</Select.Option>
+              <Select.Option value={ActivityType.OTHER}>{t('activity.type.other')}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item
             name="relatedObjectType"
-            label="关联对象类型"
-            rules={[{ required: true, message: '请选择关联对象' }]}
+            label={t('activity.form.relatedObjectType')}
+            rules={[{ required: true, message: t('activity.form.relatedObjectTypeRequired') }]}
           >
-            <Select placeholder="请选择关联对象类型">
-              <Select.Option value={RelatedObjectType.OPPORTUNITY}>商机</Select.Option>
-              <Select.Option value={RelatedObjectType.CUSTOMER}>客户</Select.Option>
-              <Select.Option value={RelatedObjectType.LEAD}>线索</Select.Option>
-              <Select.Option value={RelatedObjectType.CONTACT}>联系人</Select.Option>
+            <Select placeholder={t('activity.form.relatedObjectTypePlaceholder')}>
+              <Select.Option value={RelatedObjectType.OPPORTUNITY}>{t('activity.relatedObjectType.opportunity')}</Select.Option>
+              <Select.Option value={RelatedObjectType.CUSTOMER}>{t('activity.relatedObjectType.customer')}</Select.Option>
+              <Select.Option value={RelatedObjectType.LEAD}>{t('activity.relatedObjectType.lead')}</Select.Option>
+              <Select.Option value={RelatedObjectType.CONTACT}>{t('activity.relatedObjectType.contact')}</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="relatedObjectId" label="关联对象">
-            <Input placeholder="请输入关联对象名称" />
+          <Form.Item name="relatedObjectId" label={t('activity.form.relatedObject')}>
+            <Input placeholder={t('activity.form.relatedObjectPlaceholder')} />
           </Form.Item>
           <Form.Item
             name="content"
-            label="跟进内容"
-            rules={[{ required: true, message: '请输入跟进内容' }]}
+            label={t('activity.form.content')}
+            rules={[{ required: true, message: t('activity.form.contentRequired') }]}
           >
-            <Input.TextArea rows={4} placeholder="请输入跟进内容" />
+            <Input.TextArea rows={4} placeholder={t('activity.form.contentPlaceholder')} />
           </Form.Item>
-          <Form.Item name="nextFollowUpTime" label="下次跟进时间">
+          <Form.Item name="nextFollowUpTime" label={t('activity.form.nextFollowUpTime')}>
             <DatePicker showTime style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={2} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('activity.form.remark')}>
+            <Input.TextArea rows={2} placeholder={t('activity.form.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>

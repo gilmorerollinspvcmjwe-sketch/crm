@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Descriptions, Button, Space, Tag, message } from 'antd';
 import { ArrowLeftOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getContactById } from '../mock/contactData';
 import { getCustomerById } from '../mock/customerData';
 import { Contact, Gender, JobLevel, DecisionRole } from '../types/contact';
@@ -18,6 +19,7 @@ import { Customer } from '../types/customer';
  * 联系人详情页组件
  */
 export const ContactDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -39,10 +41,10 @@ export const ContactDetail: React.FC = () => {
           setCustomer(customerData || null);
         }
       } else {
-        message.error('联系人不存在');
+        message.error(t('contact.detail.notFound'));
       }
     } catch (error) {
-      message.error('加载联系人详情失败');
+      message.error(t('contact.detail.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -82,7 +84,7 @@ export const ContactDetail: React.FC = () => {
   };
 
   if (!contact) {
-    return <div>联系人不存在</div>;
+    return <div>{t('contact.detail.notFound')}</div>;
   }
 
   return (
@@ -91,21 +93,21 @@ export const ContactDetail: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space>
           <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
-            返回
+            {t('contact.detail.back')}
           </Button>
           <Space style={{ marginLeft: 'auto' }}>
             <Button icon={<EditOutlined />} onClick={handleEdit}>
-              编辑
+              {t('contact.detail.edit')}
             </Button>
             <Button danger icon={<DeleteOutlined />} onClick={handleDelete}>
-              删除
+              {t('contact.detail.delete')}
             </Button>
           </Space>
         </Space>
       </Card>
 
       {/* 基本信息 */}
-      <Card title="基本信息" style={{ marginBottom: 16 }} loading={loading}>
+      <Card title={t('contact.detail.basicInfo')} style={{ marginBottom: 16 }} loading={loading}>
         <Descriptions column={3} bordered>
           <Descriptions.Item label="联系人 ID" span={1}>
             {contact.id}
@@ -199,7 +201,7 @@ export const ContactDetail: React.FC = () => {
 
       {/* 关联客户信息 */}
       {customer && (
-        <Card title="关联客户" style={{ marginBottom: 16 }}>
+        <Card title={t('contact.detail.relatedCustomer')} style={{ marginBottom: 16 }}>
           <Descriptions column={3} bordered size="small">
             <Descriptions.Item label="客户名称" span={1}>
               <Button type="link" onClick={handleViewCustomer}>

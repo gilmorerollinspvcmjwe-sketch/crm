@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tag, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { ContractStatus } from '../../types/contract';
 
 // 合同状态标签属性
@@ -28,15 +29,6 @@ const STATUS_ICONS: Record<ContractStatus, string> = {
   [ContractStatus.TERMINATED]: '❌'
 };
 
-// 状态描述
-const STATUS_DESCRIPTIONS: Record<ContractStatus, string> = {
-  [ContractStatus.DRAFT]: '草稿状态，可以编辑和修改',
-  [ContractStatus.PENDING_APPROVAL]: '已提交审批，等待审批结果',
-  [ContractStatus.ACTIVE]: '已生效，合同正在执行中',
-  [ContractStatus.ARCHIVED]: '已归档，合同执行完毕',
-  [ContractStatus.TERMINATED]: '已终止，合同提前结束'
-};
-
 /**
  * 合同状态标签组件
  * 展示不同状态的合同标签
@@ -45,15 +37,41 @@ export const ContractStatusTag: React.FC<ContractStatusProps> = ({
   status,
   showTooltip = true
 }) => {
+  const { t } = useTranslation();
+
+  // 获取状态文本
+  const getStatusText = (status: ContractStatus) => {
+    const statusMap: Record<ContractStatus, string> = {
+      [ContractStatus.DRAFT]: t('contract.status.draft'),
+      [ContractStatus.PENDING_APPROVAL]: t('contract.status.pendingApproval'),
+      [ContractStatus.ACTIVE]: t('contract.status.active'),
+      [ContractStatus.ARCHIVED]: t('contract.status.archived'),
+      [ContractStatus.TERMINATED]: t('contract.status.terminated')
+    };
+    return statusMap[status] || status;
+  };
+
+  // 获取状态描述
+  const getStatusDescription = (status: ContractStatus) => {
+    const descMap: Record<ContractStatus, string> = {
+      [ContractStatus.DRAFT]: t('contract.status.draft') + '，可以编辑和修改',
+      [ContractStatus.PENDING_APPROVAL]: '已提交审批，等待审批结果',
+      [ContractStatus.ACTIVE]: '已生效，合同正在执行中',
+      [ContractStatus.ARCHIVED]: '已归档，合同执行完毕',
+      [ContractStatus.TERMINATED]: '已终止，合同提前结束'
+    };
+    return descMap[status] || '';
+  };
+
   const tag = (
     <Tag color={STATUS_COLORS[status]}>
-      {status}
+      {getStatusText(status)}
     </Tag>
   );
 
   if (showTooltip) {
     return (
-      <Tooltip title={STATUS_DESCRIPTIONS[status]}>
+      <Tooltip title={getStatusDescription(status)}>
         {tag}
       </Tooltip>
     );

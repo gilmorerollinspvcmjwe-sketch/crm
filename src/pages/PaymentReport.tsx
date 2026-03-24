@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { Card, Select, Row, Col, Table, Statistic, Progress, Tag } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { LineChart } from '../components/Charts/LineChart';
 import { PieChart } from '../components/Charts/PieChart';
 import { BarChart } from '../components/Charts/BarChart';
@@ -49,16 +50,38 @@ const paymentReport = {
 };
 
 const PaymentReport: React.FC = () => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<TimeRange>('month');
+
+  // 获取风险文本
+  const getRiskText = (risk: string) => {
+    const riskMap: Record<string, string> = {
+      low: t('report.payment.riskLow'),
+      medium: t('report.payment.riskMedium'),
+      high: t('report.payment.riskHigh'),
+      critical: t('report.payment.riskCritical'),
+    };
+    return riskMap[risk] || risk;
+  };
+
+  // 获取状态文本
+  const getStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      normal: t('report.payment.statusNormal'),
+      warning: t('report.payment.statusWarning'),
+      overdue: t('report.payment.statusOverdue'),
+    };
+    return statusMap[status] || status;
+  };
 
   const agingColumns = [
     {
-      title: '账龄',
+      title: t('report.payment.aging'),
       dataIndex: 'range',
       key: 'range',
     },
     {
-      title: '金额',
+      title: t('report.payment.amount'),
       dataIndex: 'amount',
       key: 'amount',
       render: (amount: number) => (
@@ -67,7 +90,7 @@ const PaymentReport: React.FC = () => {
       sorter: (a: any, b: any) => a.amount - b.amount,
     },
     {
-      title: '占比',
+      title: t('report.activity.percentage'),
       dataIndex: 'percentage',
       key: 'percentage',
       render: (percentage: number) => (
@@ -80,25 +103,24 @@ const PaymentReport: React.FC = () => {
       ),
     },
     {
-      title: '风险等级',
+      title: t('report.payment.riskLevel'),
       dataIndex: 'risk',
       key: 'risk',
       render: (risk: string) => {
-        const config: Record<string, { color: string; text: string }> = {
-          low: { color: '#52c41a', text: '低风险' },
-          medium: { color: '#faad14', text: '中风险' },
-          high: { color: '#f5222d', text: '高风险' },
-          critical: { color: '#722ed1', text: '严重' },
+        const colorMap: Record<string, string> = {
+          low: '#52c41a',
+          medium: '#faad14',
+          high: '#f5222d',
+          critical: '#722ed1',
         };
-        const { color, text } = config[risk] || config.low;
-        return <Tag color={color}>{text}</Tag>;
+        return <Tag color={colorMap[risk]}>{getRiskText(risk)}</Tag>;
       },
     },
   ];
 
   const customerColumns = [
     {
-      title: '排名',
+      title: t('report.performance.rank'),
       dataIndex: 'rank',
       key: 'rank',
       width: 60,
@@ -112,19 +134,19 @@ const PaymentReport: React.FC = () => {
       ),
     },
     {
-      title: '客户',
+      title: t('report.payment.customer'),
       dataIndex: 'customerName',
       key: 'customerName',
     },
     {
-      title: '应收金额',
+      title: t('report.payment.receivableAmount'),
       dataIndex: 'amount',
       key: 'amount',
       render: (amount: number) => formatAmount(amount),
       sorter: (a: any, b: any) => a.amount - b.amount,
     },
     {
-      title: '回款率',
+      title: t('report.payment.collectionRate'),
       dataIndex: 'rate',
       key: 'rate',
       render: (rate: number) => (
@@ -138,17 +160,16 @@ const PaymentReport: React.FC = () => {
       sorter: (a: any, b: any) => a.rate - b.rate,
     },
     {
-      title: '状态',
+      title: t('report.payment.status'),
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => {
-        const config: Record<string, { color: string; text: string }> = {
-          normal: { color: '#52c41a', text: '正常' },
-          warning: { color: '#faad14', text: '预警' },
-          overdue: { color: '#f5222d', text: '逾期' },
+        const colorMap: Record<string, string> = {
+          normal: '#52c41a',
+          warning: '#faad14',
+          overdue: '#f5222d',
         };
-        const { color, text } = config[status] || config.normal;
-        return <Tag color={color}>{text}</Tag>;
+        return <Tag color={colorMap[status]}>{getStatusText(status)}</Tag>;
       },
     },
   ];
@@ -172,9 +193,9 @@ const PaymentReport: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h2 style={{ margin: 0 }}>回款分析报表</h2>
+            <h2 style={{ margin: 0 }}>{t('report.payment.title')}</h2>
             <p style={{ margin: '8px 0 0 0', color: '#999' }}>
-              查看回款率、逾期情况和账龄分析
+              {t('report.payment.subtitle')}
             </p>
           </div>
           <Select
@@ -182,10 +203,10 @@ const PaymentReport: React.FC = () => {
             onChange={(value) => setTimeRange(value)}
             style={{ width: 120 }}
           >
-            <Option value="week">本周</Option>
-            <Option value="month">本月</Option>
-            <Option value="quarter">本季度</Option>
-            <Option value="year">本年</Option>
+            <Option value="week">{t('report.timeRange.week')}</Option>
+            <Option value="month">{t('report.timeRange.month')}</Option>
+            <Option value="quarter">{t('report.timeRange.quarter')}</Option>
+            <Option value="year">{t('report.timeRange.year')}</Option>
           </Select>
         </div>
       </Card>
@@ -194,9 +215,9 @@ const PaymentReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="应收总额"
+              title={t('report.payment.totalReceivable')}
               value={paymentReport.totalReceivable / 10000}
-              suffix="万"
+              suffix={t('common.unit.tenThousand')}
               precision={1}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -205,9 +226,9 @@ const PaymentReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="已回款"
+              title={t('report.payment.collected')}
               value={paymentReport.collected / 10000}
-              suffix="万"
+              suffix={t('common.unit.tenThousand')}
               precision={1}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -216,9 +237,9 @@ const PaymentReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="回款率"
+              title={t('report.payment.collectionRate')}
               value={paymentReport.collectionRate}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               precision={1}
               valueStyle={{ color: '#faad14' }}
             />
@@ -227,9 +248,9 @@ const PaymentReport: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="逾期金额"
+              title={t('report.payment.overdueAmount')}
               value={paymentReport.overdue / 10000}
-              suffix="万"
+              suffix={t('common.unit.tenThousand')}
               precision={1}
               valueStyle={{ color: '#f5222d' }}
             />
@@ -237,21 +258,21 @@ const PaymentReport: React.FC = () => {
         </Col>
       </Row>
 
-      <Card title="📈 回款趋势分析" style={{ marginBottom: 16 }}>
+      <Card title={`📈 ${t('report.payment.trendAnalysis')}`} style={{ marginBottom: 16 }}>
         <LineChart
           data={trendChartData}
           dataKeys={[
-            { key: 'planned', name: '计划回款 (万)', color: '#1890ff' },
-            { key: 'actual', name: '实际回款 (万)', color: '#52c41a' },
+            { key: 'planned', name: `${t('report.payment.plannedCollection')} (${t('common.unit.tenThousand')})`, color: '#1890ff' },
+            { key: 'actual', name: `${t('report.payment.actualCollection')} (${t('common.unit.tenThousand')})`, color: '#52c41a' },
           ]}
           height={300}
-          yAxisFormatter={(value) => `${value.toFixed(0)}万`}
+          yAxisFormatter={(value) => `${value.toFixed(0)}${t('common.unit.tenThousand')}`}
         />
       </Card>
 
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={12}>
-          <Card title="📊 账龄分析">
+          <Card title={`📊 ${t('report.payment.agingAnalysis')}`}>
             <PieChart
               data={agingPieData}
               height={300}
@@ -261,31 +282,31 @@ const PaymentReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="逾期率趋势">
+          <Card title={t('report.payment.overdueRateTrend')}>
             <div style={{ padding: '20px 0', textAlign: 'center' }}>
               <div style={{ fontSize: 48, fontWeight: 'bold', color: paymentReport.overdueRate >= 10 ? '#f5222d' : '#faad14' }}>
                 {paymentReport.overdueRate}%
               </div>
-              <div style={{ color: '#999', marginTop: 8 }}>当前逾期率</div>
+              <div style={{ color: '#999', marginTop: 8 }}>{t('report.payment.currentOverdueRate')}</div>
               <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-around' }}>
                 <div>
                   <div style={{ fontSize: 24, fontWeight: 'bold', color: '#52c41a' }}>
-                    {paymentReport.agingDist.filter(i => i.risk === 'low').reduce((sum, i) => sum + i.amount, 0) / 10000}万
+                    {paymentReport.agingDist.filter(i => i.risk === 'low').reduce((sum, i) => sum + i.amount, 0) / 10000}{t('common.unit.tenThousand')}
                   </div>
-                  <div style={{ color: '#999', fontSize: 12 }}>正常 (0-30 天)</div>
+                  <div style={{ color: '#999', fontSize: 12 }}>{t('report.payment.normalDays')}</div>
                 </div>
                 <div>
                   <div style={{ fontSize: 24, fontWeight: 'bold', color: '#faad14' }}>
-                    {paymentReport.agingDist.filter(i => i.risk === 'medium').reduce((sum, i) => sum + i.amount, 0) / 10000}万
+                    {paymentReport.agingDist.filter(i => i.risk === 'medium').reduce((sum, i) => sum + i.amount, 0) / 10000}{t('common.unit.tenThousand')}
                   </div>
-                  <div style={{ color: '#999', fontSize: 12 }}>关注 (31-60 天)</div>
+                  <div style={{ color: '#999', fontSize: 12 }}>{t('report.payment.attentionDays')}</div>
                 </div>
                 <div>
                   <div style={{ fontSize: 24, fontWeight: 'bold', color: '#f5222d' }}>
                     {(paymentReport.agingDist.filter(i => i.risk === 'high').reduce((sum, i) => sum + i.amount, 0) + 
-                      paymentReport.agingDist.filter(i => i.risk === 'critical').reduce((sum, i) => sum + i.amount, 0)) / 10000}万
+                      paymentReport.agingDist.filter(i => i.risk === 'critical').reduce((sum, i) => sum + i.amount, 0)) / 10000}{t('common.unit.tenThousand')}
                   </div>
-                  <div style={{ color: '#999', fontSize: 12 }}>风险 (60 天+)</div>
+                  <div style={{ color: '#999', fontSize: 12 }}>{t('report.payment.riskDays')}</div>
                 </div>
               </div>
             </div>
@@ -295,7 +316,7 @@ const PaymentReport: React.FC = () => {
 
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="📋 账龄详情" size="small">
+          <Card title={`📋 ${t('report.payment.agingDetails')}`} size="small">
             <Table
               columns={agingColumns}
               dataSource={paymentReport.agingDist}
@@ -306,7 +327,7 @@ const PaymentReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="🏆 客户回款排行" size="small">
+          <Card title={`🏆 ${t('report.payment.customerRanking')}`} size="small">
             <Table
               columns={customerColumns}
               dataSource={paymentReport.customerRanking}
@@ -323,4 +344,3 @@ const PaymentReport: React.FC = () => {
 };
 
 export default PaymentReport;
-;

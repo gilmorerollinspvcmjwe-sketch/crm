@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Typography, Popconfirm, Tooltip } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Opportunity, OpportunityStage, OpportunityStatus } from '../../types/opportunity';
 
 const { Text } = Typography;
@@ -21,35 +22,6 @@ interface OpportunityTableProps {
   loading?: boolean;
 }
 
-// 阶段颜色配置
-const STAGE_COLORS: Record<OpportunityStage, string> = {
-  [OpportunityStage.LEAD_CONFIRMATION]: 'default',
-  [OpportunityStage.INITIAL_CONTACT]: 'blue',
-  [OpportunityStage.REQUIREMENT_CONFIRMATION]: 'cyan',
-  [OpportunityStage.PROPOSAL_QUOTATION]: 'geekblue',
-  [OpportunityStage.NEGOTIATION_APPROVAL]: 'orange',
-  [OpportunityStage.CLOSED_WON]: 'green',
-  [OpportunityStage.CLOSED_LOST]: 'red'
-};
-
-// 状态颜色配置
-const STATUS_COLORS: Record<OpportunityStatus, string> = {
-  [OpportunityStatus.IN_PROGRESS]: 'processing',
-  [OpportunityStatus.CLOSED_WON]: 'success',
-  [OpportunityStatus.CLOSED_LOST]: 'default',
-  [OpportunityStatus.CLOSED]: 'default'
-};
-
-// 格式化金额
-const formatAmount = (amount: number) => {
-  return `¥${(amount / 10000).toFixed(1)}万`;
-};
-
-// 格式化日期
-const formatDate = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString('zh-CN');
-};
-
 /**
  * 商机表格组件
  * 展示商机列表数据
@@ -62,10 +34,41 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
   onChangeStage,
   loading = false
 }) => {
+  const { t } = useTranslation();
+
+  // 阶段颜色配置
+  const STAGE_COLORS: Record<OpportunityStage, string> = {
+    [OpportunityStage.LEAD_CONFIRMATION]: 'default',
+    [OpportunityStage.INITIAL_CONTACT]: 'blue',
+    [OpportunityStage.REQUIREMENT_CONFIRMATION]: 'cyan',
+    [OpportunityStage.PROPOSAL_QUOTATION]: 'geekblue',
+    [OpportunityStage.NEGOTIATION_APPROVAL]: 'orange',
+    [OpportunityStage.CLOSED_WON]: 'green',
+    [OpportunityStage.CLOSED_LOST]: 'red'
+  };
+
+  // 状态颜色配置
+  const STATUS_COLORS: Record<OpportunityStatus, string> = {
+    [OpportunityStatus.IN_PROGRESS]: 'processing',
+    [OpportunityStatus.CLOSED_WON]: 'success',
+    [OpportunityStatus.CLOSED_LOST]: 'default',
+    [OpportunityStatus.CLOSED]: 'default'
+  };
+
+  // 格式化金额
+  const formatAmount = (amount: number) => {
+    return `¥${(amount / 10000).toFixed(1)}${t('common.unit.tenThousand')}`;
+  };
+
+  // 格式化日期
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('zh-CN');
+  };
+
   // 表格列定义
   const columns = [
     {
-      title: '商机名称',
+      title: t('opportunity.column.name'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
@@ -78,7 +81,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       )
     },
     {
-      title: '金额',
+      title: t('opportunity.column.amount'),
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
@@ -90,7 +93,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       )
     },
     {
-      title: '阶段',
+      title: t('opportunity.column.stage'),
       dataIndex: 'stage',
       key: 'stage',
       width: 100,
@@ -104,7 +107,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       )
     },
     {
-      title: '预计成交日期',
+      title: t('opportunity.column.expectedCloseDate'),
       dataIndex: 'estimatedCloseDate',
       key: 'estimatedCloseDate',
       width: 120,
@@ -113,13 +116,13 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       render: (date: string) => formatDate(date)
     },
     {
-      title: '成交概率',
+      title: t('opportunity.column.probability'),
       dataIndex: 'probability',
       key: 'probability',
       width: 100,
       sorter: (a: Opportunity, b: Opportunity) => a.probability - b.probability,
       render: (probability: number, record: Opportunity) => (
-        <Tooltip title={`阶段：${record.stage}`}>
+        <Tooltip title={`${t('opportunity.column.stage')}：${record.stage}`}>
           <Tag color={probability >= 80 ? 'green' : probability >= 50 ? 'orange' : 'red'}>
             {probability}%
           </Tag>
@@ -127,7 +130,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       )
     },
     {
-      title: '负责人',
+      title: t('opportunity.column.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
@@ -138,7 +141,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       onFilter: (value: any, record: Opportunity) => record.ownerName === value
     },
     {
-      title: '创建时间',
+      title: t('opportunity.column.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 120,
@@ -147,13 +150,13 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
       render: (date: string) => formatDate(date)
     },
     {
-      title: '操作',
+      title: t('opportunity.column.action'),
       key: 'action',
       width: 200,
       fixed: 'right' as const,
       render: (_: any, record: Opportunity) => (
         <Space size="small">
-          <Tooltip title="查看详情">
+          <Tooltip title={t('opportunity.action.viewDetail')}>
             <Button
               type="link"
               icon={<EyeOutlined />}
@@ -161,7 +164,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
               size="small"
             />
           </Tooltip>
-          <Tooltip title="编辑">
+          <Tooltip title={t('opportunity.action.edit')}>
             <Button
               type="link"
               icon={<EditOutlined />}
@@ -170,7 +173,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
             />
           </Tooltip>
           {onChangeStage && record.status === OpportunityStatus.IN_PROGRESS && (
-            <Tooltip title="变更阶段">
+            <Tooltip title={t('opportunity.action.changeStage')}>
               <Button
                 type="link"
                 icon={<ThunderboltOutlined />}
@@ -180,12 +183,12 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
             </Tooltip>
           )}
           <Popconfirm
-            title="确定要删除这个商机吗？"
+            title={t('opportunity.delete.confirm')}
             onConfirm={() => onDelete(record.id)}
-            okText="确定"
-            cancelText="取消"
+            okText={t('common.confirm')}
+            cancelText={t('common.cancel')}
           >
-            <Tooltip title="删除">
+            <Tooltip title={t('opportunity.action.delete')}>
               <Button
                 type="link"
                 danger
@@ -210,7 +213,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
         pageSize: 20,
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条`,
+        showTotal: (total) => t('opportunity.pagination.total', { count: total }),
         pageSizeOptions: ['10', '20', '50', '100']
       }}
       size="middle"

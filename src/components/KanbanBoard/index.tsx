@@ -3,6 +3,7 @@
  * 支持拖拽排序、阶段分列显示
  */
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, Tag, Dropdown, Menu, Modal, Select, Input, Button, Space, message, Typography, Tooltip } from 'antd';
 import {
   MoreOutlined,
@@ -75,6 +76,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   draggable = true,
   showAmountSummary = true,
 }) => {
+  const { t } = useTranslation();
   const [draggedCard, setDraggedCard] = useState<{ card: KanbanCard; fromColumn: string } | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
@@ -117,20 +119,20 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
         {
           key: 'edit',
           icon: <EditOutlined />,
-          label: '编辑',
+          label: t('components.kanban.edit'),
           onClick: () => onCardEdit?.(card),
         },
         {
           key: 'delete',
           icon: <DeleteOutlined />,
-          label: '删除',
+          label: t('components.kanban.delete'),
           danger: true,
           onClick: () => {
             Modal.confirm({
-              title: '确认删除',
-              content: `确定要删除「${card.title}」吗？`,
-              okText: '删除',
-              cancelText: '取消',
+              title: t('components.kanban.confirmDelete'),
+              content: t('components.kanban.confirmDeleteMessage', { title: card.title }),
+              okText: t('components.kanban.delete'),
+              cancelText: t('common.cancel'),
               okType: 'danger',
               onOk: () => onCardDelete?.(card),
             });
@@ -191,7 +193,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             color={priorityColors[card.priority]}
             style={{ margin: 0, fontSize: 11 }}
           >
-            {card.priority === 'high' ? '高' : card.priority === 'medium' ? '中' : '低'}
+            {card.priority === 'high' ? t('components.kanban.high') : card.priority === 'medium' ? t('components.kanban.medium') : t('components.kanban.low')}
           </Tag>
         )}
       </div>
@@ -281,7 +283,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             onClick={() => onCardCreate(column.key)}
             style={{ marginTop: 8 }}
           >
-            新建
+            {t('components.kanban.newButton')}
           </Button>
         )}
       </div>

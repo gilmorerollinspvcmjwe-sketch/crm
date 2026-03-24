@@ -12,10 +12,8 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Table, Space, Button, Dropdown, Tooltip, Modal, Checkbox, Segmented } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/es/table';
 import type { ColumnsType } from 'antd/es/table/interface';
-import {
-  SettingOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { SettingOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../styles/tokens';
 
 /** 表格密度类型 */
@@ -71,12 +69,6 @@ const densityConfig: Record<TableDensity, { size: 'small' | 'middle' | 'large'; 
   wide: { size: 'large', cellPadding: 16 },
 };
 
-const densityOptions = [
-  { value: 'compact', label: '紧凑' },
-  { value: 'default', label: '标准' },
-  { value: 'wide', label: '宽松' },
-];
-
 function DataTableInner<T extends Record<string, any>>({
   columns,
   dataSource,
@@ -94,6 +86,14 @@ function DataTableInner<T extends Record<string, any>>({
   onDensityChange,
   ...restProps
 }: DataTableProps<T>) {
+  const { t } = useTranslation();
+
+  const densityOptions = [
+    { label: '紧凑', value: 'compact' },
+    { label: '默认', value: 'default' },
+    { label: '宽松', value: 'wide' },
+  ];
+
   // 从 localStorage 读取配置
   const getStoredConfig = useCallback(<K extends string, V>(key: K, defaultValue: V): V => {
     if (!tableKey) return defaultValue;
@@ -178,14 +178,14 @@ function DataTableInner<T extends Record<string, any>>({
           {selectedRowKeys.length > 0 && (
             <Space>
               <span style={{ color: colors.text.secondary }}>
-                已选择 {selectedRowKeys.length} 项
+                {t('components.dataTable.selected', { count: selectedRowKeys.length })}
               </span>
               {batchActions}
               <Button
                 size="small"
                 onClick={() => setSelectedRowKeys([])}
               >
-                取消选择
+                {t('components.dataTable.cancelSelection')}
               </Button>
             </Space>
           )}
@@ -203,7 +203,7 @@ function DataTableInner<T extends Record<string, any>>({
             />
           )}
           {showRefresh && (
-            <Tooltip title="刷新">
+            <Tooltip title={t('components.dataTable.refresh')}>
               <Button
                 size="small"
                 icon={<ReloadOutlined />}
@@ -212,7 +212,7 @@ function DataTableInner<T extends Record<string, any>>({
             </Tooltip>
           )}
           {columnConfig && (
-            <Tooltip title="列配置">
+            <Tooltip title={t('components.dataTable.columnConfig')}>
               <Button
                 size="small"
                 icon={<SettingOutlined />}

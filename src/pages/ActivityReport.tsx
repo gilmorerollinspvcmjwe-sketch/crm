@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { Card, Select, Row, Col, Table, Statistic, Progress } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { BarChart } from '../components/Charts/BarChart';
 import { PieChart } from '../components/Charts/PieChart';
 import { getSalesFunnelReport, formatAmount } from '../mock/reportData';
@@ -39,22 +40,23 @@ const activityReport = {
 };
 
 const ActivityReport: React.FC = () => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<TimeRange>('month');
 
   const typeColumns = [
     {
-      title: '跟进类型',
+      title: t('report.activity.followUpType'),
       dataIndex: 'type',
       key: 'type',
     },
     {
-      title: '数量',
+      title: t('report.activity.count'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
     },
     {
-      title: '占比',
+      title: t('report.activity.percentage'),
       dataIndex: 'percentage',
       key: 'percentage',
       render: (percentage: number) => (
@@ -70,7 +72,7 @@ const ActivityReport: React.FC = () => {
 
   const rankingColumns = [
     {
-      title: '排名',
+      title: t('report.activity.rank'),
       dataIndex: 'rank',
       key: 'rank',
       width: 60,
@@ -84,18 +86,18 @@ const ActivityReport: React.FC = () => {
       ),
     },
     {
-      title: '销售',
+      title: t('report.activity.sales'),
       dataIndex: 'userName',
       key: 'userName',
     },
     {
-      title: '跟进数量',
+      title: t('report.activity.followUpCount'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
     },
     {
-      title: '完成率',
+      title: t('report.activity.completionRate'),
       dataIndex: 'completionRate',
       key: 'completionRate',
       render: (rate: number) => (
@@ -125,9 +127,9 @@ const ActivityReport: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h2 style={{ margin: 0 }}>📞 跟进活动统计</h2>
+            <h2 style={{ margin: 0 }}>📞 {t('report.activity.title')}</h2>
             <p style={{ margin: '8px 0 0 0', color: '#999' }}>
-              查看跟进数量、类型分布和销售排行
+              {t('report.activity.subtitle')}
             </p>
           </div>
           <Select
@@ -135,10 +137,10 @@ const ActivityReport: React.FC = () => {
             onChange={(value) => setTimeRange(value)}
             style={{ width: 120 }}
           >
-            <Option value="week">本周</Option>
-            <Option value="month">本月</Option>
-            <Option value="quarter">本季度</Option>
-            <Option value="year">本年</Option>
+            <Option value="week">{t('report.timeRange.week')}</Option>
+            <Option value="month">{t('report.timeRange.month')}</Option>
+            <Option value="quarter">{t('report.timeRange.quarter')}</Option>
+            <Option value="year">{t('report.timeRange.year')}</Option>
           </Select>
         </div>
       </Card>
@@ -147,9 +149,9 @@ const ActivityReport: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="总跟进数"
+              title={t('report.activity.totalActivities')}
               value={activityReport.totalActivities}
-              suffix="次"
+              suffix={t('common.unit.times')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Card>
@@ -157,9 +159,9 @@ const ActivityReport: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="本周跟进"
+              title={t('report.activity.thisWeek')}
               value={activityReport.thisWeek}
-              suffix="次"
+              suffix={t('common.unit.times')}
               valueStyle={{ color: '#52c41a' }}
             />
           </Card>
@@ -167,9 +169,9 @@ const ActivityReport: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="人均跟进"
+              title={t('report.activity.avgPerSales')}
               value={activityReport.avgPerSales}
-              suffix="次"
+              suffix={t('common.unit.times')}
               precision={1}
               valueStyle={{ color: '#faad14' }}
             />
@@ -179,7 +181,7 @@ const ActivityReport: React.FC = () => {
 
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={12}>
-          <Card title="📊 跟进类型分布">
+          <Card title={`📊 ${t('report.activity.typeDistribution')}`}>
             <PieChart
               data={typePieData}
               height={300}
@@ -189,7 +191,7 @@ const ActivityReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="📈 周跟进趋势">
+          <Card title={`📈 ${t('report.activity.weeklyTrend')}`}>
             <BarChart
               data={weeklyBarData}
               height={300}
@@ -201,7 +203,7 @@ const ActivityReport: React.FC = () => {
 
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="📋 跟进类型详情" size="small">
+          <Card title={`📋 ${t('report.activity.typeDetails')}`} size="small">
             <Table
               columns={typeColumns}
               dataSource={activityReport.typeDist}
@@ -212,7 +214,7 @@ const ActivityReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="销售跟进排行" size="small">
+          <Card title={t('report.activity.salesRanking')} size="small">
             <Table
               columns={rankingColumns}
               dataSource={activityReport.salesRanking}

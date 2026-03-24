@@ -9,6 +9,7 @@ import {
   PlusOutlined,
   CalculatorOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { QuoteProduct, Product } from '../../types/cpq';
 
@@ -26,6 +27,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   onChange,
   readonly = false,
 }) => {
+  const { t } = useTranslation();
   const [quoteProducts, setQuoteProducts] = useState<QuoteProduct[]>(products);
 
   /** 同步外部产品变化 */
@@ -77,7 +79,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
     const updated = quoteProducts.filter(p => p.id !== id);
     setQuoteProducts(updated);
     onChange(updated);
-    message.success('产品已删除');
+    message.success(t('quote.calculator.productDeleted'));
   };
 
   /** 添加产品（从外部传入） */
@@ -100,7 +102,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
     const updated = [...quoteProducts, ...newQuoteProducts];
     setQuoteProducts(updated);
     onChange(updated);
-    message.success(`已添加 ${newProducts.length} 个产品`);
+    message.success(t('quote.calculator.productsAdded', { count: newProducts.length }));
   };
 
   /** 计算总计 */
@@ -126,21 +128,21 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   /** 表格列定义 */
   const columns: ColumnsType<QuoteProduct> = [
     {
-      title: '产品名称',
+      title: t('quote.calculator.productName'),
       dataIndex: 'productName',
       key: 'productName',
       width: 250,
       fixed: 'left',
     },
     {
-      title: '单价',
+      title: t('quote.calculator.unitPrice'),
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       width: 120,
       render: (price: number) => `¥${price.toLocaleString()}`,
     },
     {
-      title: '数量',
+      title: t('quote.calculator.quantity'),
       dataIndex: 'quantity',
       key: 'quantity',
       width: 120,
@@ -160,7 +162,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
       },
     },
     {
-      title: '折扣 (%)',
+      title: t('quote.calculator.discount'),
       dataIndex: 'discount',
       key: 'discount',
       width: 120,
@@ -182,21 +184,21 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
       },
     },
     {
-      title: '小计',
+      title: t('quote.calculator.subtotal'),
       dataIndex: 'subtotal',
       key: 'subtotal',
       width: 120,
       render: (subtotal: number) => `¥${subtotal.toLocaleString()}`,
     },
     {
-      title: '税费 (13%)',
+      title: t('quote.calculator.tax'),
       dataIndex: 'tax',
       key: 'tax',
       width: 120,
       render: (tax: number) => `¥${tax.toLocaleString()}`,
     },
     {
-      title: '总计',
+      title: t('quote.calculator.total'),
       dataIndex: 'total',
       key: 'total',
       width: 120,
@@ -205,7 +207,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
       ),
     },
     {
-      title: '操作',
+      title: t('quote.calculator.actions'),
       key: 'action',
       width: 80,
       fixed: 'right',
@@ -215,10 +217,10 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
         }
         return (
           <Popconfirm
-            title="确定要删除该产品吗？"
+            title={t('quote.calculator.deleteConfirm')}
             onConfirm={() => handleDelete(record.id)}
-            okText="确定"
-            cancelText="取消"
+            okText={t('common.actions.confirm')}
+            cancelText={t('common.actions.cancel')}
           >
             <Button type="link" danger icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -232,12 +234,12 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
       title={
         <Space>
           <CalculatorOutlined />
-          <span>报价明细</span>
+          <span>{t('quote.calculator.title')}</span>
         </Space>
       }
       extra={
         !readonly && (
-          <Tag color="blue">共 {quoteProducts.length} 个产品</Tag>
+          <Tag color="blue">{t('quote.calculator.totalProducts', { count: quoteProducts.length })}</Tag>
         )
       }
     >
@@ -252,16 +254,16 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           <div style={{ textAlign: 'right', fontWeight: 'bold' }}>
             <Space size="large">
               <span>
-                小计：¥{totals.subtotal.toLocaleString()}
+                {t('quote.calculator.subtotal')}：¥{totals.subtotal.toLocaleString()}
               </span>
               <span style={{ color: '#ff4d4f' }}>
-                折扣：-¥{totals.totalDiscount.toLocaleString()}
+                {t('quote.calculator.discount')}：-¥{totals.totalDiscount.toLocaleString()}
               </span>
               <span>
-                税费：¥{totals.totalTax.toLocaleString()}
+                {t('quote.calculator.tax')}：¥{totals.totalTax.toLocaleString()}
               </span>
               <span style={{ color: '#52c41a', fontSize: 16 }}>
-                总计：¥{totals.grandTotal.toLocaleString()}
+                {t('quote.calculator.grandTotal')}：¥{totals.grandTotal.toLocaleString()}
               </span>
             </Space>
           </div>

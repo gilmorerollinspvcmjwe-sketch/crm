@@ -24,6 +24,7 @@ import {
 } from 'antd';
 import { PlusOutlined, SearchOutlined, BarChartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Campaign, CampaignType, CampaignStatus } from '../types/marketing';
 import { getCampaignsData } from '../mock/marketingData';
 
@@ -55,6 +56,7 @@ const typeColorMap: Record<CampaignType, string> = {
  */
 export const CampaignsList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [campaignList, setCampaignList] = useState<Campaign[]>([]);
   const [filteredData, setFilteredData] = useState<Campaign[]>([]);
@@ -70,7 +72,7 @@ export const CampaignsList: React.FC = () => {
       setCampaignList(data);
       setFilteredData(data);
     } catch (error) {
-      message.error('加载营销活动列表失败');
+      message.error(t('marketing.campaigns.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -129,7 +131,7 @@ export const CampaignsList: React.FC = () => {
   /** 表格列定义 */
   const columns = [
     {
-      title: '活动名称',
+      title: t('marketing.campaigns.columnName'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
@@ -145,7 +147,7 @@ export const CampaignsList: React.FC = () => {
       ),
     },
     {
-      title: '类型',
+      title: t('marketing.campaigns.columnType'),
       dataIndex: 'type',
       key: 'type',
       width: 100,
@@ -154,7 +156,7 @@ export const CampaignsList: React.FC = () => {
       ),
     },
     {
-      title: '状态',
+      title: t('marketing.campaigns.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -163,32 +165,32 @@ export const CampaignsList: React.FC = () => {
       ),
     },
     {
-      title: '负责人',
+      title: t('marketing.campaigns.columnOwner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '预算',
+      title: t('marketing.campaigns.columnBudget'),
       dataIndex: 'budget',
       key: 'budget',
       width: 100,
-      render: (budget: number) => `¥${(budget / 10000).toFixed(1)}万`,
+      render: (budget: number) => `¥${(budget / 10000).toFixed(1)}${t('marketing.campaigns.unitWan')}`,
     },
     {
-      title: '时间周期',
+      title: t('marketing.campaigns.columnDateRange'),
       key: 'dateRange',
       width: 180,
       render: (_: unknown, record: Campaign) => (
         <Space direction="vertical" size={0}>
           <Typography.Text style={{ fontSize: 12 }}>
-            {record.startDate} 至 {record.endDate}
+            {record.startDate} {t('common.to')} {record.endDate}
           </Typography.Text>
         </Space>
       ),
     },
     {
-      title: '转化率',
+      title: t('marketing.campaigns.columnConversionRate'),
       key: 'conversionRate',
       width: 150,
       render: (_: unknown, record: Campaign) => {
@@ -205,14 +207,14 @@ export const CampaignsList: React.FC = () => {
               format={() => `${(metrics.conversionRate || 0).toFixed(1)}%`}
             />
             <Typography.Text type="secondary" style={{ fontSize: 11 }}>
-              转化：{metrics.converted || 0} / 发送：{metrics.sent || 0}
+              {t('marketing.campaigns.conversionLabel')}：{metrics.converted || 0} / {t('marketing.campaigns.sentLabel')}：{metrics.sent || 0}
             </Typography.Text>
           </Space>
         );
       },
     },
     {
-      title: '操作',
+      title: t('common.detail'),
       key: 'action',
       width: 150,
       render: (_: unknown, record: Campaign) => (
@@ -222,15 +224,15 @@ export const CampaignsList: React.FC = () => {
             size="small"
             onClick={() => handleViewDetail(record.id)}
           >
-            详情
+            {t('marketing.campaigns.viewDetail')}
           </Button>
           <Button
             type="link"
             size="small"
             icon={<BarChartOutlined />}
-            onClick={() => message.info('效果分析功能开发中...')}
+            onClick={() => message.info(t('common.comingSoon'))}
           >
-            分析
+            {t('marketing.campaigns.analyze')}
           </Button>
         </Space>
       ),
@@ -249,31 +251,31 @@ export const CampaignsList: React.FC = () => {
         <Row gutter={16}>
           <Col span={6}>
             <Statistic
-              title="总活动数"
+              title={t('marketing.campaigns.totalCampaigns')}
               value={campaignList.length}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="进行中"
+              title={t('marketing.campaigns.running')}
               value={runningCount}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#52c41a' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="总预算"
+              title={t('marketing.campaigns.totalBudget')}
               value={(totalBudget / 10000).toFixed(1)}
-              suffix="万元"
+              suffix={t('marketing.campaigns.unitWan')}
               valueStyle={{ color: '#faad14' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="总转化"
+              title={t('marketing.campaigns.totalConversion')}
               value={totalConverted}
               suffix={` / ${totalSent}`}
               valueStyle={{ color: '#722ed1' }}
@@ -283,36 +285,36 @@ export const CampaignsList: React.FC = () => {
       </Card>
 
       <Card
-        title="营销活动列表"
+        title={t('marketing.campaigns.title')}
         extra={
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建活动
+            {t('marketing.campaigns.newCampaign')}
           </Button>
         }
       >
         <Space style={{ marginBottom: 16 }} wrap>
           <Search
-            placeholder="搜索活动名称或描述"
+            placeholder={t('marketing.campaigns.searchPlaceholder')}
             allowClear
             onSearch={handleSearch}
             style={{ width: 300 }}
             prefix={<SearchOutlined />}
           />
           <Select
-            placeholder="活动类型"
+            placeholder={t('marketing.campaigns.campaignType')}
             allowClear
             style={{ width: 150 }}
             onChange={(value) => setFilterType(value)}
             options={Object.values(CampaignType).map((type) => ({ label: type, value: type }))}
           />
           <Select
-            placeholder="活动状态"
+            placeholder={t('marketing.campaigns.campaignStatus')}
             allowClear
             style={{ width: 150 }}
             onChange={(value) => setFilterStatus(value)}
             options={Object.values(CampaignStatus).map((status) => ({ label: status, value: status }))}
           />
-          <Button onClick={handleReset}>重置</Button>
+          <Button onClick={handleReset}>{t('common.reset')}</Button>
         </Space>
 
         <Table
@@ -323,7 +325,7 @@ export const CampaignsList: React.FC = () => {
           pagination={{
             pageSize: 20,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个活动`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
           }}
         />
       </Card>

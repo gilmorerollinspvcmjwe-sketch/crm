@@ -13,6 +13,7 @@ import {
   Button,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { CustomField, FieldType } from '../../types/customField';
 
@@ -44,6 +45,8 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
   readOnly = false,
   formPrefix = 'customFields',
 }) => {
+  const { t } = useTranslation();
+
   // 字段值变化处理
   const handleChange = (fieldName: string, value: any) => {
     onChange?.(fieldName, value);
@@ -69,18 +72,18 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请输入${field.label}` },
+              field.required && { required: true, message: `${t('customField.form.placeholder')}${field.label}` },
               field.validation?.minLength && { 
                 min: field.validation.minLength, 
-                message: `最少${field.validation.minLength}个字符` 
+                message: `${t('customField.form.minLength')}${field.validation.minLength}` 
               },
               field.validation?.maxLength && { 
                 max: field.validation.maxLength, 
-                message: `最多${field.validation.maxLength}个字符` 
+                message: `${t('customField.form.maxLength')}${field.validation.maxLength}` 
               },
               field.validation?.pattern && { 
                 pattern: new RegExp(field.validation.pattern), 
-                message: field.validation.errorMessage || '格式不正确' 
+                message: field.validation.errorMessage || t('common.operationFailed')
               },
             ].filter(Boolean)}
           >
@@ -95,14 +98,14 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请输入${field.label}` },
+              field.required && { required: true, message: `${t('customField.form.placeholder')}${field.label}` },
               field.validation?.minLength && { 
                 min: field.validation.minLength, 
-                message: `最少${field.validation.minLength}个字符` 
+                message: `${t('customField.form.minLength')}${field.validation.minLength}` 
               },
               field.validation?.maxLength && { 
                 max: field.validation.maxLength, 
-                message: `最多${field.validation.maxLength}个字符` 
+                message: `${t('customField.form.maxLength')}${field.validation.maxLength}` 
               },
             ].filter(Boolean)}
           >
@@ -117,16 +120,16 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请输入${field.label}` },
+              field.required && { required: true, message: `${t('customField.form.placeholder')}${field.label}` },
               field.validation?.min !== undefined && { 
                 type: 'number' as const,
                 min: field.validation.min, 
-                message: `最小值为${field.validation.min}` 
+                message: `${t('customField.form.minValue')}${field.validation.min}` 
               },
               field.validation?.max !== undefined && { 
                 type: 'number' as const,
                 max: field.validation.max, 
-                message: `最大值为${field.validation.max}` 
+                message: `${t('customField.form.maxValue')}${field.validation.max}` 
               },
             ].filter(Boolean)}
           >
@@ -147,7 +150,7 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <DatePicker
@@ -170,7 +173,7 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <DatePicker
@@ -194,12 +197,12 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <Select
               {...commonProps}
-              placeholder={`请选择${field.label}`}
+              placeholder={`${t('common.select')}${field.label}`}
               allowClear
               options={field.options?.map(opt => ({ label: opt, value: opt }))}
               disabled={readOnly}
@@ -214,13 +217,13 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <Select
               {...commonProps}
               mode="multiple"
-              placeholder={`请选择${field.label}`}
+              placeholder={`${t('common.select')}${field.label}`}
               options={field.options?.map(opt => ({ label: opt, value: opt }))}
               disabled={readOnly}
               style={{ width: '100%' }}
@@ -236,14 +239,14 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             label={field.label}
             valuePropName="checked"
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <Switch 
               {...commonProps}
               checked={fieldValue}
-              checkedChildren="是"
-              unCheckedChildren="否"
+              checkedChildren={t('common.yes')}
+              unCheckedChildren={t('common.no')}
               disabled={readOnly}
             />
           </Form.Item>
@@ -256,12 +259,12 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <Select
               {...commonProps}
-              placeholder="选择用户"
+              placeholder={t('customField.types.user')}
               showSearch
               filterOption={(input, option) =>
                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
@@ -279,12 +282,12 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <Select
               {...commonProps}
-              placeholder="选择部门"
+              placeholder={t('customField.types.department')}
               showSearch
               filterOption={(input, option) =>
                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
@@ -302,12 +305,12 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请选择${field.label}` },
+              field.required && { required: true, message: `${t('common.select')}${field.label}` },
             ].filter(Boolean)}
           >
             <Select
               {...commonProps}
-              placeholder="选择关联记录"
+              placeholder={t('customField.types.relation')}
               showSearch
               filterOption={(input, option) =>
                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
@@ -325,7 +328,7 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
             name={fieldName}
             label={field.label}
             rules={[
-              field.required && { required: true, message: `请上传${field.label}` },
+              field.required && { required: true, message: `${t('customField.form.placeholder')}${field.label}` },
             ].filter(Boolean)}
           >
             <Upload
@@ -336,7 +339,7 @@ const DynamicCustomFields: React.FC<DynamicCustomFieldsProps> = ({
               disabled={readOnly}
               multiple
             >
-              <Button icon={<UploadOutlined />}>点击上传</Button>
+              <Button icon={<UploadOutlined />}>{t('customField.form.placeholder')}</Button>
             </Upload>
           </Form.Item>
         );

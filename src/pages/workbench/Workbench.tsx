@@ -12,6 +12,7 @@ import {
   RightOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { TodayTodo } from './components/TodayTodo';
 import { QuickActions } from './components/QuickActions';
 import { AIRecommendation } from './components/AIRecommendation';
@@ -24,6 +25,7 @@ const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 
 const Workbench: React.FC = () => {
+  const { t } = useTranslation();
   const { user, todos, aiRecommendations, performance, quickActions } =
     workbenchMockData;
 
@@ -46,7 +48,7 @@ const Workbench: React.FC = () => {
 
   const handleViewAllTodos = () => {
     console.log('查看全部待办');
-    message.info('待办列表页面待实现');
+    message.info(t('workbench.todoListPage'));
     // TODO: 跳转到待办列表页
   };
 
@@ -56,7 +58,7 @@ const Workbench: React.FC = () => {
 
   const handleSettings = () => {
     console.log('打开设置');
-    message.info('设置页面待实现');
+    message.info(t('workbench.settingsPage'));
     // TODO: 打开设置页面
   };
 
@@ -70,7 +72,7 @@ const Workbench: React.FC = () => {
   // 处理重点客户点击
   const handleCustomerClick = (customer: any) => {
     console.log('点击重点客户:', customer);
-    message.info('客户详情页面待实现');
+    message.info(t('workbench.customerDetailPage'));
     // TODO: 打开客户详情
   };
 
@@ -94,7 +96,7 @@ const Workbench: React.FC = () => {
       case 'new-quote':
         // 跳转到报价页面
         console.log('跳转到报价页面：/quote/new');
-        message.info('跳转到报价页面');
+        message.info(t('workbench.quotePage'));
         // 在实际应用中这里会使用 navigate('/quote/new')
         break;
       case 'new-contract':
@@ -129,7 +131,7 @@ const Workbench: React.FC = () => {
 
   // 处理 AI 助手的业绩查看请求
   const handleAIAssistantViewPerformance = () => {
-    message.info('业绩详情页面待实现');
+    message.info(t('workbench.performancePage'));
     // TODO: 跳转业绩报表页面
   };
 
@@ -150,7 +152,7 @@ const Workbench: React.FC = () => {
       newCompleted.add(todoId);
     }
     setCompletedTodoIds(newCompleted);
-    message.success('标记完成');
+    message.success(t('common.operationSuccess'));
   };
 
   // 处理待办点击
@@ -162,13 +164,13 @@ const Workbench: React.FC = () => {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 6) return '夜深了';
-    if (hour < 9) return '早上好';
-    if (hour < 12) return '上午好';
-    if (hour < 14) return '中午好';
-    if (hour < 18) return '下午好';
-    if (hour < 22) return '晚上好';
-    return '夜深了';
+    if (hour < 6) return t('workbench.greeting.lateNight');
+    if (hour < 9) return t('workbench.greeting.morning');
+    if (hour < 12) return t('workbench.greeting.forenoon');
+    if (hour < 14) return t('workbench.greeting.noon');
+    if (hour < 18) return t('workbench.greeting.afternoon');
+    if (hour < 22) return t('workbench.greeting.evening');
+    return t('workbench.greeting.lateNight');
   };
 
   // 获取今日日程（简化版）
@@ -199,10 +201,10 @@ const Workbench: React.FC = () => {
             icon={<RobotOutlined />}
             onClick={handleAIAssistant}
           >
-            AI 助手
+            {t('workbench.aiAssistant')}
           </Button>
           <Button icon={<SettingOutlined />} onClick={handleSettings}>
-            设置
+            {t('workbench.settings')}
           </Button>
         </Space>
       </Header>
@@ -271,7 +273,7 @@ const Workbench: React.FC = () => {
 
       {/* 日程抽屉 */}
       <Drawer
-        title="📅 今日日程"
+        title={`📅 ${t('workbench.scheduleDrawer.title')}`}
         placement="right"
         width={400}
         onClose={() => setScheduleDrawerVisible(false)}
@@ -299,7 +301,7 @@ const Workbench: React.FC = () => {
 
       {/* 商机详情抽屉 */}
       <Drawer
-        title="商机详情"
+        title={t('workbench.opportunityDrawer.title')}
         placement="right"
         width={500}
         onClose={() => setOpportunityDrawerVisible(false)}
@@ -308,25 +310,25 @@ const Workbench: React.FC = () => {
         {selectedOpportunity && (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <div>
-              <Text strong>客户名称：</Text>
+              <Text strong>{t('workbench.opportunityDrawer.customerName')}：</Text>
               <Text>{selectedOpportunity.customerName}</Text>
             </div>
             <div>
-              <Text strong>商机金额：</Text>
+              <Text strong>{t('workbench.opportunityDrawer.amount')}：</Text>
               <Text>¥{(selectedOpportunity.amount / 10000).toFixed(0)}万</Text>
             </div>
             <div>
-              <Text strong>当前阶段：</Text>
+              <Text strong>{t('workbench.opportunityDrawer.stage')}：</Text>
               <Tag>{selectedOpportunity.stage}</Tag>
             </div>
             <div>
-              <Text strong>赢单概率：</Text>
+              <Text strong>{t('workbench.opportunityDrawer.winProbability')}：</Text>
               <Tag color={selectedOpportunity.winProbability >= 0.7 ? 'green' : 'blue'}>
                 {Math.round(selectedOpportunity.winProbability * 100)}%
               </Tag>
             </div>
             <div>
-              <Text strong>AI 建议：</Text>
+              <Text strong>{t('workbench.opportunityDrawer.aiSuggestion')}：</Text>
               <Tag color="orange">{selectedOpportunity.recommendation}</Tag>
             </div>
           </Space>

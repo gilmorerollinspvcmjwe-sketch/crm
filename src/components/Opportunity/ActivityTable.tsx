@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Tag, Space, Typography, Tooltip } from 'antd';
 import { PhoneOutlined, EnvironmentOutlined, MailOutlined, WechatOutlined, VideoCameraOutlined, FileTextOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Activity, ActivityType, ActivityMethod, ActivityResult, CustomerInterest } from '../../types/activity';
 
 const { Text, Paragraph } = Typography;
@@ -19,65 +20,67 @@ interface ActivityTableProps {
   onDelete?: (id: string) => void;
 }
 
-// 跟进类型图标映射
-const ACTIVITY_TYPE_ICONS: Record<ActivityType, React.ReactNode> = {
-  [ActivityType.PHONE]: <PhoneOutlined />,
-  [ActivityType.VISIT]: <EnvironmentOutlined />,
-  [ActivityType.EMAIL]: <MailOutlined />,
-  [ActivityType.WECHAT]: <WechatOutlined />,
-  [ActivityType.MEETING]: <VideoCameraOutlined />,
-  [ActivityType.OTHER]: <FileTextOutlined />
-};
-
-// 跟进类型颜色配置
-const ACTIVITY_TYPE_COLORS: Record<ActivityType, string> = {
-  [ActivityType.PHONE]: 'blue',
-  [ActivityType.VISIT]: 'green',
-  [ActivityType.EMAIL]: 'cyan',
-  [ActivityType.WECHAT]: 'lime',
-  [ActivityType.MEETING]: 'purple',
-  [ActivityType.OTHER]: 'default'
-};
-
-// 跟进结果颜色配置
-const RESULT_COLORS: Record<ActivityResult, string> = {
-  [ActivityResult.PROGRESS]: 'green',
-  [ActivityResult.NO_PROGRESS]: 'red',
-  [ActivityResult.NEED_FOLLOWUP]: 'orange'
-};
-
-// 意向度颜色配置
-const INTEREST_COLORS: Record<CustomerInterest, string> = {
-  [CustomerInterest.HIGH]: 'red',
-  [CustomerInterest.MEDIUM]: 'orange',
-  [CustomerInterest.LOW]: 'default'
-};
-
-// 格式化日期时间
-const formatDateTime = (dateStr: string) => {
-  return new Date(dateStr).toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
-
-// 去除 HTML 标签
-const stripHtml = (html: string) => {
-  return html.replace(/<[^>]*>/g, '').substring(0, 100) + (html.length > 100 ? '...' : '');
-};
-
 /**
  * 跟进记录表格组件
  * 展示跟进记录列表
  */
 export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = false }) => {
+  const { t } = useTranslation();
+
+  // 跟进类型图标映射
+  const ACTIVITY_TYPE_ICONS: Record<ActivityType, React.ReactNode> = {
+    [ActivityType.PHONE]: <PhoneOutlined />,
+    [ActivityType.VISIT]: <EnvironmentOutlined />,
+    [ActivityType.EMAIL]: <MailOutlined />,
+    [ActivityType.WECHAT]: <WechatOutlined />,
+    [ActivityType.MEETING]: <VideoCameraOutlined />,
+    [ActivityType.OTHER]: <FileTextOutlined />
+  };
+
+  // 跟进类型颜色配置
+  const ACTIVITY_TYPE_COLORS: Record<ActivityType, string> = {
+    [ActivityType.PHONE]: 'blue',
+    [ActivityType.VISIT]: 'green',
+    [ActivityType.EMAIL]: 'cyan',
+    [ActivityType.WECHAT]: 'lime',
+    [ActivityType.MEETING]: 'purple',
+    [ActivityType.OTHER]: 'default'
+  };
+
+  // 跟进结果颜色配置
+  const RESULT_COLORS: Record<ActivityResult, string> = {
+    [ActivityResult.PROGRESS]: 'green',
+    [ActivityResult.NO_PROGRESS]: 'red',
+    [ActivityResult.NEED_FOLLOWUP]: 'orange'
+  };
+
+  // 意向度颜色配置
+  const INTEREST_COLORS: Record<CustomerInterest, string> = {
+    [CustomerInterest.HIGH]: 'red',
+    [CustomerInterest.MEDIUM]: 'orange',
+    [CustomerInterest.LOW]: 'default'
+  };
+
+  // 格式化日期时间
+  const formatDateTime = (dateStr: string) => {
+    return new Date(dateStr).toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // 去除 HTML 标签
+  const stripHtml = (html: string) => {
+    return html.replace(/<[^>]*>/g, '').substring(0, 100) + (html.length > 100 ? '...' : '');
+  };
+
   // 表格列定义
   const columns = [
     {
-      title: '跟进对象',
+      title: t('activity.column.object'),
       dataIndex: 'relatedObjectName',
       key: 'relatedObjectName',
       width: 200,
@@ -91,7 +94,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       )
     },
     {
-      title: '跟进类型',
+      title: t('activity.column.type'),
       dataIndex: 'type',
       key: 'type',
       width: 100,
@@ -107,7 +110,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       )
     },
     {
-      title: '跟进内容',
+      title: t('activity.column.content'),
       dataIndex: 'content',
       key: 'content',
       width: 300,
@@ -119,14 +122,14 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       )
     },
     {
-      title: '跟进方式',
+      title: t('activity.column.method'),
       dataIndex: 'method',
       key: 'method',
       width: 80,
       render: (method?: ActivityMethod) => method || '-'
     },
     {
-      title: '跟进人',
+      title: t('activity.column.owner'),
       dataIndex: 'createdByName',
       key: 'createdByName',
       width: 100,
@@ -137,7 +140,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       onFilter: (value: any, record: Activity) => record.createdByName === value
     },
     {
-      title: '跟进时间',
+      title: t('activity.column.time'),
       dataIndex: 'activityTime',
       key: 'activityTime',
       width: 160,
@@ -146,7 +149,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       render: (time: string) => formatDateTime(time)
     },
     {
-      title: '下次跟进',
+      title: t('activity.column.nextFollowup'),
       dataIndex: 'nextFollowupTime',
       key: 'nextFollowupTime',
       width: 160,
@@ -158,7 +161,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       render: (time?: string) => time ? formatDateTime(time) : '-'
     },
     {
-      title: '跟进结果',
+      title: t('activity.column.result'),
       dataIndex: 'result',
       key: 'result',
       width: 90,
@@ -167,7 +170,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       )
     },
     {
-      title: '客户意向',
+      title: t('activity.column.interest'),
       dataIndex: 'interestLevel',
       key: 'interestLevel',
       width: 90,
@@ -176,7 +179,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
       )
     },
     {
-      title: '附件',
+      title: t('activity.column.attachments'),
       key: 'attachments',
       width: 60,
       render: (_: any, record: Activity) => {
@@ -197,7 +200,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({ data, loading = fa
         pageSize: 20,
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条`,
+        showTotal: (total) => t('activity.pagination.total', { count: total }),
         pageSizeOptions: ['10', '20', '50', '100']
       }}
       size="middle"

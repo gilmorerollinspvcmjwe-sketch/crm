@@ -5,6 +5,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { Customer, CustomerLevel, CustomerStatus } from '../../types/customer';
 
@@ -62,6 +63,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
   onBatchAssign,
   onBatchDelete,
 }) => {
+  const { t } = useTranslation();
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
 
   /** 处理选择变化 */
@@ -78,7 +80,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
   /** 处理批量分配 */
   const handleBatchAssign = () => {
     if (selectedRowKeys.length === 0) {
-      message.warning('请选择要分配的客户');
+      message.warning(t('customerTable.selectToAssign'));
       return;
     }
     onBatchAssign?.(selectedRowKeys as string[]);
@@ -87,7 +89,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
   /** 处理批量删除 */
   const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) {
-      message.warning('请选择要删除的客户');
+      message.warning(t('customerTable.selectToDelete'));
       return;
     }
     onBatchDelete?.(selectedRowKeys as string[]);
@@ -96,7 +98,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
   /** 表格列配置 */
   const columns: ColumnsType<Customer> = [
     {
-      title: '客户名称',
+      title: t('customerTable.name'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
@@ -109,26 +111,26 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
       ),
     },
     {
-      title: '行业',
+      title: t('customerTable.industry'),
       dataIndex: 'industry',
       key: 'industry',
       width: 150,
       ellipsis: true,
     },
     {
-      title: '规模',
+      title: t('customerTable.size'),
       dataIndex: 'companySize',
       key: 'companySize',
       width: 120,
     },
     {
-      title: '来源',
+      title: t('customerTable.source'),
       dataIndex: 'source',
       key: 'source',
       width: 100,
     },
     {
-      title: '等级',
+      title: t('customerTable.level'),
       dataIndex: 'level',
       key: 'level',
       width: 80,
@@ -137,7 +139,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
       ),
     },
     {
-      title: '状态',
+      title: t('customerTable.status'),
       dataIndex: 'status',
       key: 'status',
       width: 80,
@@ -146,20 +148,20 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
       ),
     },
     {
-      title: '负责人',
+      title: t('customerTable.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '创建时间',
+      title: t('customerTable.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
       sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
     {
-      title: '操作',
+      title: t('customerTable.actions'),
       key: 'action',
       width: 180,
       fixed: 'right',
@@ -170,7 +172,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
             size="small"
             onClick={() => onViewDetail(record.id)}
           >
-            详情
+            {t('customerTable.viewDetail')}
           </Button>
           {onEdit && (
             <Button
@@ -179,15 +181,15 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
               icon={<EditOutlined />}
               onClick={() => onEdit(record.id)}
             >
-              编辑
+              {t('customerTable.edit')}
             </Button>
           )}
           {onDelete && (
             <Popconfirm
-              title="确定要删除该客户吗？"
+              title={t('customerTable.confirmDelete')}
               onConfirm={() => onDelete(record.id)}
-              okText="确定"
-              cancelText="取消"
+              okText={t('commonBatch.confirm')}
+              cancelText={t('commonBatch.cancel')}
             >
               <Button
                 type="link"
@@ -195,7 +197,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
                 danger
                 icon={<DeleteOutlined />}
               >
-                删除
+                {t('customerTable.delete')}
               </Button>
             </Popconfirm>
           )}
@@ -210,22 +212,22 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
       {selectedRowKeys.length > 0 && (
         <div style={{ marginBottom: 16, padding: '8px 12px', background: '#e6f7ff', borderRadius: 4 }}>
           <Space>
-            <span>已选择 {selectedRowKeys.length} 项</span>
+            <span>{t('customerTable.selectedCount', { count: selectedRowKeys.length })}</span>
             {onBatchAssign && (
               <Button size="small" onClick={handleBatchAssign}>
-                批量分配
+                {t('customerTable.batchAssign')}
               </Button>
             )}
             {onBatchDelete && (
               <Button size="small" danger onClick={handleBatchDelete}>
-                批量删除
+                {t('customerTable.batchDelete')}
               </Button>
             )}
             <Button
               size="small"
               onClick={() => setSelectedRowKeys([])}
             >
-              取消选择
+              {t('customerTable.cancelSelection')}
             </Button>
           </Space>
         </div>

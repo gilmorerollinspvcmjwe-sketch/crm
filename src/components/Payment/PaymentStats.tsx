@@ -8,6 +8,7 @@ import {
   RiseOutlined,
   CalendarOutlined
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { PaymentStats as PaymentStatsType } from '../../types/payment';
 import { PaymentStatus, PaymentMethod } from '../../types/payment';
 
@@ -38,19 +39,33 @@ const formatAmount = (amount: number) => {
  * 回款统计卡片组件
  * 展示回款统计概览
  */
-export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title = '回款统计' }) => {
+export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title }) => {
+  const { t } = useTranslation();
+  const cardTitle = title || t('payment.list.stats.title');
+
+  // 获取状态文本
+  const getStatusText = (status: PaymentStatus) => {
+    const statusMap: Record<PaymentStatus, string> = {
+      [PaymentStatus.PENDING]: t('payment.status.pending'),
+      [PaymentStatus.PARTIAL]: t('payment.status.partial'),
+      [PaymentStatus.COMPLETED]: t('payment.status.completed'),
+      [PaymentStatus.OVERDUE]: t('payment.status.overdue')
+    };
+    return statusMap[status] || status;
+  };
+
   return (
     <div>
-      <Title level={4} style={{ marginBottom: 16 }}>{title}</Title>
+      <Title level={4} style={{ marginBottom: 16 }}>{cardTitle}</Title>
       
       {/* 核心指标卡片 */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>
           <Card>
             <Statistic
-              title="计划回款总额"
-              value={formatAmount(stats.totalPlanned)}
-              suffix="万元"
+              title={t('payment.list.stats.thisMonthPlan')}
+              value={formatAmount(stats.thisMonthPlanned)}
+              suffix={t('common.unit.tenThousand')}
               prefix={<DollarOutlined />}
               valueStyle={{ color: '#1890ff' }}
               precision={0}
@@ -60,9 +75,9 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
         <Col span={6}>
           <Card>
             <Statistic
-              title="实际回款总额"
-              value={formatAmount(stats.totalActual)}
-              suffix="万元"
+              title={t('payment.list.stats.thisMonthActual')}
+              value={formatAmount(stats.thisMonthActual)}
+              suffix={t('common.unit.tenThousand')}
               prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#52c41a' }}
               precision={0}
@@ -72,18 +87,20 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
         <Col span={6}>
           <Card>
             <Statistic
-              title="回款完成率"
-              value={stats.completionRate}
-              suffix="%"
+              title={t('payment.list.stats.thisMonthRate')}
+              value={stats.thisMonthPlanned > 0 ? Math.round((stats.thisMonthActual / stats.thisMonthPlanned) * 100) : 0}
+              suffix={t('common.unit.percent')}
               prefix={<RiseOutlined />}
               valueStyle={{
-                color: stats.completionRate >= 80 ? '#52c41a' : stats.completionRate >= 50 ? '#faad14' : '#ff4d4f'
+                color: stats.thisMonthPlanned > 0 && (stats.thisMonthActual / stats.thisMonthPlanned) >= 0.8 ? '#52c41a' : 
+                       stats.thisMonthPlanned > 0 && (stats.thisMonthActual / stats.thisMonthPlanned) >= 0.5 ? '#faad14' : '#ff4d4f'
               }}
             />
             <Progress
-              percent={stats.completionRate}
+              percent={stats.thisMonthPlanned > 0 ? Math.round((stats.thisMonthActual / stats.thisMonthPlanned) * 100) : 0}
               size="small"
-              strokeColor={stats.completionRate >= 80 ? '#52c41a' : stats.completionRate >= 50 ? '#faad14' : '#ff4d4f'}
+              strokeColor={stats.thisMonthPlanned > 0 && (stats.thisMonthActual / stats.thisMonthPlanned) >= 0.8 ? '#52c41a' : 
+                           stats.thisMonthPlanned > 0 && (stats.thisMonthActual / stats.thisMonthPlanned) >= 0.5 ? '#faad14' : '#ff4d4f'}
               style={{ marginTop: 8 }}
             />
           </Card>
@@ -91,16 +108,16 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
         <Col span={6}>
           <Card>
             <Statistic
-              title="逾期金额"
+              title={t('payment.list.overdueAmount')}
               value={formatAmount(stats.overdueAmount)}
-              suffix="万元"
+              suffix={t('common.unit.tenThousand')}
               prefix={<ExclamationCircleOutlined />}
               valueStyle={{ color: stats.overdueAmount > 0 ? '#ff4d4f' : '#52c41a' }}
               precision={0}
             />
             {stats.overdueCount > 0 && (
               <Text type="danger" style={{ fontSize: 12 }}>
-                逾期笔数：{stats.overdueCount}
+                {t('payment.list.stats.overdueCount')}：{stats.overdueCount}
               </Text>
             )}
           </Card>
@@ -113,23 +130,23 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
           <Card title={<CalendarOutlined />}>
             <Space size="large">
               <div>
-                <Text type="secondary">本月计划</Text>
+                <Text type="secondary">{t('payment.list.stats.thisMonthPlan')}</Text>
                 <div style={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}>
-                  ¥{formatAmount(stats.thisMonthPlanned)}万
+                  ¥{formatAmount(stats.thisMonthPlanned)}{t('common.unit.tenThousand')}
                 </div>
               </div>
               <div>
-                <Text type="secondary">本月实际</Text>
+                <Text type="secondary">{t('payment.list.stats.thisMonthActual')}</Text>
                 <div style={{ fontSize: 20, fontWeight: 'bold', color: '#52c41a' }}>
-                  ¥{formatAmount(stats.thisMonthActual)}万
+                  ¥{formatAmount(stats.thisMonthActual)}{t('common.unit.tenThousand')}
                 </div>
               </div>
               <div>
-                <Text type="secondary">本月完成率</Text>
+                <Text type="secondary">{t('payment.list.stats.thisMonthRate')}</Text>
                 <div style={{ fontSize: 20, fontWeight: 'bold' }}>
                   {stats.thisMonthPlanned > 0
                     ? Math.round((stats.thisMonthActual / stats.thisMonthPlanned) * 100)
-                    : 0}%
+                    : 0}{t('common.unit.percent')}
                 </div>
               </div>
             </Space>
@@ -143,10 +160,10 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
               {Object.entries(stats.byStatus).map(([status, count]) => (
                 <div key={status} style={{ textAlign: 'center' }}>
                   <Tag color={STATUS_COLORS[status as PaymentStatus]} style={{ marginBottom: 4 }}>
-                    {status}
+                    {getStatusText(status as PaymentStatus)}
                   </Tag>
                   <div style={{ fontSize: 18, fontWeight: 'bold' }}>{count}</div>
-                  <Text type="secondary" style={{ fontSize: 12 }}>笔</Text>
+                  <Text type="secondary" style={{ fontSize: 12 }}>{t('common.unit.count')}</Text>
                 </div>
               ))}
             </Space>
@@ -155,7 +172,7 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
       </Row>
       
       {/* 按付款方式分布 */}
-      <Card title="💳 付款方式分布">
+      <Card title={t('payment.list.stats.paymentMethodDist')}>
         <Row gutter={16}>
           {Object.entries(stats.byPaymentMethod)
             .filter(([_, amount]) => amount > 0)
@@ -164,7 +181,7 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
                 <div style={{ textAlign: 'center' }}>
                   <Tag color="blue" style={{ marginBottom: 4 }}>{method}</Tag>
                   <div style={{ fontSize: 16, fontWeight: 'bold', color: '#1890ff' }}>
-                    ¥{formatAmount(amount)}万
+                    ¥{formatAmount(amount)}{t('common.unit.tenThousand')}
                   </div>
                 </div>
               </Col>
@@ -172,7 +189,7 @@ export const PaymentStatsCard: React.FC<PaymentStatsCardProps> = ({ stats, title
           {Object.values(stats.byPaymentMethod).every(amount => amount === 0) && (
             <Col span={24}>
               <Text type="secondary" style={{ textAlign: 'center', display: 'block' }}>
-                暂无回款数据
+                {t('payment.list.stats.noData')}
               </Text>
             </Col>
           )}

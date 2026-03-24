@@ -18,6 +18,7 @@ import {
   SearchOutlined,
   DragOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { CustomField, FieldType, ModuleType } from '../../types/customField';
 import { customFieldService } from '../../services/customFieldService';
 import CustomFieldForm from '../../components/CustomField/CustomFieldForm';
@@ -56,6 +57,7 @@ const TYPE_LABELS: Record<FieldType, string> = {
 };
 
 const CustomFields: React.FC = () => {
+  const { t } = useTranslation();
   const [fields, setFields] = useState<CustomField[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -72,7 +74,7 @@ const CustomFields: React.FC = () => {
       );
       setFields(data);
     } catch (error) {
-      message.error('加载字段列表失败');
+      message.error(t('settings.customFields.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -85,15 +87,15 @@ const CustomFields: React.FC = () => {
   // 删除字段
   const handleDelete = async (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '删除后无法恢复，确定要删除该字段吗？',
+      title: t('common.confirm'),
+      content: t('settings.customFields.deleteConfirm'),
       onOk: async () => {
         try {
           await customFieldService.deleteCustomField(id);
-          message.success('删除成功');
+          message.success(t('settings.customFields.deleteSuccess'));
           loadFields();
         } catch (error) {
-          message.error('删除失败');
+          message.error(t('settings.customFields.operationFailed'));
         }
       },
     });
@@ -116,15 +118,15 @@ const CustomFields: React.FC = () => {
     try {
       if (editingField) {
         await customFieldService.updateCustomField(editingField.id, values);
-        message.success('更新成功');
+        message.success(t('settings.customFields.updateSuccess'));
       } else {
         await customFieldService.createCustomField(values);
-        message.success('创建成功');
+        message.success(t('settings.customFields.createSuccess'));
       }
       setModalVisible(false);
       loadFields();
     } catch (error) {
-      message.error(editingField ? '更新失败' : '创建失败');
+      message.error(editingField ? t('settings.customFields.operationFailed') : t('settings.customFields.operationFailed'));
     }
   };
 
@@ -134,10 +136,10 @@ const CustomFields: React.FC = () => {
       await customFieldService.updateCustomField(field.id, {
         enabled: !field.enabled,
       });
-      message.success(field.enabled ? '已禁用' : '已启用');
+      message.success(field.enabled ? t('settings.customFields.disabled') : t('settings.customFields.enabled'));
       loadFields();
     } catch (error) {
-      message.error('操作失败');
+      message.error(t('settings.customFields.operationFailed'));
     }
   };
 
@@ -153,7 +155,7 @@ const CustomFields: React.FC = () => {
   // 表格列定义
   const columns = [
     {
-      title: '模块',
+      title: t('settings.customFields.columnModule'),
       dataIndex: 'modules',
       key: 'modules',
       width: 150,
@@ -161,54 +163,54 @@ const CustomFields: React.FC = () => {
         <Space wrap>
           {modules.map(module => (
             <Tag key={module} color="blue">
-              {MODULE_LABELS[module]}
+              {t(`customField.modules.${module}`)}
             </Tag>
           ))}
         </Space>
       ),
     },
     {
-      title: '字段名称',
+      title: t('settings.customFields.columnFieldName'),
       dataIndex: 'name',
       key: 'name',
       width: 150,
     },
     {
-      title: '显示标签',
+      title: t('settings.customFields.columnLabel'),
       dataIndex: 'label',
       key: 'label',
       width: 120,
     },
     {
-      title: '字段类型',
+      title: t('settings.customFields.columnFieldType'),
       dataIndex: 'type',
       key: 'type',
       width: 100,
-      render: (type: FieldType) => <Tag>{TYPE_LABELS[type]}</Tag>,
+      render: (type: FieldType) => <Tag>{t(`customField.types.${type}`)}</Tag>,
     },
     {
-      title: '必填',
+      title: t('settings.customFields.columnRequired'),
       dataIndex: 'required',
       key: 'required',
       width: 60,
-      render: (required: boolean) => required ? '是' : '否',
+      render: (required: boolean) => required ? t('common.yes') : t('common.no'),
     },
     {
-      title: '列表显示',
+      title: t('settings.customFields.columnListVisible'),
       dataIndex: 'listVisible',
       key: 'listVisible',
       width: 80,
       render: (listVisible: boolean) => listVisible ? '✓' : '-',
     },
     {
-      title: '详情显示',
+      title: t('settings.customFields.columnDetailVisible'),
       dataIndex: 'detailVisible',
       key: 'detailVisible',
       width: 80,
       render: (detailVisible: boolean) => detailVisible ? '✓' : '-',
     },
     {
-      title: '状态',
+      title: t('settings.customFields.columnStatus'),
       dataIndex: 'enabled',
       key: 'enabled',
       width: 80,
@@ -216,26 +218,26 @@ const CustomFields: React.FC = () => {
         <Switch
           checked={enabled}
           onChange={() => handleToggleEnabled(record)}
-          checkedChildren="启用"
-          unCheckedChildren="禁用"
+          checkedChildren={t('settings.customFields.enabled')}
+          unCheckedChildren={t('settings.customFields.disabled')}
           size="small"
         />
       ),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 120,
       render: (_: any, record: CustomField) => (
         <Space>
-          <Tooltip title="编辑">
+          <Tooltip title={t('common.edit')}>
             <Button
               type="link"
               icon={<EditOutlined />}
               onClick={() => handleEdit(record)}
             />
           </Tooltip>
-          <Tooltip title="删除">
+          <Tooltip title={t('common.delete')}>
             <Button
               type="link"
               danger
@@ -257,9 +259,9 @@ const CustomFields: React.FC = () => {
         alignItems: 'center',
         marginBottom: '24px',
       }}>
-        <h1 style={{ margin: 0, fontSize: '24px' }}>自定义字段管理</h1>
+        <h1 style={{ margin: 0, fontSize: '24px' }}>{t('settings.customFields.title')}</h1>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-          新建字段
+          {t('settings.customFields.newField')}
         </Button>
       </div>
 
@@ -275,15 +277,15 @@ const CustomFields: React.FC = () => {
           value={selectedModule}
           onChange={(value) => setSelectedModule(value)}
           options={[
-            { label: '全部模块', value: 'all' },
-            ...Object.entries(MODULE_LABELS).map(([value, label]) => ({
-              label,
+            { label: t('settings.customFields.allModules'), value: 'all' },
+            ...Object.keys(MODULE_LABELS).map((value) => ({
+              label: t(`customField.modules.${value as ModuleType}`),
               value,
             })),
           ]}
         />
         <Input
-          placeholder="搜索字段名称/标签"
+          placeholder={t('settings.customFields.searchPlaceholder')}
           prefix={<SearchOutlined />}
           style={{ width: 300 }}
           value={searchText}
@@ -301,14 +303,14 @@ const CustomFields: React.FC = () => {
         pagination={{
           pageSize: 20,
           showSizeChanger: true,
-          showTotal: (total) => `共 ${total} 个字段`,
+          showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
         }}
         scroll={{ x: 1200 }}
       />
 
       {/* 新建/编辑弹窗 */}
       <Modal
-        title={editingField ? '编辑自定义字段' : '新建自定义字段'}
+        title={editingField ? t('settings.customFields.editField') : t('settings.customFields.newFieldTitle')}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}

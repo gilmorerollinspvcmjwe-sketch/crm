@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, Space, Tag, Spin, message, Divider } from 'antd';
 import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Product, ProductCategory } from '../../types/cpq';
 import { getProductById } from '../../services/productService';
 
@@ -12,6 +13,7 @@ import { getProductById } from '../../services/productService';
  * 产品详情页面组件
  */
 export const ProductDetail: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
@@ -25,7 +27,7 @@ export const ProductDetail: React.FC = () => {
         const data = await getProductById(id);
         setProduct(data || null);
       } catch (error) {
-        message.error('加载产品详情失败');
+        message.error(t('product.detail.loadFailed'));
       } finally {
         setLoading(false);
       }
@@ -34,11 +36,11 @@ export const ProductDetail: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <Spin tip="加载中..." style={{ display: 'block', margin: '100px auto' }} />;
+    return <Spin tip={t('common.loading')} style={{ display: 'block', margin: '100px auto' }} />;
   }
 
   if (!product) {
-    return <Card>产品不存在</Card>;
+    return <Card>{t('product.detail.notExist')}</Card>;
   }
 
   return (
@@ -47,37 +49,37 @@ export const ProductDetail: React.FC = () => {
         {/* 顶部操作栏 */}
         <Space style={{ marginBottom: 24 }}>
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/product/list')}>
-            返回
+            {t('product.detail.back')}
           </Button>
           <Button type="primary" icon={<EditOutlined />}>
-            编辑
+            {t('product.detail.edit')}
           </Button>
         </Space>
 
         {/* 产品基本信息 */}
-        <Descriptions title="基本信息" bordered column={2}>
-          <Descriptions.Item label="产品编号">{product.sku}</Descriptions.Item>
-          <Descriptions.Item label="产品名称">{product.name}</Descriptions.Item>
-          <Descriptions.Item label="产品类别">
+        <Descriptions title={t('product.detail.basicInfo')} bordered column={2}>
+          <Descriptions.Item label={t('product.detail.productNumber')}>{product.sku}</Descriptions.Item>
+          <Descriptions.Item label={t('product.detail.productName')}>{product.name}</Descriptions.Item>
+          <Descriptions.Item label={t('product.detail.productCategory')}>
             <Tag color="blue">{product.category}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="单价">¥{product.unitPrice.toLocaleString()}</Descriptions.Item>
-          <Descriptions.Item label="单位">{product.unit}</Descriptions.Item>
-          <Descriptions.Item label="库存状态">
+          <Descriptions.Item label={t('product.detail.unitPrice')}>¥{product.unitPrice.toLocaleString()}</Descriptions.Item>
+          <Descriptions.Item label={t('product.detail.unit')}>{product.unit}</Descriptions.Item>
+          <Descriptions.Item label={t('product.detail.stockStatus')}>
             <Tag color={product.inStock ? 'green' : 'red'}>
-              {product.inStock ? '有货' : '缺货'}
+              {product.inStock ? t('product.list.inStock') : t('product.list.outOfStock')}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="描述" span={2}>
+          <Descriptions.Item label={t('product.detail.description')} span={2}>
             {product.description}
           </Descriptions.Item>
         </Descriptions>
 
-        <Divider orientation="left">规格参数</Divider>
+        <Divider orientation="left">{t('product.detail.specs')}</Divider>
 
         <Descriptions bordered column={2}>
-          <Descriptions.Item label="创建时间">2026-01-01</Descriptions.Item>
-          <Descriptions.Item label="更新时间">2026-03-01</Descriptions.Item>
+          <Descriptions.Item label={t('product.detail.createdAt')}>2026-01-01</Descriptions.Item>
+          <Descriptions.Item label={t('product.detail.updatedAt')}>2026-03-01</Descriptions.Item>
         </Descriptions>
       </Card>
     </div>

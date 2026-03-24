@@ -26,6 +26,7 @@ import {
   ThunderboltOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { ChurnWarning as ChurnWarningType } from '../types/ai';
 import { churnWarnings } from '../mock/aiData';
@@ -33,6 +34,7 @@ import { churnWarnings } from '../mock/aiData';
 const { Title, Text, Paragraph } = Typography;
 
 const ChurnWarning: React.FC = () => {
+  const { t } = useTranslation();
   const [warnings, setWarnings] = useState<ChurnWarningType[]>(churnWarnings);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentWarning, setCurrentWarning] = useState<ChurnWarningType | null>(null);
@@ -53,11 +55,11 @@ const ChurnWarning: React.FC = () => {
   const getRiskText = (level: string): string => {
     switch (level) {
       case 'high':
-        return '高风险';
+        return t('ai.churnWarning.riskHigh');
       case 'medium':
-        return '中风险';
+        return t('ai.churnWarning.riskMedium');
       default:
-        return '低风险';
+        return t('ai.churnWarning.riskLow');
     }
   };
 
@@ -70,12 +72,12 @@ const ChurnWarning: React.FC = () => {
               ...w,
               isProcessed: true,
               processedAt: new Date().toISOString(),
-              processedBy: '管理员',
+              processedBy: t('ai.churnWarning.admin'),
             }
           : w
       )
     );
-    message.success('已标记为已处理');
+    message.success(t('ai.churnWarning.markedProcessed'));
   };
 
   // 打开详情弹窗
@@ -86,7 +88,7 @@ const ChurnWarning: React.FC = () => {
 
   const columns: ColumnsType<ChurnWarningType> = [
     {
-      title: '客户名称',
+      title: t('ai.churnWarning.customerName'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 200,
@@ -101,7 +103,7 @@ const ChurnWarning: React.FC = () => {
       ),
     },
     {
-      title: '风险等级',
+      title: t('ai.churnWarning.riskLevel'),
       dataIndex: 'riskLevel',
       key: 'riskLevel',
       width: 120,
@@ -113,13 +115,13 @@ const ChurnWarning: React.FC = () => {
           />
           <br />
           <Text type="secondary" style={{ fontSize: 12 }}>
-            风险分：{record.riskScore}
+            {t('ai.churnWarning.riskScore')}：{record.riskScore}
           </Text>
         </div>
       ),
     },
     {
-      title: '风险因素',
+      title: t('ai.churnWarning.riskFactors'),
       key: 'riskFactors',
       width: 250,
       render: (_, record) => (
@@ -136,18 +138,18 @@ const ChurnWarning: React.FC = () => {
       ),
     },
     {
-      title: '距离上次联系',
+      title: t('ai.churnWarning.lastContactDays'),
       dataIndex: 'lastContactDays',
       key: 'lastContactDays',
       width: 120,
       render: (days: number) => (
         <Text type={days > 90 ? 'danger' : days > 60 ? 'warning' : 'secondary'}>
-          {days}天
+          {days}{t('ai.churnWarning.daysUnit')}
         </Text>
       ),
     },
     {
-      title: '合同到期',
+      title: t('ai.churnWarning.contractExpiry'),
       dataIndex: 'contractExpiry',
       key: 'contractExpiry',
       width: 120,
@@ -159,37 +161,37 @@ const ChurnWarning: React.FC = () => {
         ),
     },
     {
-      title: '投诉次数',
+      title: t('ai.churnWarning.complaintCount'),
       dataIndex: 'complaintCount',
       key: 'complaintCount',
       width: 100,
       render: (count: number) => (
         <Text type={count > 0 ? 'danger' : 'success'}>
-          {count > 0 ? `${count}次` : '无'}
+          {count > 0 ? `${count}${t('ai.churnWarning.timesUnit')}` : t('ai.churnWarning.none')}
         </Text>
       ),
     },
     {
-      title: '负责人',
+      title: t('ai.churnWarning.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '处理状态',
+      title: t('ai.churnWarning.status'),
       key: 'status',
       width: 100,
       render: (_, record) =>
         record.isProcessed ? (
           <Tag color="success" icon={<CheckCircleOutlined />}>
-            已处理
+            {t('ai.churnWarning.processed')}
           </Tag>
         ) : (
-          <Tag color="warning">待处理</Tag>
+          <Tag color="warning">{t('ai.churnWarning.pending')}</Tag>
         ),
     },
     {
-      title: '操作',
+      title: t('ai.churnWarning.actions'),
       key: 'action',
       width: 150,
       render: (_, record) => (
@@ -198,7 +200,7 @@ const ChurnWarning: React.FC = () => {
             type="link"
             onClick={() => handleViewDetail(record)}
           >
-            详情
+            {t('ai.churnWarning.details')}
           </Button>
           {!record.isProcessed && (
             <Button
@@ -207,7 +209,7 @@ const ChurnWarning: React.FC = () => {
               icon={<CheckCircleOutlined />}
               onClick={() => handleMarkProcessed(record.id)}
             >
-              已处理
+              {t('ai.churnWarning.processed')}
             </Button>
           )}
         </Space>
@@ -227,10 +229,10 @@ const ChurnWarning: React.FC = () => {
       {/* 页面头部 */}
       <div style={{ background: '#fff', padding: '16px 24px', marginBottom: 16 }}>
         <Title level={2} style={{ margin: 0 }}>
-          <RobotOutlined /> 客户流失预警
+          <RobotOutlined /> {t('ai.churnWarning.title')}
         </Title>
         <Text type="secondary">
-          AI 识别高流失风险客户，分析流失原因并提供智能挽回建议
+          {t('ai.churnWarning.subtitle')}
         </Text>
       </div>
 
@@ -239,7 +241,7 @@ const ChurnWarning: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="预警客户总数"
+              title={t('ai.churnWarning.totalWarnings')}
               value={totalWarnings}
               valueStyle={{ color: '#ff4d4f' }}
               prefix={<WarningOutlined />}
@@ -249,32 +251,32 @@ const ChurnWarning: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="高风险客户"
+              title={t('ai.churnWarning.highRiskCustomers')}
               value={highRisk}
               valueStyle={{ color: '#ff4d4f' }}
               prefix={<ExclamationCircleOutlined />}
             />
             <Text type="secondary" style={{ fontSize: 12 }}>
-              需立即处理
+              {t('ai.churnWarning.needImmediateAction')}
             </Text>
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="中风险客户"
+              title={t('ai.churnWarning.mediumRiskCustomers')}
               value={mediumRisk}
               valueStyle={{ color: '#faad14' }}
             />
             <Text type="secondary" style={{ fontSize: 12 }}>
-              需关注
+              {t('ai.churnWarning.needAttention')}
             </Text>
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="待处理"
+              title={t('ai.churnWarning.pending')}
               value={pending}
               valueStyle={{ color: pending > 0 ? '#ff4d4f' : '#52c41a' }}
             />
@@ -292,7 +294,7 @@ const ChurnWarning: React.FC = () => {
       {/* 高风险预警 */}
       {highRisk > 0 && (
         <Alert
-          message={`当前有 ${highRisk} 个高风险客户，需要立即处理！`}
+          message={t('ai.churnWarning.highRiskAlert', { count: highRisk })}
           type="warning"
           showIcon
           style={{ marginBottom: 16 }}
@@ -315,7 +317,7 @@ const ChurnWarning: React.FC = () => {
         title={
           <Space>
             <ThunderboltOutlined />
-            流失预警详情
+            {t('ai.churnWarning.details')}
           </Space>
         }
         open={isModalVisible}
@@ -334,7 +336,7 @@ const ChurnWarning: React.FC = () => {
             }}
             disabled={currentWarning?.isProcessed}
           >
-            标记为已处理
+            {t('ai.churnWarning.markAsProcessed')}
           </Button>,
         ]}
       >
@@ -365,7 +367,7 @@ const ChurnWarning: React.FC = () => {
               </Space>
             </Card>
 
-            <Title level={5}>风险因素分析</Title>
+            <Title level={5}>{t('ai.churnWarning.riskAnalysis')}</Title>
             <Space direction="vertical" size={12} style={{ width: '100%', marginBottom: 16 }}>
               {currentWarning.riskFactors.map((factor, idx) => (
                 <Alert
@@ -378,38 +380,38 @@ const ChurnWarning: React.FC = () => {
               ))}
             </Space>
 
-            <Title level={5}>基本信息</Title>
+            <Title level={5}>{t('ai.churnWarning.basicInfo')}</Title>
             <Row gutter={16} style={{ marginBottom: 16 }}>
               <Col span={8}>
                 <Card size="small">
-                  <Text type="secondary">距离上次联系</Text>
+                  <Text type="secondary">{t('ai.churnWarning.lastContactDays')}</Text>
                   <br />
                   <Title level={4} style={{ margin: '8px 0 0 0' }}>
-                    {currentWarning.lastContactDays}天
+                    {currentWarning.lastContactDays}{t('ai.churnWarning.daysUnit')}
                   </Title>
                 </Card>
               </Col>
               <Col span={8}>
                 <Card size="small">
-                  <Text type="secondary">合同到期日</Text>
+                  <Text type="secondary">{t('ai.churnWarning.contractExpiry')}</Text>
                   <br />
                   <Title level={4} style={{ margin: '8px 0 0 0' }}>
-                    {currentWarning.contractExpiry || '无'}
+                    {currentWarning.contractExpiry || t('ai.churnWarning.none')}
                   </Title>
                 </Card>
               </Col>
               <Col span={8}>
                 <Card size="small">
-                  <Text type="secondary">投诉次数</Text>
+                  <Text type="secondary">{t('ai.churnWarning.complaintCount')}</Text>
                   <br />
                   <Title level={4} style={{ margin: '8px 0 0 0' }}>
-                    {currentWarning.complaintCount}次
+                    {currentWarning.complaintCount}{t('ai.churnWarning.timesUnit')}
                   </Title>
                 </Card>
               </Col>
             </Row>
 
-            <Title level={5}>AI 挽回建议</Title>
+            <Title level={5}>{t('ai.churnWarning.aiSuggestions')}</Title>
             <Space direction="vertical" size={12} style={{ width: '100%' }}>
               {currentWarning.aiSuggestions.map((suggestion, idx) => (
                 <Alert

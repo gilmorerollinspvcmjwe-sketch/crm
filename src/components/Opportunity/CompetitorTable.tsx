@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Typography, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Competitor } from '../../types/opportunity';
 
 const { Text, Paragraph } = Typography;
@@ -30,10 +31,12 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
   onEdit,
   onDelete
 }) => {
+  const { t } = useTranslation();
+
   // 表格列定义
   const columns = [
     {
-      title: '竞争对手',
+      title: t('competitor.column.name'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
@@ -42,7 +45,7 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
       )
     },
     {
-      title: '竞争优势',
+      title: t('competitor.column.advantage'),
       dataIndex: 'advantage',
       key: 'advantage',
       render: (text: string) => (
@@ -56,7 +59,7 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
       )
     },
     {
-      title: '竞争劣势',
+      title: t('competitor.column.disadvantage'),
       dataIndex: 'disadvantage',
       key: 'disadvantage',
       render: (text: string) => (
@@ -70,7 +73,7 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
       )
     },
     {
-      title: '操作',
+      title: t('competitor.column.action'),
       key: 'action',
       width: 120,
       render: (_: any, record: Competitor) => (
@@ -82,7 +85,7 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
               onClick={() => onEdit?.(record)}
               size="small"
             >
-              编辑
+              {t('competitor.action.edit')}
             </Button>
             <Button
               type="link"
@@ -91,7 +94,7 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
               onClick={() => onDelete?.(record.id)}
               size="small"
             >
-              删除
+              {t('competitor.action.delete')}
             </Button>
           </Space>
         ) : null
@@ -109,7 +112,7 @@ export const CompetitorTable: React.FC<CompetitorTableProps> = ({
           style={{ marginBottom: 16 }}
           size="small"
         >
-          添加竞争对手
+          {t('competitor.action.add')}
         </Button>
       )}
       <Table

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Row, Col, Statistic, Progress, Table, Typography } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import { OpportunityStage, SalesFunnelStats } from '../../types/opportunity';
 
 const { Title } = Typography;
@@ -13,33 +14,35 @@ interface SalesFunnelProps {
   onStageClick?: (stage: OpportunityStage) => void;
 }
 
-// 阶段颜色配置
-const STAGE_COLORS: Record<OpportunityStage, string> = {
-  [OpportunityStage.LEAD_CONFIRMATION]: '#1890ff',
-  [OpportunityStage.INITIAL_CONTACT]: '#40a9ff',
-  [OpportunityStage.REQUIREMENT_CONFIRMATION]: '#69c0ff',
-  [OpportunityStage.PROPOSAL_QUOTATION]: '#91d5ff',
-  [OpportunityStage.NEGOTIATION_APPROVAL]: '#bae7ff',
-  [OpportunityStage.CLOSED_WON]: '#52c41a',
-  [OpportunityStage.CLOSED_LOST]: '#ff4d4f'
-};
-
-// 阶段名称映射
-const STAGE_LABELS: Record<OpportunityStage, string> = {
-  [OpportunityStage.LEAD_CONFIRMATION]: '线索确认',
-  [OpportunityStage.INITIAL_CONTACT]: '初步接触',
-  [OpportunityStage.REQUIREMENT_CONFIRMATION]: '需求确认',
-  [OpportunityStage.PROPOSAL_QUOTATION]: '方案报价',
-  [OpportunityStage.NEGOTIATION_APPROVAL]: '谈判审批',
-  [OpportunityStage.CLOSED_WON]: '已成交',
-  [OpportunityStage.CLOSED_LOST]: '已输单'
-};
-
 /**
  * 销售漏斗可视化组件
  * 展示各阶段商机数量和金额统计
  */
 export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) => {
+  const { t } = useTranslation();
+
+  // 阶段颜色配置
+  const STAGE_COLORS: Record<OpportunityStage, string> = {
+    [OpportunityStage.LEAD_CONFIRMATION]: '#1890ff',
+    [OpportunityStage.INITIAL_CONTACT]: '#40a9ff',
+    [OpportunityStage.REQUIREMENT_CONFIRMATION]: '#69c0ff',
+    [OpportunityStage.PROPOSAL_QUOTATION]: '#91d5ff',
+    [OpportunityStage.NEGOTIATION_APPROVAL]: '#bae7ff',
+    [OpportunityStage.CLOSED_WON]: '#52c41a',
+    [OpportunityStage.CLOSED_LOST]: '#ff4d4f'
+  };
+
+  // 阶段名称映射
+  const STAGE_LABELS: Record<OpportunityStage, string> = {
+    [OpportunityStage.LEAD_CONFIRMATION]: t('salesFunnel.stage.leadConfirmation'),
+    [OpportunityStage.INITIAL_CONTACT]: t('salesFunnel.stage.initialContact'),
+    [OpportunityStage.REQUIREMENT_CONFIRMATION]: t('salesFunnel.stage.requirementConfirmation'),
+    [OpportunityStage.PROPOSAL_QUOTATION]: t('salesFunnel.stage.proposalQuotation'),
+    [OpportunityStage.NEGOTIATION_APPROVAL]: t('salesFunnel.stage.negotiationApproval'),
+    [OpportunityStage.CLOSED_WON]: t('salesFunnel.stage.closedWon'),
+    [OpportunityStage.CLOSED_LOST]: t('salesFunnel.stage.closedLost')
+  };
+
   // 格式化金额为万元
   const formatAmount = (amount: number) => {
     return (amount / 10000).toFixed(0);
@@ -64,7 +67,7 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
   // 表格列定义
   const columns = [
     {
-      title: '阶段',
+      title: t('salesFunnel.column.stage'),
       dataIndex: 'name',
       key: 'name',
       render: (text: string, record: any) => (
@@ -77,7 +80,7 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
       )
     },
     {
-      title: '商机数量',
+      title: t('salesFunnel.column.count'),
       dataIndex: 'count',
       key: 'count',
       sorter: (a: any, b: any) => a.count - b.count,
@@ -86,14 +89,14 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
       )
     },
     {
-      title: '预计金额 (万元)',
+      title: t('salesFunnel.column.amount'),
       dataIndex: 'amount',
       key: 'amount',
       sorter: (a: any, b: any) => a.amount - b.amount,
-      render: (amount: number) => `¥${formatAmount(amount)}`
+      render: (amount: number) => `¥${formatAmount(amount)}${t('common.unit.tenThousand')}`
     },
     {
-      title: '成交概率',
+      title: t('salesFunnel.column.probability'),
       dataIndex: 'probability',
       key: 'probability',
       sorter: (a: any, b: any) => a.probability - b.probability,
@@ -109,31 +112,31 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
   ];
 
   return (
-    <Card title="销售漏斗分析" style={{ marginBottom: 24 }}>
+    <Card title={t('salesFunnel.title')} style={{ marginBottom: 24 }}>
       {/* 统计卡片 */}
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={8}>
           <Statistic
-            title="商机总数"
+            title={t('salesFunnel.stats.totalCount')}
             value={totalCount}
-            suffix="个"
+            suffix={t('salesFunnel.stats.countUnit')}
             valueStyle={{ color: '#1890ff' }}
           />
         </Col>
         <Col span={8}>
           <Statistic
-            title="预计总金额"
+            title={t('salesFunnel.stats.totalAmount')}
             value={formatAmount(totalAmount)}
-            suffix="万元"
+            suffix={t('common.unit.tenThousand')}
             valueStyle={{ color: '#52c41a' }}
             precision={0}
           />
         </Col>
         <Col span={8}>
           <Statistic
-            title="平均成交概率"
+            title={t('salesFunnel.stats.avgProbability')}
             value={avgProbability}
-            suffix="%"
+            suffix={t('common.unit.percent')}
             valueStyle={{ color: '#faad14' }}
           />
         </Col>
@@ -154,27 +157,27 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
               interval={0}
               height={80}
             />
-            <YAxis yAxisId="left" orientation="left" stroke="#1890ff" label={{ value: '商机数量', angle: -90, position: 'insideLeft' }} />
+            <YAxis yAxisId="left" orientation="left" stroke="#1890ff" label={{ value: t('salesFunnel.chart.countLabel'), angle: -90, position: 'insideLeft' }} />
             <YAxis
               yAxisId="right"
               orientation="right"
               stroke="#52c41a"
-              tickFormatter={(value) => `${(value / 10000).toFixed(0)}万`}
-              label={{ value: '预计金额', angle: 90, position: 'insideRight' }}
+              tickFormatter={(value) => `${(value / 10000).toFixed(0)}${t('common.unit.tenThousand')}`}
+              label={{ value: t('salesFunnel.chart.amountLabel'), angle: 90, position: 'insideRight' }}
             />
             <Tooltip
               formatter={(value: any, name: any) => {
-                if (name === '预计金额') {
-                  return [`¥${formatAmount(value as number)}万`, '预计金额'];
+                if (name === t('salesFunnel.chart.amount')) {
+                  return [`¥${formatAmount(value as number)}${t('common.unit.tenThousand')}`, t('salesFunnel.chart.amount')];
                 }
-                return [value, name === 'count' ? '商机数量' : '成交概率'];
+                return [value, name === 'count' ? t('salesFunnel.chart.count') : t('salesFunnel.chart.probability')];
               }}
             />
             <Legend />
             <Bar
               yAxisId="left"
               dataKey="count"
-              name="商机数量"
+              name={t('salesFunnel.chart.count')}
               fill="#1890ff"
               radius={[4, 4, 0, 0]}
             >
@@ -188,7 +191,7 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
             <Bar
               yAxisId="right"
               dataKey="amount"
-              name="预计金额"
+              name={t('salesFunnel.chart.amount')}
               fill="#52c41a"
               radius={[4, 4, 0, 0]}
             />
@@ -197,7 +200,7 @@ export const SalesFunnel: React.FC<SalesFunnelProps> = ({ data, onStageClick }) 
       </div>
 
       {/* 数据表格 */}
-      <Title level={5}>详细数据</Title>
+      <Title level={5}>{t('salesFunnel.detailData')}</Title>
       <Table
         columns={columns}
         dataSource={chartData}

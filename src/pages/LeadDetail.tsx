@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Descriptions, Button, Space, Tag, Timeline, message, Modal, Divider } from 'antd';
 import { ArrowLeftOutlined, EditOutlined, UserSwitchOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getLeadById, getFollowUpRecords } from '../mock/leadData';
 import { Lead, LeadStatus, LeadLevel, LeadSource, FollowUpRecord } from '../types/lead';
@@ -16,6 +17,7 @@ import { Lead, LeadStatus, LeadLevel, LeadSource, FollowUpRecord } from '../type
  * 线索详情页组件
  */
 export const LeadDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
@@ -34,10 +36,10 @@ export const LeadDetail: React.FC = () => {
         const records = getFollowUpRecords(id);
         setFollowUpRecords(records);
       } else {
-        message.error('线索不存在');
+        message.error(t('lead.detail.notFound'));
       }
     } catch (error) {
-      message.error('加载线索详情失败');
+      message.error(t('lead.detail.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -56,12 +58,12 @@ export const LeadDetail: React.FC = () => {
 
   /** 编辑线索 */
   const handleEdit = () => {
-    message.info('编辑线索功能待实现');
+    message.info(t('lead.detail.editInfo'));
   };
 
   /** 分配线索 */
   const handleAssign = () => {
-    message.info('分配线索功能待实现');
+    message.info(t('lead.detail.assignInfo'));
   };
 
   /** 转化线索 */
@@ -69,27 +71,27 @@ export const LeadDetail: React.FC = () => {
     if (!lead) return;
     
     Modal.confirm({
-      title: '确认转化',
+      title: t('lead.detail.confirmConvert'),
       content: (
         <div>
-          <p>确定要将该线索转化为客户吗？</p>
-          <p>系统将自动创建：</p>
+          <p>{t('lead.detail.convertContent')}</p>
+          <p>{t('lead.detail.convertWillCreate')}</p>
           <ul>
-            <li>客户档案：{lead.companyName || lead.name}</li>
-            <li>联系人：{lead.contactName}</li>
-            <li>商机：{lead.name}</li>
+            <li>{t('lead.detail.convertCustomerFile')}：{lead.companyName || lead.name}</li>
+            <li>{t('lead.detail.convertContact')}：{lead.contactName}</li>
+            <li>{t('lead.detail.convertOpportunity')}：{lead.name}</li>
           </ul>
         </div>
       ),
       onOk: () => {
-        message.success('转化成功');
+        message.success(t('lead.list.convertSuccess'));
         navigate('/lead/list');
       },
     });
   };
 
   if (!lead) {
-    return <div>线索不存在</div>;
+    return <div>{t('lead.detail.notFound')}</div>;
   }
 
   /** 跟进记录时间线 */
@@ -97,7 +99,7 @@ export const LeadDetail: React.FC = () => {
     if (followUpRecords.length === 0) {
       return (
         <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
-          暂无跟进记录
+          {t('lead.detail.noFollowUpRecords')}
         </div>
       );
     }
@@ -115,12 +117,12 @@ export const LeadDetail: React.FC = () => {
               <p style={{ margin: '8px 0', fontSize: 13 }}>{record.content}</p>
               <div style={{ fontSize: 12, color: '#999' }}>
                 <span>{record.followUpTime}</span>
-                {record.duration && <span style={{ marginLeft: 16 }}>时长：{record.duration}分钟</span>}
+                {record.duration && <span style={{ marginLeft: 16 }}>{t('lead.detail.duration')}：{record.duration}{t('lead.detail.minutes')}</span>}
                 <span style={{ marginLeft: 16 }}> - {record.createdBy}</span>
               </div>
               {record.nextFollowUpTime && (
                 <Tag color="orange" style={{ marginTop: 8 }}>
-                  下次跟进：{record.nextFollowUpTime}
+                  {t('lead.detail.nextFollowUp')}：{record.nextFollowUpTime}
                 </Tag>
               )}
             </div>
@@ -136,14 +138,14 @@ export const LeadDetail: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space>
           <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
-            返回
+            {t('lead.detail.back')}
           </Button>
           <Space style={{ marginLeft: 'auto' }}>
             <Button icon={<EditOutlined />} onClick={handleEdit} disabled={lead.status === '已转化' || lead.status === '已关闭'}>
-              编辑
+              {t('lead.detail.edit')}
             </Button>
             <Button icon={<UserSwitchOutlined />} onClick={handleAssign} disabled={lead.status === '已转化' || lead.status === '已关闭'}>
-              分配
+              {t('lead.detail.assign')}
             </Button>
             <Button
               type="primary"
@@ -151,49 +153,49 @@ export const LeadDetail: React.FC = () => {
               onClick={handleConvert}
               disabled={lead.status !== '跟进中'}
             >
-              转化为客户
+              {t('lead.detail.convertToCustomer')}
             </Button>
           </Space>
         </Space>
       </Card>
 
       {/* 基本信息 */}
-      <Card title="基本信息" style={{ marginBottom: 16 }} loading={loading}>
+      <Card title={t('lead.detail.basicInfo')} style={{ marginBottom: 16 }} loading={loading}>
         <Descriptions column={3} bordered>
-          <Descriptions.Item label="线索 ID" span={1}>
+          <Descriptions.Item label={t('lead.detail.leadId')} span={1}>
             {lead.id}
           </Descriptions.Item>
-          <Descriptions.Item label="线索名称" span={2}>
+          <Descriptions.Item label={t('lead.form.name')} span={2}>
             {lead.name}
           </Descriptions.Item>
-          <Descriptions.Item label="联系人姓名" span={1}>
+          <Descriptions.Item label={t('lead.form.contactName')} span={1}>
             {lead.contactName}
           </Descriptions.Item>
-          <Descriptions.Item label="联系人职位" span={1}>
+          <Descriptions.Item label={t('lead.detail.position')} span={1}>
             {lead.position || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="手机号码" span={1}>
+          <Descriptions.Item label={t('lead.form.mobile')} span={1}>
             {lead.mobile}
           </Descriptions.Item>
-          <Descriptions.Item label="邮箱" span={1}>
+          <Descriptions.Item label={t('lead.form.email')} span={1}>
             {lead.email || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="公司名称" span={1}>
+          <Descriptions.Item label={t('lead.form.companyName')} span={1}>
             {lead.companyName || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="所属行业" span={1}>
+          <Descriptions.Item label={t('lead.detail.industry')} span={1}>
             {lead.industry || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="公司规模" span={1}>
+          <Descriptions.Item label={t('lead.detail.companySize')} span={1}>
             {lead.companySize || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="线索来源" span={1}>
+          <Descriptions.Item label={t('lead.form.source')} span={1}>
             <Tag color="blue">{lead.source}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="来源明细" span={1}>
+          <Descriptions.Item label={t('lead.detail.sourceDetail')} span={1}>
             {lead.sourceDetail || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="线索状态" span={1}>
+          <Descriptions.Item label={t('lead.form.status')} span={1}>
             <Tag color={
               lead.status === '待跟进' ? 'default' :
               lead.status === '跟进中' ? 'processing' :
@@ -202,10 +204,10 @@ export const LeadDetail: React.FC = () => {
               {lead.status}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="线索评分" span={1}>
-            {lead.score !== undefined ? `${lead.score}分` : '-'}
+          <Descriptions.Item label={t('lead.detail.score')} span={1}>
+            {lead.score !== undefined ? `${lead.score}${t('lead.detail.points')}` : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="线索等级" span={1}>
+          <Descriptions.Item label={t('lead.form.level')} span={1}>
             {lead.level ? (
               <Tag color={lead.level === 'A' ? 'red' : lead.level === 'B' ? 'orange' : 'blue'}>
                 {lead.level}
@@ -214,53 +216,53 @@ export const LeadDetail: React.FC = () => {
               '-'
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="预算范围" span={1}>
+          <Descriptions.Item label={t('lead.detail.budget')} span={1}>
             {lead.budget || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="预计采购时间" span={1}>
+          <Descriptions.Item label={t('lead.detail.purchaseTimeframe')} span={1}>
             {lead.purchaseTimeframe || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="负责人" span={1}>
+          <Descriptions.Item label={t('lead.detail.owner')} span={1}>
             {lead.ownerName || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="创建时间" span={1}>
+          <Descriptions.Item label={t('lead.detail.createdAt')} span={1}>
             {lead.createdAt}
           </Descriptions.Item>
-          <Descriptions.Item label="创建人" span={1}>
+          <Descriptions.Item label={t('lead.detail.createdBy')} span={1}>
             {lead.createdBy}
           </Descriptions.Item>
-          <Descriptions.Item label="首次联系时间" span={1}>
+          <Descriptions.Item label={t('lead.detail.firstContactTime')} span={1}>
             {lead.firstContactTime || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="最后跟进时间" span={1}>
+          <Descriptions.Item label={t('lead.detail.lastContactTime')} span={1}>
             {lead.lastContactTime || '-'}
           </Descriptions.Item>
           {lead.convertedAt && (
             <>
-              <Descriptions.Item label="转化时间" span={1}>
+              <Descriptions.Item label={t('lead.detail.convertedAt')} span={1}>
                 {lead.convertedAt}
               </Descriptions.Item>
-              <Descriptions.Item label="转化客户" span={2}>
+              <Descriptions.Item label={t('lead.detail.convertedCustomer')} span={2}>
                 {lead.convertedCustomerName || '-'}
               </Descriptions.Item>
             </>
           )}
           {lead.invalidReason && (
-            <Descriptions.Item label="无效原因" span={3}>
+            <Descriptions.Item label={t('lead.detail.invalidReason')} span={3}>
               <Tag color="red">{lead.invalidReason}</Tag>
             </Descriptions.Item>
           )}
-          <Descriptions.Item label="线索内容" span={3}>
+          <Descriptions.Item label={t('lead.detail.content')} span={3}>
             {lead.content || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="备注" span={3}>
+          <Descriptions.Item label={t('lead.form.remark')} span={3}>
             {lead.remark || '-'}
           </Descriptions.Item>
         </Descriptions>
       </Card>
 
       {/* 跟进记录 */}
-      <Card title="跟进记录">
+      <Card title={t('lead.detail.followUpRecords')}>
         {renderTimeline()}
       </Card>
     </div>

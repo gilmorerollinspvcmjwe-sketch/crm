@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { Tree, Checkbox, Card, Typography, Space, Tag } from 'antd';
 import type { DataNode } from 'antd/es/tree';
+import { useTranslation } from 'react-i18next';
 import { Permission, PermissionType } from '../../types/permission';
 
 const { Title, Text } = Typography;
@@ -25,6 +26,7 @@ export const PermissionTree: React.FC<PermissionTreeProps> = ({
   onChange,
   showType = true,
 }) => {
+  const { t } = useTranslation();
   const [treeData, setTreeData] = useState<DataNode[]>([]);
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export const PermissionTree: React.FC<PermissionTreeProps> = ({
             <Text>{perm.name}</Text>
             {showType && (
               <Tag color={perm.type === PermissionType.MENU ? 'blue' : 'green'}>
-                {perm.type === PermissionType.MENU ? '菜单' : '按钮'}
+                {perm.type === PermissionType.MENU ? t('permission.permissionTree.menuType') : t('permission.permissionTree.buttonType')}
               </Tag>
             )}
             {perm.code && (
@@ -52,10 +54,10 @@ export const PermissionTree: React.FC<PermissionTreeProps> = ({
     };
 
     setTreeData(convertToTreeData(permissions));
-  }, [permissions, showType]);
+  }, [permissions, showType, t]);
 
   return (
-    <Card title="权限配置" bordered={false}>
+    <Card title={t('permission.permissionTree.title')} bordered={false}>
       <Tree
         checkable
         checkedKeys={checkedKeys}

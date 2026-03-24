@@ -4,6 +4,7 @@
  */
 import React, { useEffect } from 'react';
 import { Form, Input, Select, Radio, Space, Button, Divider } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { DataScope } from '../../types/permission';
 
 const { TextArea } = Input;
@@ -22,13 +23,6 @@ interface RoleFormProps {
   isEdit?: boolean;
 }
 
-const dataScopeOptions = [
-  { label: '全部数据', value: DataScope.ALL },
-  { label: '部门数据', value: DataScope.DEPARTMENT },
-  { label: '团队数据', value: DataScope.TEAM },
-  { label: '个人数据', value: DataScope.SELF },
-];
-
 /**
  * 角色表单组件
  */
@@ -39,6 +33,7 @@ export const RoleForm: React.FC<RoleFormProps> = ({
   loading = false,
   isEdit = false,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -56,6 +51,13 @@ export const RoleForm: React.FC<RoleFormProps> = ({
     }
   };
 
+  const dataScopeOptions = [
+    { label: t('permission.settings.allData'), value: DataScope.ALL },
+    { label: t('permission.settings.departmentData'), value: DataScope.DEPARTMENT },
+    { label: t('permission.settings.teamData'), value: DataScope.TEAM },
+    { label: t('permission.settings.selfData'), value: DataScope.SELF },
+  ];
+
   return (
     <Form
       form={form}
@@ -67,47 +69,47 @@ export const RoleForm: React.FC<RoleFormProps> = ({
     >
       <Form.Item
         name="name"
-        label="角色名称"
-        rules={[{ required: true, message: '请输入角色名称' }]}
+        label={t('permission.roleForm.roleName')}
+        rules={[{ required: true, message: t('permission.roleForm.enterRoleName') }]}
       >
-        <Input placeholder="例如：销售经理" disabled={isEdit && initialValues?.id === 'ROLE001'} />
+        <Input placeholder={t('permission.roleForm.enterRoleName')} disabled={isEdit && initialValues?.id === 'ROLE001'} />
       </Form.Item>
 
       <Form.Item
         name="code"
-        label="角色代码"
+        label={t('permission.roleForm.roleCode')}
         rules={[
-          { required: true, message: '请输入角色代码' },
-          { pattern: /^[a-z_]+$/, message: '只能包含小写字母和下划线' },
+          { required: true, message: t('permission.roleForm.enterRoleCode') },
+          { pattern: /^[a-z_]+$/, message: t('permission.roleForm.codePatternError') },
         ]}
       >
-        <Input placeholder="例如：sales_manager" disabled={isEdit} />
+        <Input placeholder={t('permission.roleForm.enterRoleCode')} disabled={isEdit} />
       </Form.Item>
 
-      <Form.Item name="description" label="角色描述">
-        <TextArea rows={3} placeholder="描述角色的职责和权限范围" />
+      <Form.Item name="description" label={t('permission.roleForm.roleDescription')}>
+        <TextArea rows={3} placeholder={t('permission.roleForm.enterDescription')} />
       </Form.Item>
 
-      <Divider orientation="left">数据权限</Divider>
+      <Divider orientation="left">{t('permission.roleForm.dataScope')}</Divider>
 
       <Form.Item
         name="dataScope"
-        label="数据范围"
-        rules={[{ required: true, message: '请选择数据范围' }]}
+        label={t('permission.roleForm.dataScopeLabel')}
+        tooltip={t('permission.roleForm.dataScopeTooltip')}
       >
         <Radio.Group options={dataScopeOptions} />
       </Form.Item>
 
       <Form.Item
         name="dataScope"
-        label="数据范围说明"
-        tooltip="不同数据范围决定用户能看到的数据"
+        label={t('permission.roleForm.dataScopeLabel')}
+        tooltip={t('permission.roleForm.dataScopeTooltip')}
       >
         <Space direction="vertical" style={{ width: '100%' }}>
-          <Radio value={DataScope.ALL}>全部数据 - 可查看所有数据</Radio>
-          <Radio value={DataScope.DEPARTMENT}>部门数据 - 仅查看本部门数据</Radio>
-          <Radio value={DataScope.TEAM}>团队数据 - 仅查看本团队数据</Radio>
-          <Radio value={DataScope.SELF}>个人数据 - 仅查看自己创建的数据</Radio>
+          <Radio value={DataScope.ALL}>{t('permission.settings.allData')} - {t('permission.settings.allDataDesc')}</Radio>
+          <Radio value={DataScope.DEPARTMENT}>{t('permission.settings.departmentData')} - {t('permission.settings.departmentDataDesc')}</Radio>
+          <Radio value={DataScope.TEAM}>{t('permission.settings.teamData')} - {t('permission.settings.teamDataDesc')}</Radio>
+          <Radio value={DataScope.SELF}>{t('permission.settings.selfData')} - {t('permission.settings.selfDataDesc')}</Radio>
         </Space>
       </Form.Item>
 
@@ -115,9 +117,9 @@ export const RoleForm: React.FC<RoleFormProps> = ({
 
       <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
         <Space>
-          <Button onClick={onCancel}>取消</Button>
+          <Button onClick={onCancel}>{t('permission.roleForm.cancel')}</Button>
           <Button type="primary" onClick={handleSubmit} loading={loading}>
-            {isEdit ? '保存' : '创建'}
+            {isEdit ? t('permission.roleForm.save') : t('permission.roleForm.create')}
           </Button>
         </Space>
       </Form.Item>

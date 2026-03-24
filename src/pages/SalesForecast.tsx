@@ -20,6 +20,7 @@ import {
   FallOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import {
   LineChart,
   Line,
@@ -44,6 +45,7 @@ const { Option } = Select;
 const COLORS = ['#1890ff', '#52c41a', '#faad14', '#ff4d4f', '#722ed1', '#13c2c2'];
 
 const SalesForecast: React.FC = () => {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<'monthly' | 'quarterly' | 'yearly'>('monthly');
   const data: SalesForecastData = salesForecast;
 
@@ -64,12 +66,29 @@ const SalesForecast: React.FC = () => {
   const TrendIcon = data.trend === 'up' ? RiseOutlined : data.trend === 'down' ? FallOutlined : undefined;
   const trendColor = data.trend === 'up' ? '#52c41a' : data.trend === 'down' ? '#ff4d4f' : '#faad14';
 
+  // 获取趋势文本
+  const getTrendText = (trend: string) => {
+    const trendMap: Record<string, string> = {
+      up: t('ai.salesForecast.trendUp'),
+      down: t('ai.salesForecast.trendDown'),
+      stable: t('ai.salesForecast.trendStable'),
+    };
+    return trendMap[trend] || trend;
+  };
+
   // 格式化金额
   const formatMoney = (value: number) => {
     if (value >= 1000000) {
       return `¥${(value / 1000000).toFixed(1)}M`;
     }
     return `¥${(value / 1000).toFixed(0)}K`;
+  };
+
+  // 获取达成状态文本
+  const getAttainmentText = (attainment: number) => {
+    if (attainment >= 100) return t('ai.salesForecast.exceeded');
+    if (attainment >= 80) return t('ai.salesForecast.normal');
+    return t('ai.salesForecast.behind');
   };
 
   return (
@@ -79,10 +98,10 @@ const SalesForecast: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <Title level={2} style={{ margin: 0 }}>
-              <RobotOutlined /> 销售预测 AI
+              <RobotOutlined /> {t('ai.salesForecast.title')}
             </Title>
             <Text type="secondary">
-              AI 基于历史数据和市场趋势预测未来销售，支持按月/季/年查看
+              {t('ai.salesForecast.subtitle')}
             </Text>
           </div>
           <Select
@@ -90,9 +109,9 @@ const SalesForecast: React.FC = () => {
             onChange={(value) => setPeriod(value)}
             style={{ width: 150 }}
           >
-            <Option value="monthly">月度</Option>
-            <Option value="quarterly">季度</Option>
-            <Option value="yearly">年度</Option>
+            <Option value="monthly">{t('ai.salesForecast.monthly')}</Option>
+            <Option value="quarterly">{t('ai.salesForecast.quarterly')}</Option>
+            <Option value="yearly">{t('ai.salesForecast.yearly')}</Option>
           </Select>
         </div>
       </div>
@@ -102,9 +121,9 @@ const SalesForecast: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="预测准确率"
+              title={t('ai.salesForecast.predictionAccuracy')}
               value={calculateAccuracy()}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               valueStyle={{ color: '#52c41a' }}
               prefix={<ThunderboltOutlined />}
             />
@@ -119,7 +138,7 @@ const SalesForecast: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="本月预测"
+              title={t('ai.salesForecast.thisMonthPrediction')}
               value={data.predictions[data.predictions.length - 1]?.predicted || 0}
               precision={0}
               prefix="¥"
@@ -133,25 +152,25 @@ const SalesForecast: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="趋势"
-              value={data.trend === 'up' ? '上升' : data.trend === 'down' ? '下降' : '平稳'}
+              title={t('ai.salesForecast.trend')}
+              value={getTrendText(data.trend)}
               valueStyle={{ color: trendColor }}
               prefix={TrendIcon && <TrendIcon />}
             />
             <Text type="secondary" style={{ fontSize: 12 }}>
-              相比上期
+              {t('ai.salesForecast.vsLastPeriod')}
             </Text>
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="平均达成率"
+              title={t('ai.salesForecast.avgAttainment')}
               value={Math.round(
                 data.breakdownBySales.reduce((sum, s) => sum + s.attainment, 0) /
                   data.breakdownBySales.length
               )}
-              suffix="%"
+              suffix={t('common.unit.percent')}
               valueStyle={{ color: '#faad14' }}
             />
             <Progress
@@ -168,7 +187,7 @@ const SalesForecast: React.FC = () => {
       </Row>
 
       {/* 预测趋势图 */}
-      <Card title="预测 vs 实际对比" style={{ marginBottom: 16 }}>
+      <Card title={t('ai.salesForecast.predictionVsActual')} style={{ marginBottom: 16 }}>
         <ResponsiveContainer width="100%" height={350}>
           <LineChart data={data.predictions}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -178,8 +197,8 @@ const SalesForecast: React.FC = () => {
               style={{ fontSize: 12 }}
             />
             <Tooltip
-              formatter={(value: number) => [`¥${value.toLocaleString()}`, '金额']}
-              labelFormatter={(label) => `期间：${label}`}
+              formatter={(value: number) => [`¥${value.toLocaleString()}`, t('ai.salesForecast.amount')]}
+              labelFormatter={(label) => `${t('ai.salesForecast.period')}：${label}`}
             />
             <Legend />
             <Line
@@ -187,7 +206,7 @@ const SalesForecast: React.FC = () => {
               dataKey="predicted"
               stroke="#1890ff"
               strokeWidth={3}
-              name="预测"
+              name={t('ai.salesForecast.predicted')}
               dot={{ r: 4 }}
             />
             <Line
@@ -195,7 +214,7 @@ const SalesForecast: React.FC = () => {
               dataKey="actual"
               stroke="#52c41a"
               strokeWidth={3}
-              name="实际"
+              name={t('ai.salesForecast.actual')}
               dot={{ r: 4 }}
               strokeDasharray="5 5"
             />
@@ -206,7 +225,7 @@ const SalesForecast: React.FC = () => {
       {/* 预测拆分 */}
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="按产品拆分" style={{ marginBottom: 16 }}>
+          <Card title={t('ai.salesForecast.byProduct')} style={{ marginBottom: 16 }}>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data.breakdownByProduct}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -216,10 +235,10 @@ const SalesForecast: React.FC = () => {
                   style={{ fontSize: 12 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [`¥${value.toLocaleString()}`, '预测金额']}
-                  labelFormatter={(label) => `产品：${label}`}
+                  formatter={(value: number) => [`¥${value.toLocaleString()}`, t('ai.salesForecast.predictedAmount')]}
+                  labelFormatter={(label) => `${t('ai.salesForecast.product')}：${label}`}
                 />
-                <Bar dataKey="predicted" fill="#1890ff" name="预测金额">
+                <Bar dataKey="predicted" fill="#1890ff" name={t('ai.salesForecast.predictedAmount')}>
                   {data.breakdownByProduct.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
@@ -229,7 +248,7 @@ const SalesForecast: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="按区域拆分" style={{ marginBottom: 16 }}>
+          <Card title={t('ai.salesForecast.byRegion')} style={{ marginBottom: 16 }}>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -246,7 +265,7 @@ const SalesForecast: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number) => [`¥${value.toLocaleString()}`, '预测金额']}
+                  formatter={(value: number) => [`¥${value.toLocaleString()}`, t('ai.salesForecast.predictedAmount')]}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -255,7 +274,7 @@ const SalesForecast: React.FC = () => {
       </Row>
 
       {/* 区域预测详情 */}
-      <Card title="区域预测详情" style={{ marginBottom: 16 }}>
+      <Card title={t('ai.salesForecast.regionDetails')} style={{ marginBottom: 16 }}>
         <Row gutter={16}>
           {data.breakdownByRegion.map((region, idx) => (
             <Col span={4} key={idx}>
@@ -273,7 +292,7 @@ const SalesForecast: React.FC = () => {
                     color={region.growth > 0 ? 'green' : 'red'}
                     style={{ marginTop: 8 }}
                   >
-                    {region.growth > 0 ? '+' : ''}{region.growth}% 增长
+                    {region.growth > 0 ? '+' : ''}{region.growth}% {t('ai.salesForecast.growth')}
                   </Tag>
                 </div>
               </Card>
@@ -283,7 +302,7 @@ const SalesForecast: React.FC = () => {
       </Card>
 
       {/* 销售预测详情 */}
-      <Card title="销售个人预测">
+      <Card title={t('ai.salesForecast.salesPrediction')}>
         <Row gutter={16}>
           {data.breakdownBySales.map((sales, idx) => (
             <Col span={4} key={idx}>
@@ -291,11 +310,11 @@ const SalesForecast: React.FC = () => {
                 <div style={{ textAlign: 'center' }}>
                   <Title level={5} style={{ margin: '8px 0' }}>{sales.salesName}</Title>
                   <Text type="secondary" style={{ fontSize: 12 }}>
-                    预测：{formatMoney(sales.predicted)}
+                    {t('ai.salesForecast.predicted')}：{formatMoney(sales.predicted)}
                   </Text>
                   <br />
                   <Text type="secondary" style={{ fontSize: 12 }}>
-                    配额：{formatMoney(sales.quota)}
+                    {t('ai.salesForecast.quota')}：{formatMoney(sales.quota)}
                   </Text>
                   <Progress
                     percent={Math.round(sales.attainment)}
@@ -308,7 +327,7 @@ const SalesForecast: React.FC = () => {
                     color={sales.attainment >= 100 ? 'success' : sales.attainment >= 80 ? 'processing' : 'error'}
                     style={{ marginTop: 8 }}
                   >
-                    {sales.attainment >= 100 ? '超额' : sales.attainment >= 80 ? '正常' : '落后'}
+                    {getAttainmentText(sales.attainment)}
                   </Tag>
                 </div>
               </Card>

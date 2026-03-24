@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Typography, Popconfirm, Tooltip, Progress } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, CheckCircleOutlined, FolderOutlined, CiOutlined as ArchiveOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Contract, ContractStatus, ContractType, PaymentPlan } from '../../types/contract';
 
 const { Text } = Typography;
@@ -23,40 +24,6 @@ interface ContractTableProps {
   loading?: boolean;
 }
 
-// 状态颜色配置
-const STATUS_COLORS: Record<ContractStatus, string> = {
-  [ContractStatus.DRAFT]: 'default',
-  [ContractStatus.PENDING_APPROVAL]: 'processing',
-  [ContractStatus.ACTIVE]: 'success',
-  [ContractStatus.ARCHIVED]: 'blue',
-  [ContractStatus.TERMINATED]: 'red'
-};
-
-// 类型颜色配置
-const TYPE_COLORS: Record<ContractType, string> = {
-  [ContractType.SALES]: 'green',
-  [ContractType.PURCHASE]: 'orange',
-  [ContractType.SERVICE]: 'cyan',
-  [ContractType.OTHER]: 'default'
-};
-
-// 格式化金额
-const formatAmount = (amount: number) => {
-  return `¥${(amount / 10000).toFixed(1)}万`;
-};
-
-// 格式化日期
-const formatDate = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString('zh-CN');
-};
-
-// 计算回款进度
-const calculatePaymentProgress = (paymentPlans: PaymentPlan[]) => {
-  if (!paymentPlans || paymentPlans.length === 0) return 0;
-  const completed = paymentPlans.filter(p => p.status === 'COMPLETED').length;
-  return Math.round((completed / paymentPlans.length) * 100);
-};
-
 /**
  * 合同表格组件
  * 展示合同列表数据
@@ -70,10 +37,46 @@ export const ContractTable: React.FC<ContractTableProps> = ({
   onArchive,
   loading = false
 }) => {
+  const { t } = useTranslation();
+
+  // 状态颜色配置
+  const STATUS_COLORS: Record<ContractStatus, string> = {
+    [ContractStatus.DRAFT]: 'default',
+    [ContractStatus.PENDING_APPROVAL]: 'processing',
+    [ContractStatus.ACTIVE]: 'success',
+    [ContractStatus.ARCHIVED]: 'blue',
+    [ContractStatus.TERMINATED]: 'red'
+  };
+
+  // 类型颜色配置
+  const TYPE_COLORS: Record<ContractType, string> = {
+    [ContractType.SALES]: 'green',
+    [ContractType.PURCHASE]: 'orange',
+    [ContractType.SERVICE]: 'cyan',
+    [ContractType.OTHER]: 'default'
+  };
+
+  // 格式化金额
+  const formatAmount = (amount: number) => {
+    return `¥${(amount / 10000).toFixed(1)}${t('common.unit.tenThousand')}`;
+  };
+
+  // 格式化日期
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('zh-CN');
+  };
+
+  // 计算回款进度
+  const calculatePaymentProgress = (paymentPlans: PaymentPlan[]) => {
+    if (!paymentPlans || paymentPlans.length === 0) return 0;
+    const completed = paymentPlans.filter(p => p.status === 'COMPLETED').length;
+    return Math.round((completed / paymentPlans.length) * 100);
+  };
+
   // 表格列定义
   const columns = [
     {
-      title: '合同名称',
+      title: t('contract.column.name'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
@@ -86,7 +89,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       )
     },
     {
-      title: '合同编号',
+      title: t('contract.column.number'),
       dataIndex: 'contractNumber',
       key: 'contractNumber',
       width: 120,
@@ -95,7 +98,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       )
     },
     {
-      title: '所属客户',
+      title: t('contract.column.customer'),
       dataIndex: 'customerName',
       key: 'customerName',
       width: 150,
@@ -106,7 +109,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       onFilter: (value: any, record: Contract) => record.customerName === value
     },
     {
-      title: '合同金额',
+      title: t('contract.column.amount'),
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
@@ -118,7 +121,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       )
     },
     {
-      title: '签订日期',
+      title: t('contract.column.signDate'),
       dataIndex: 'signingDate',
       key: 'signingDate',
       width: 100,
@@ -127,7 +130,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       render: (date: string) => formatDate(date)
     },
     {
-      title: '状态',
+      title: t('contract.column.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -141,7 +144,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       )
     },
     {
-      title: '负责人',
+      title: t('contract.column.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
@@ -152,13 +155,13 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       onFilter: (value: any, record: Contract) => record.ownerName === value
     },
     {
-      title: '回款进度',
+      title: t('contract.column.paymentProgress'),
       key: 'paymentProgress',
       width: 120,
       render: (_: any, record: Contract) => {
         const progress = calculatePaymentProgress(record.paymentPlans);
         return (
-          <Tooltip title={`已回款 ${record.paymentPlans.filter(p => p.status === 'COMPLETED').length}/${record.paymentPlans.length} 期`}>
+          <Tooltip title={t('contract.paymentProgress.tooltip', { completed: record.paymentPlans.filter(p => p.status === 'COMPLETED').length, total: record.paymentPlans.length })}>
             <Progress
               percent={progress}
               size="small"
@@ -169,13 +172,13 @@ export const ContractTable: React.FC<ContractTableProps> = ({
       }
     },
     {
-      title: '操作',
+      title: t('contract.column.action'),
       key: 'action',
       width: 250,
       fixed: 'right' as const,
       render: (_: any, record: Contract) => (
         <Space size="small">
-          <Tooltip title="查看详情">
+          <Tooltip title={t('contract.action.viewDetail')}>
             <Button
               type="link"
               icon={<EyeOutlined />}
@@ -185,7 +188,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
           </Tooltip>
           {record.status === ContractStatus.DRAFT && (
             <>
-              <Tooltip title="编辑">
+              <Tooltip title={t('contract.action.edit')}>
                 <Button
                   type="link"
                   icon={<EditOutlined />}
@@ -194,7 +197,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
                 />
               </Tooltip>
               {onSubmitApproval && (
-                <Tooltip title="提交审批">
+                <Tooltip title={t('contract.action.submitApproval')}>
                   <Button
                     type="link"
                     icon={<CheckCircleOutlined />}
@@ -207,7 +210,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
             </>
           )}
           {record.status === ContractStatus.ACTIVE && onArchive && (
-            <Tooltip title="归档">
+            <Tooltip title={t('contract.action.archive')}>
               <Button
                 type="link"
                 icon={<ArchiveOutlined />}
@@ -217,12 +220,12 @@ export const ContractTable: React.FC<ContractTableProps> = ({
             </Tooltip>
           )}
           <Popconfirm
-            title="确定要删除这个合同吗？"
+            title={t('contract.delete.confirm')}
             onConfirm={() => onDelete(record.id)}
-            okText="确定"
-            cancelText="取消"
+            okText={t('common.confirm')}
+            cancelText={t('common.cancel')}
           >
-            <Tooltip title="删除">
+            <Tooltip title={t('contract.action.delete')}>
               <Button
                 type="link"
                 danger
@@ -247,7 +250,7 @@ export const ContractTable: React.FC<ContractTableProps> = ({
         pageSize: 20,
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条`,
+        showTotal: (total) => t('contract.pagination.total', { count: total }),
         pageSizeOptions: ['10', '20', '50', '100']
       }}
       size="middle"

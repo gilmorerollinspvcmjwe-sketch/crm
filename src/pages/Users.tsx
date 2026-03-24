@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { Card, Table, Button, Space, Modal, Form, Input, Select, Tag, message, Popconfirm, Avatar } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { UserRoleAssign } from '../components/Permission/UserRoleAssign';
 import { Role, User as UserType, DataScope } from '../types/permission';
 
@@ -162,6 +163,7 @@ const mockUsers: User[] = [
 const departments = ['总经办', '销售部', '市场部', '客服部', '财务部', '技术部'];
 
 const Users: React.FC = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
@@ -171,7 +173,7 @@ const Users: React.FC = () => {
 
   const columns = [
     {
-      title: '用户',
+      title: t('permission.users.columnUser'),
       dataIndex: 'realName',
       key: 'realName',
       render: (name: string, record: User) => (
@@ -185,22 +187,22 @@ const Users: React.FC = () => {
       ),
     },
     {
-      title: '邮箱',
+      title: t('permission.users.columnEmail'),
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: '手机',
+      title: t('permission.users.columnPhone'),
       dataIndex: 'phone',
       key: 'phone',
     },
     {
-      title: '部门',
+      title: t('permission.users.columnDepartment'),
       dataIndex: 'department',
       key: 'department',
     },
     {
-      title: '角色',
+      title: t('permission.users.columnRoles'),
       key: 'roles',
       render: (_: any, record: User) => (
         <Space wrap>
@@ -217,17 +219,17 @@ const Users: React.FC = () => {
       ),
     },
     {
-      title: '状态',
+      title: t('permission.users.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => (
         <Tag color={status === 'active' ? 'green' : 'default'}>
-          {status === 'active' ? '正常' : '停用'}
+          {status === 'active' ? t('permission.users.statusActive') : t('permission.users.statusInactive')}
         </Tag>
       ),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       render: (_: any, record: User) => (
         <Space>
@@ -236,23 +238,23 @@ const Users: React.FC = () => {
             icon={<TeamOutlined />}
             onClick={() => handleAssignRole(record)}
           >
-            分配角色
+            {t('permission.users.assignRole')}
           </Button>
           <Button
             type="link"
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
-            编辑
+            {t('permission.users.edit')}
           </Button>
           <Popconfirm
-            title="确定删除此用户？"
+            title={t('permission.users.deleteConfirm')}
             onConfirm={() => handleDelete(record.id)}
-            okText="确定"
-            cancelText="取消"
+            okText={t('common.confirm')}
+            cancelText={t('common.cancel')}
           >
             <Button type="link" danger icon={<DeleteOutlined />}>
-              删除
+              {t('permission.users.delete')}
             </Button>
           </Popconfirm>
         </Space>
@@ -280,7 +282,7 @@ const Users: React.FC = () => {
 
   const handleDelete = (id: string) => {
     setUsers(users.filter((u) => u.id !== id));
-    message.success('用户删除成功');
+    message.success(t('permission.users.deleteSuccess'));
   };
 
   const handleModalClose = () => {
@@ -311,7 +313,7 @@ const Users: React.FC = () => {
               : u
           )
         );
-        message.success('用户更新成功');
+        message.success(t('permission.users.updateSuccess'));
       } else {
         // 新建用户
         const newUser: User = {
@@ -329,7 +331,7 @@ const Users: React.FC = () => {
           createdAt: new Date().toISOString().split('T')[0],
         };
         setUsers([...users, newUser]);
-        message.success('用户创建成功');
+        message.success(t('permission.users.createSuccess'));
       }
       handleModalClose();
     } catch (error) {
@@ -357,7 +359,7 @@ const Users: React.FC = () => {
   return (
     <div style={{ background: '#f0f2f5', minHeight: '100vh', padding: 16 }}>
       <Card
-        title="👥 用户管理"
+        title={`👥 ${t('permission.users.title')}`}
         extra={
           <Button 
             type="primary" 
@@ -367,12 +369,12 @@ const Users: React.FC = () => {
               setIsModalOpen(true); 
             }}
           >
-            新建用户
+            {t('permission.users.newUser')}
           </Button>
         }
       >
         <p style={{ color: '#999', marginBottom: 16 }}>
-          管理系统用户，分配角色和权限
+          {t('permission.users.subtitle')}
         </p>
         <Table
           columns={columns}
@@ -384,52 +386,52 @@ const Users: React.FC = () => {
 
       {/* 用户编辑 Modal */}
       <Modal
-        title={editingUser ? '编辑用户' : '新建用户'}
+        title={editingUser ? t('permission.users.editUserTitle') : t('permission.users.newUserTitle')}
         open={isModalOpen}
         onCancel={handleModalClose}
         onOk={handleSave}
         width={600}
-        okText="保存"
-        cancelText="取消"
+        okText={t('common.save')}
+        cancelText={t('common.cancel')}
       >
         <Form form={form} layout="vertical">
           <Form.Item
             name="username"
-            label="用户名"
-            rules={[{ required: true, message: '请输入用户名' }]}
+            label={t('permission.users.columnUser')}
+            rules={[{ required: true, message: t('permission.users.columnUser') }]}
           >
-            <Input placeholder="用于登录的用户名" disabled={!!editingUser} />
+            <Input placeholder={t('permission.users.columnUser')} disabled={!!editingUser} />
           </Form.Item>
           <Form.Item
             name="realName"
-            label="真实姓名"
-            rules={[{ required: true, message: '请输入真实姓名' }]}
+            label={t('permission.users.realName', { defaultValue: '真实姓名' })}
+            rules={[{ required: true, message: t('permission.users.realName', { defaultValue: '请输入真实姓名' }) }]}
           >
-            <Input placeholder="请输入真实姓名" />
+            <Input placeholder={t('permission.users.realName', { defaultValue: '请输入真实姓名' })} />
           </Form.Item>
           <Form.Item
             name="email"
-            label="邮箱"
+            label={t('permission.users.columnEmail')}
             rules={[
-              { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '请输入有效的邮箱地址' },
+              { required: true, message: t('permission.users.columnEmail') },
+              { type: 'email', message: t('permission.users.validEmail', { defaultValue: '请输入有效的邮箱地址' }) },
             ]}
           >
-            <Input placeholder="请输入邮箱地址" />
+            <Input placeholder={t('permission.users.columnEmail')} />
           </Form.Item>
           <Form.Item
             name="phone"
-            label="手机"
-            rules={[{ required: true, message: '请输入手机号' }]}
+            label={t('permission.users.columnPhone')}
+            rules={[{ required: true, message: t('permission.users.columnPhone') }]}
           >
-            <Input placeholder="请输入手机号" />
+            <Input placeholder={t('permission.users.columnPhone')} />
           </Form.Item>
           <Form.Item
             name="department"
-            label="部门"
-            rules={[{ required: true, message: '请选择部门' }]}
+            label={t('permission.users.columnDepartment')}
+            rules={[{ required: true, message: t('permission.users.columnDepartment') }]}
           >
-            <Select placeholder="请选择部门">
+            <Select placeholder={t('permission.users.columnDepartment')}>
               {departments.map((dept) => (
                 <Select.Option key={dept} value={dept}>
                   {dept}
@@ -439,12 +441,12 @@ const Users: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="status"
-            label="状态"
+            label={t('permission.users.columnStatus')}
             initialValue="active"
           >
             <Select>
-              <Select.Option value="active">正常</Select.Option>
-              <Select.Option value="inactive">停用</Select.Option>
+              <Select.Option value="active">{t('permission.users.statusActive')}</Select.Option>
+              <Select.Option value="inactive">{t('permission.users.statusInactive')}</Select.Option>
             </Select>
           </Form.Item>
         </Form>
@@ -452,7 +454,7 @@ const Users: React.FC = () => {
 
       {/* 角色分配 Modal */}
       <Modal
-        title={`分配角色 - ${selectedUserForAssign?.realName}`}
+        title={t('permission.users.assignRoleTitle', { name: selectedUserForAssign?.realName })}
         open={isAssignModalOpen}
         onCancel={handleModalClose}
         footer={null}

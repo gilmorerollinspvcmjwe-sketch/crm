@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Select, Row, Col, Button, Space } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
@@ -46,6 +47,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
   onReset,
   loading = false
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
 
   // 处理表单提交
@@ -75,8 +77,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 名称搜索 */}
         {filters.name && (
           <Col flex="200px">
-            <Form.Item name="name" label="名称">
-              <Input placeholder="请输入名称" allowClear />
+            <Form.Item name="name" label={t('searchFilter.name')}>
+              <Input placeholder={t('searchFilter.namePlaceholder')} allowClear />
             </Form.Item>
           </Col>
         )}
@@ -84,8 +86,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 客户名称搜索 */}
         {filters.customerName && (
           <Col flex="200px">
-            <Form.Item name="customerName" label="客户名称">
-              <Input placeholder="请输入客户名称" allowClear />
+            <Form.Item name="customerName" label={t('searchFilter.customerName')}>
+              <Input placeholder={t('searchFilter.customerNamePlaceholder')} allowClear />
             </Form.Item>
           </Col>
         )}
@@ -93,8 +95,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 合同编号搜索 */}
         {filters.contractNumber && (
           <Col flex="200px">
-            <Form.Item name="contractNumber" label="合同编号">
-              <Input placeholder="请输入合同编号" allowClear />
+            <Form.Item name="contractNumber" label={t('searchFilter.contractNumber')}>
+              <Input placeholder={t('searchFilter.contractNumberPlaceholder')} allowClear />
             </Form.Item>
           </Col>
         )}
@@ -102,8 +104,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 阶段筛选 */}
         {filters.stage && stageOptions.length > 0 && (
           <Col flex="200px">
-            <Form.Item name="stage" label="阶段">
-              <Select placeholder="请选择阶段" allowClear>
+            <Form.Item name="stage" label={t('searchFilter.stage')}>
+              <Select placeholder={t('searchFilter.stagePlaceholder')} allowClear>
                 {stageOptions.map(option => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
@@ -117,8 +119,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 状态筛选 */}
         {filters.status && statusOptions.length > 0 && (
           <Col flex="200px">
-            <Form.Item name="status" label="状态">
-              <Select placeholder="请选择状态" allowClear>
+            <Form.Item name="status" label={t('searchFilter.status')}>
+              <Select placeholder={t('searchFilter.statusPlaceholder')} allowClear>
                 {statusOptions.map(option => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
@@ -132,8 +134,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 类型筛选 */}
         {filters.type && typeOptions.length > 0 && (
           <Col flex="200px">
-            <Form.Item name="type" label="类型">
-              <Select placeholder="请选择类型" allowClear>
+            <Form.Item name="type" label={t('searchFilter.type')}>
+              <Select placeholder={t('searchFilter.typePlaceholder')} allowClear>
                 {typeOptions.map(option => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
@@ -147,8 +149,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         {/* 负责人筛选 */}
         {filters.owner && ownerOptions.length > 0 && (
           <Col flex="200px">
-            <Form.Item name="owner" label="负责人">
-              <Select placeholder="请选择负责人" allowClear>
+            <Form.Item name="owner" label={t('searchFilter.owner')}>
+              <Select placeholder={t('searchFilter.ownerPlaceholder')} allowClear>
                 {ownerOptions.map(option => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
@@ -169,14 +171,14 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
                 icon={<SearchOutlined />}
                 loading={loading}
               >
-                搜索
+                {t('searchFilter.search')}
               </Button>
               <Button
                 htmlType="button"
                 icon={<ReloadOutlined />}
                 onClick={handleReset}
               >
-                重置
+                {t('searchFilter.reset')}
               </Button>
             </Space>
           </Form.Item>

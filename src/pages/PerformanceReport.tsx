@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { Card, Select, Row, Col, Table, Progress } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { LineChart } from '../components/Charts/LineChart';
 import { BarChart } from '../components/Charts/BarChart';
 import { performanceReport, formatAmount } from '../mock/reportData';
@@ -11,11 +12,12 @@ import { performanceReport, formatAmount } from '../mock/reportData';
 const { Option } = Select;
 
 const PerformanceReport: React.FC = () => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<'month' | 'quarter' | 'year'>('month');
 
   const personalColumns = [
     {
-      title: '排名',
+      title: t('report.performance.rank'),
       dataIndex: 'rank',
       key: 'rank',
       width: 60,
@@ -29,18 +31,18 @@ const PerformanceReport: React.FC = () => {
       ),
     },
     {
-      title: '销售',
+      title: t('report.performance.sales'),
       dataIndex: 'userName',
       key: 'userName',
     },
     {
-      title: '目标',
+      title: t('report.performance.target'),
       dataIndex: 'target',
       key: 'target',
       render: (target: number) => formatAmount(target),
     },
     {
-      title: '实际完成',
+      title: t('report.performance.actual'),
       dataIndex: 'actual',
       key: 'actual',
       render: (actual: number) => (
@@ -50,7 +52,7 @@ const PerformanceReport: React.FC = () => {
       ),
     },
     {
-      title: '完成率',
+      title: t('report.performance.completionRate'),
       dataIndex: 'rate',
       key: 'rate',
       render: (rate: number) => (
@@ -66,7 +68,7 @@ const PerformanceReport: React.FC = () => {
 
   const teamColumns = [
     {
-      title: '排名',
+      title: t('report.performance.rank'),
       dataIndex: 'rank',
       key: 'rank',
       width: 60,
@@ -80,18 +82,18 @@ const PerformanceReport: React.FC = () => {
       ),
     },
     {
-      title: '团队',
+      title: t('report.performance.team'),
       dataIndex: 'teamName',
       key: 'teamName',
     },
     {
-      title: '目标',
+      title: t('report.performance.target'),
       dataIndex: 'target',
       key: 'target',
       render: (target: number) => formatAmount(target),
     },
     {
-      title: '实际完成',
+      title: t('report.performance.actual'),
       dataIndex: 'actual',
       key: 'actual',
       render: (actual: number) => (
@@ -101,7 +103,7 @@ const PerformanceReport: React.FC = () => {
       ),
     },
     {
-      title: '完成率',
+      title: t('report.performance.completionRate'),
       dataIndex: 'rate',
       key: 'rate',
       render: (rate: number) => (
@@ -127,9 +129,9 @@ const PerformanceReport: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h2 style={{ margin: 0 }}>🎯 业绩统计报表</h2>
+            <h2 style={{ margin: 0 }}>🎯 {t('report.performance.title')}</h2>
             <p style={{ margin: '8px 0 0 0', color: '#999' }}>
-              查看个人和团队业绩完成情况
+              {t('report.performance.subtitle')}
             </p>
           </div>
           <Select
@@ -137,14 +139,14 @@ const PerformanceReport: React.FC = () => {
             onChange={(value) => setTimeRange(value)}
             style={{ width: 120 }}
           >
-            <Option value="month">本月</Option>
-            <Option value="quarter">本季度</Option>
-            <Option value="year">本年</Option>
+            <Option value="month">{t('report.timeRange.month')}</Option>
+            <Option value="quarter">{t('report.timeRange.quarter')}</Option>
+            <Option value="year">{t('report.timeRange.year')}</Option>
           </Select>
         </div>
       </Card>
 
-      <Card title="📈 月度趋势分析" style={{ marginBottom: 16 }}>
+      <Card title={`📈 ${t('report.performance.monthlyTrend')}`} style={{ marginBottom: 16 }}>
         <LineChart
           data={performanceReport.monthlyTrend.map((item) => ({
             month: item.month.slice(5),
@@ -153,17 +155,17 @@ const PerformanceReport: React.FC = () => {
             rate: item.rate,
           }))}
           dataKeys={[
-            { key: 'target', name: '目标 (万)', color: '#1890ff' },
-            { key: 'actual', name: '实际 (万)', color: '#52c41a' },
+            { key: 'target', name: `${t('report.performance.targetChart')} (${t('common.unit.tenThousand')})`, color: '#1890ff' },
+            { key: 'actual', name: `${t('report.performance.actualChart')} (${t('common.unit.tenThousand')})`, color: '#52c41a' },
           ]}
           height={300}
-          yAxisFormatter={(value) => `${value.toFixed(0)}万`}
+          yAxisFormatter={(value) => `${value.toFixed(0)}${t('common.unit.tenThousand')}`}
         />
       </Card>
 
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="👥 个人业绩排行" size="small">
+          <Card title={`👥 ${t('report.performance.personalRanking')}`} size="small">
             <Table
               columns={personalColumns}
               dataSource={performanceReport.personalPerformance}
@@ -175,12 +177,12 @@ const PerformanceReport: React.FC = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="🏢 团队业绩排行" size="small">
+          <Card title={`🏢 ${t('report.performance.teamRanking')}`} size="small">
             <div style={{ height: 250, marginBottom: 16 }}>
               <BarChart
                 data={teamBarData}
                 height={250}
-                valueFormatter={(value) => `${(value / 10000).toFixed(0)}万`}
+                valueFormatter={(value) => `${(value / 10000).toFixed(0)}${t('common.unit.tenThousand')}`}
               />
             </div>
             <Table

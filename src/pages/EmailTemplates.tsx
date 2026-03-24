@@ -32,6 +32,7 @@ import {
   DeleteOutlined,
   CopyOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { EmailTemplate } from '../types/marketing';
 import { getEmailTemplatesData } from '../mock/marketingData';
 
@@ -43,6 +44,7 @@ const { TextArea } = Input;
  * 邮件模板管理页组件
  */
 export const EmailTemplates: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [templateList, setTemplateList] = useState<EmailTemplate[]>([]);
   const [filteredData, setFilteredData] = useState<EmailTemplate[]>([]);
@@ -60,7 +62,7 @@ export const EmailTemplates: React.FC = () => {
       setTemplateList(data);
       setFilteredData(data);
     } catch (error) {
-      message.error('加载邮件模板列表失败');
+      message.error(t('marketing.emailTemplates.loadFailed'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -110,8 +112,8 @@ export const EmailTemplates: React.FC = () => {
   /** 新建模板 */
   const handleCreate = () => {
     Modal.info({
-      title: '新建模板',
-      content: '新建模板功能开发中...',
+      title: t('marketing.emailTemplates.newTemplate'),
+      content: t('common.loading'),
       width: 600,
     });
   };
@@ -119,25 +121,25 @@ export const EmailTemplates: React.FC = () => {
   /** 编辑模板 */
   const handleEdit = (template: EmailTemplate) => {
     Modal.info({
-      title: '编辑模板',
-      content: '编辑模板功能开发中...',
+      title: t('marketing.emailTemplates.edit'),
+      content: t('common.loading'),
       width: 600,
     });
   };
 
   /** 复制模板 */
   const handleCopy = (template: EmailTemplate) => {
-    message.success(`已复制模板"${template.name}"`);
+    message.success(t('marketing.emailTemplates.copiedSuccess', { name: template.name }));
   };
 
   /** 删除模板 */
   const handleDelete = (template: EmailTemplate) => {
     Modal.confirm({
-      title: '确认删除',
-      content: `确定要删除模板"${template.name}"吗？此操作不可恢复。`,
+      title: t('common.confirm'),
+      content: t('marketing.emailTemplates.deleteConfirm', { name: template.name }),
       onOk: () => {
         setTemplateList(templateList.filter((t) => t.id !== template.id));
-        message.success('模板已删除');
+        message.success(t('marketing.emailTemplates.deletedSuccess'));
       },
     });
   };
@@ -148,7 +150,7 @@ export const EmailTemplates: React.FC = () => {
   /** 表格列定义 */
   const columns = [
     {
-      title: '模板名称',
+      title: t('marketing.emailTemplates.columnName'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
@@ -162,35 +164,35 @@ export const EmailTemplates: React.FC = () => {
       ),
     },
     {
-      title: '分类',
+      title: t('marketing.emailTemplates.columnCategory'),
       dataIndex: 'category',
       key: 'category',
       width: 120,
       render: (category: string) => <Tag color="blue">{category}</Tag>,
     },
     {
-      title: '变量数量',
+      title: t('marketing.emailTemplates.columnVariables'),
       key: 'variables',
       width: 100,
       render: (_: unknown, record: EmailTemplate) => (
-        <Tag color="green">{record.variables.length} 个变量</Tag>
+        <Tag color="green">{t('marketing.emailTemplates.variableCount', { count: record.variables.length })}</Tag>
       ),
     },
     {
-      title: '创建人',
+      title: t('marketing.emailTemplates.columnCreator'),
       dataIndex: 'createdByName',
       key: 'createdByName',
       width: 100,
     },
     {
-      title: '更新时间',
+      title: t('marketing.emailTemplates.columnUpdateTime'),
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 180,
       render: (time: string) => new Date(time).toLocaleString('zh-CN'),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 200,
       render: (_: unknown, record: EmailTemplate) => (
@@ -201,7 +203,7 @@ export const EmailTemplates: React.FC = () => {
             icon={<EyeOutlined />}
             onClick={() => handlePreview(record)}
           >
-            预览
+            {t('marketing.emailTemplates.preview')}
           </Button>
           <Button
             type="link"
@@ -209,7 +211,7 @@ export const EmailTemplates: React.FC = () => {
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
-            编辑
+            {t('marketing.emailTemplates.edit')}
           </Button>
           <Button
             type="link"
@@ -217,7 +219,7 @@ export const EmailTemplates: React.FC = () => {
             icon={<CopyOutlined />}
             onClick={() => handleCopy(record)}
           >
-            复制
+            {t('marketing.emailTemplates.copy')}
           </Button>
           <Button
             type="link"
@@ -226,7 +228,7 @@ export const EmailTemplates: React.FC = () => {
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
           >
-            删除
+            {t('marketing.emailTemplates.delete')}
           </Button>
         </Space>
       ),
@@ -239,31 +241,31 @@ export const EmailTemplates: React.FC = () => {
         <Row gutter={16}>
           <Col span={6}>
             <Statistic
-              title="模板总数"
+              title={t('marketing.emailTemplates.totalTemplates')}
               value={templateList.length}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#1890ff' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="分类数量"
+              title={t('marketing.emailTemplates.categoryCount')}
               value={categories.length}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#722ed1' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="总变量数"
+              title={t('marketing.emailTemplates.totalVariables')}
               value={templateList.reduce((sum, t) => sum + t.variables.length, 0)}
-              suffix="个"
+              suffix={t('marketing.campaigns.unit')}
               valueStyle={{ color: '#faad14' }}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="最近更新"
+              title={t('marketing.emailTemplates.lastUpdate')}
               value={new Date(Math.max(...templateList.map((t) => new Date(t.updatedAt).getTime()))).toLocaleDateString('zh-CN')}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -272,29 +274,29 @@ export const EmailTemplates: React.FC = () => {
       </Card>
 
       <Card
-        title="邮件模板管理"
+        title={t('marketing.emailTemplates.title')}
         extra={
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建模板
+            {t('marketing.emailTemplates.newTemplate')}
           </Button>
         }
       >
         <Space style={{ marginBottom: 16 }} wrap>
           <Search
-            placeholder="搜索模板名称或主题"
+            placeholder={t('marketing.emailTemplates.searchPlaceholder')}
             allowClear
             onSearch={handleSearch}
             style={{ width: 300 }}
             prefix={<SearchOutlined />}
           />
           <Select
-            placeholder="模板分类"
+            placeholder={t('marketing.emailTemplates.templateCategory')}
             allowClear
             style={{ width: 150 }}
             onChange={(value) => setFilterCategory(value)}
             options={categories.map((cat) => ({ label: cat, value: cat }))}
           />
-          <Button onClick={handleReset}>重置</Button>
+          <Button onClick={handleReset}>{t('common.reset')}</Button>
         </Space>
 
         <Table
@@ -305,7 +307,7 @@ export const EmailTemplates: React.FC = () => {
           pagination={{
             pageSize: 20,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个模板`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
           }}
         />
       </Card>
@@ -315,7 +317,7 @@ export const EmailTemplates: React.FC = () => {
         title={
           <Space>
             <EyeOutlined />
-            <span>模板预览</span>
+            <span>{t('marketing.emailTemplates.templatePreview')}</span>
           </Space>
         }
         open={previewVisible}
@@ -323,7 +325,7 @@ export const EmailTemplates: React.FC = () => {
         width={800}
         footer={[
           <Button key="close" onClick={() => setPreviewVisible(false)}>
-            关闭
+            {t('marketing.emailTemplates.close')}
           </Button>,
         ]}
       >
@@ -336,17 +338,17 @@ export const EmailTemplates: React.FC = () => {
 
             <Row gutter={16} style={{ marginBottom: 16 }}>
               <Col span={12}>
-                <Text strong>分类：</Text>
+                <Text strong>{t('marketing.emailTemplates.category')}：</Text>
                 <Tag color="blue">{previewTemplate.category}</Tag>
               </Col>
               <Col span={12}>
-                <Text strong>创建人：</Text>
+                <Text strong>{t('marketing.emailTemplates.creator')}：</Text>
                 <Text>{previewTemplate.createdByName}</Text>
               </Col>
             </Row>
 
             <div style={{ marginBottom: 16 }}>
-              <Text strong>邮件主题：</Text>
+              <Text strong>{t('marketing.emailTemplates.emailSubject')}：</Text>
               <Paragraph
                 copyable={{ text: previewTemplate.subject }}
                 style={{ background: '#f5f5f5', padding: 8, borderRadius: 4, marginTop: 8 }}
@@ -357,7 +359,7 @@ export const EmailTemplates: React.FC = () => {
 
             {previewTemplate.previewText && (
               <div style={{ marginBottom: 16 }}>
-                <Text strong>预览文本：</Text>
+                <Text strong>{t('marketing.emailTemplates.previewText')}：</Text>
                 <Paragraph type="secondary" style={{ marginTop: 8 }}>
                   {previewTemplate.previewText}
                 </Paragraph>
@@ -365,7 +367,7 @@ export const EmailTemplates: React.FC = () => {
             )}
 
             <div style={{ marginBottom: 16 }}>
-              <Text strong>可用变量：</Text>
+              <Text strong>{t('marketing.emailTemplates.availableVariables')}：</Text>
               <div style={{ marginTop: 8 }}>
                 {previewTemplate.variables.map((variable, index) => (
                   <Tag key={index} color="green">
@@ -376,7 +378,7 @@ export const EmailTemplates: React.FC = () => {
             </div>
 
             <div>
-              <Text strong>模板内容：</Text>
+              <Text strong>{t('marketing.emailTemplates.templateContent')}：</Text>
               <TextArea
                 value={previewTemplate.content}
                 readOnly
@@ -387,9 +389,9 @@ export const EmailTemplates: React.FC = () => {
 
             <Divider />
             <Text type="secondary">
-              创建时间：{new Date(previewTemplate.createdAt).toLocaleString('zh-CN')}
+              {t('marketing.emailTemplates.createdAt')}：{new Date(previewTemplate.createdAt).toLocaleString('zh-CN')}
               {' | '}
-              更新时间：{new Date(previewTemplate.updatedAt).toLocaleString('zh-CN')}
+              {t('marketing.emailTemplates.updatedAt')}：{new Date(previewTemplate.updatedAt).toLocaleString('zh-CN')}
             </Text>
           </div>
         )}

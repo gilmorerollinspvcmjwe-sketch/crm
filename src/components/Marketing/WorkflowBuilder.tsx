@@ -13,6 +13,7 @@ import {
   NodeIndexOutlined,
   BranchesOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Workflow, WorkflowNode, WorkflowEdge, TriggerType, ActionType } from '../../types/marketing';
 
 const { Title, Text } = Typography;
@@ -24,33 +25,6 @@ interface WorkflowBuilderProps {
   readOnly?: boolean;
 }
 
-/** 节点类型配置 */
-const nodeTypeConfig = {
-  trigger: { color: 'blue', icon: PlayCircleOutlined, label: '触发器' },
-  action: { color: 'green', icon: NodeIndexOutlined, label: '动作' },
-  condition: { color: 'orange', icon: BranchesOutlined, label: '条件' },
-  end: { color: 'gray', icon: undefined, label: '结束' },
-};
-
-/** 触发类型选项 */
-const triggerTypeOptions = [
-  { label: '时间触发', value: TriggerType.TIME_BASED },
-  { label: '行为触发', value: TriggerType.BEHAVIOR_BASED },
-  { label: '属性触发', value: TriggerType.ATTRIBUTE_BASED },
-  { label: '事件触发', value: TriggerType.EVENT_BASED },
-];
-
-/** 动作类型选项 */
-const actionTypeOptions = [
-  { label: '发送邮件', value: ActionType.SEND_EMAIL },
-  { label: '发送短信', value: ActionType.SEND_SMS },
-  { label: '创建任务', value: ActionType.CREATE_TASK },
-  { label: '更新字段', value: ActionType.UPDATE_FIELD },
-  { label: '加入列表', value: ActionType.ADD_TO_LIST },
-  { label: '移出列表', value: ActionType.REMOVE_FROM_LIST },
-  { label: '通知用户', value: ActionType.NOTIFY_USER },
-];
-
 /**
  * 工作流构建器组件
  */
@@ -59,6 +33,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
   onSave,
   readOnly = false,
 }) => {
+  const { t } = useTranslation();
   const [nodes, setNodes] = useState<WorkflowNode[]>(workflow?.nodes || []);
   const [edges, setEdges] = useState<WorkflowEdge[]>(workflow?.edges || []);
   const [selectedNode, setSelectedNode] = useState<WorkflowNode | null>(null);
@@ -66,17 +41,46 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
   const [form] = Form.useForm();
   const canvasRef = useRef<HTMLDivElement>(null);
 
+  /** 节点类型配置 */
+  const nodeTypeConfig = {
+    trigger: { color: 'blue', icon: PlayCircleOutlined, label: t('marketing.workflowBuilder.trigger') },
+    action: { color: 'green', icon: NodeIndexOutlined, label: t('marketing.workflowBuilder.action') },
+    condition: { color: 'orange', icon: BranchesOutlined, label: t('marketing.workflowBuilder.condition') },
+    end: { color: 'gray', icon: undefined, label: t('marketing.workflowBuilder.end') },
+  };
+
+  /** 触发类型选项 */
+  const triggerTypeOptions = [
+    { label: t('marketing.workflowBuilder.timeTrigger'), value: TriggerType.TIME_BASED },
+    { label: t('marketing.workflowBuilder.behaviorTrigger'), value: TriggerType.BEHAVIOR_BASED },
+    { label: t('marketing.workflowBuilder.attributeTrigger'), value: TriggerType.ATTRIBUTE_BASED },
+    { label: t('marketing.workflowBuilder.eventTrigger'), value: TriggerType.EVENT_BASED },
+  ];
+
+  /** 动作类型选项 */
+  const actionTypeOptions = [
+    { label: t('marketing.workflowBuilder.sendEmail'), value: ActionType.SEND_EMAIL },
+    { label: t('marketing.workflowBuilder.sendSMS'), value: ActionType.SEND_SMS },
+    { label: t('marketing.workflowBuilder.createTask'), value: ActionType.CREATE_TASK },
+    { label: t('marketing.workflowBuilder.updateField'), value: ActionType.UPDATE_FIELD },
+    { label: t('marketing.workflowBuilder.addToList'), value: ActionType.ADD_TO_LIST },
+    { label: t('marketing.workflowBuilder.removeFromList'), value: ActionType.REMOVE_FROM_LIST },
+    { label: t('marketing.workflowBuilder.notifyUser'), value: ActionType.NOTIFY_USER },
+  ];
+
   /** 添加新节点 */
   const handleAddNode = (type: 'trigger' | 'action' | 'condition') => {
     if (readOnly) {
-      message.warning('只读模式下无法添加节点');
+      message.warning(t('marketing.workflowBuilder.readOnlyWarning', { action: t('common.edit') }));
       return;
     }
 
     const newNode: WorkflowNode = {
       id: `node_${Date.now()}`,
       type,
-      name: `新${nodeTypeConfig[type].label}`,
+      name: type === 'trigger' ? t('marketing.workflowBuilder.newTrigger') : 
+            type === 'action' ? t('marketing.workflowBuilder.newAction') : 
+            t('marketing.workflowBuilder.newCondition'),
       triggerType: type === 'trigger' ? TriggerType.TIME_BASED : undefined,
       actionType: type === 'action' ? ActionType.SEND_EMAIL : undefined,
       config: {},
@@ -130,7 +134,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
         setNodes(updatedNodes);
         setEditDrawerVisible(false);
         setSelectedNode(null);
-        message.success('节点已保存');
+        message.success(t('marketing.workflowBuilder.nodeSaved'));
       }
     });
   };
@@ -138,13 +142,13 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
   /** 删除节点 */
   const handleDeleteNode = (nodeId: string) => {
     if (readOnly) {
-      message.warning('只读模式下无法删除节点');
+      message.warning(t('marketing.workflowBuilder.readOnlyWarning', { action: t('common.delete') }));
       return;
     }
 
     setNodes(nodes.filter((n) => n.id !== nodeId));
     setEdges(edges.filter((e) => e.source !== nodeId && e.target !== nodeId));
-    message.success('节点已删除');
+    message.success(t('marketing.workflowBuilder.nodeDeleted'));
   };
 
   /** 保存整个工作流 */
@@ -158,7 +162,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
     };
 
     onSave?.(updatedWorkflow);
-    message.success('工作流已保存');
+    message.success(t('marketing.workflowBuilder.workflowSaved'));
   };
 
   /** 渲染节点 */
@@ -221,7 +225,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
   return (
     <div style={{ position: 'relative' }}>
       <Card
-        title="工作流设计器"
+        title={t('marketing.workflowBuilder.title')}
         extra={
           !readOnly && (
             <Space>
@@ -230,22 +234,22 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
                 icon={<PlusOutlined />}
                 onClick={() => handleAddNode('trigger')}
               >
-                添加触发器
+                {t('marketing.workflowBuilder.addTrigger')}
               </Button>
               <Button
                 icon={<PlusOutlined />}
                 onClick={() => handleAddNode('action')}
               >
-                添加动作
+                {t('marketing.workflowBuilder.addAction')}
               </Button>
               <Button
                 icon={<PlusOutlined />}
                 onClick={() => handleAddNode('condition')}
               >
-                添加条件
+                {t('marketing.workflowBuilder.addCondition')}
               </Button>
               <Button type="primary" onClick={handleSaveWorkflow}>
-                保存工作流
+                {t('marketing.workflowBuilder.saveWorkflow')}
               </Button>
             </Space>
           )
@@ -295,7 +299,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
               }}
             >
               <NodeIndexOutlined style={{ fontSize: 48, marginBottom: 16 }} />
-              <div>暂无节点，点击上方按钮添加</div>
+              <div>{t('marketing.workflowBuilder.noNodes')}</div>
             </div>
           )}
         </div>
@@ -303,7 +307,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
 
       {/* 节点编辑抽屉 */}
       <Drawer
-        title="编辑节点"
+        title={t('marketing.workflowBuilder.editNode')}
         placement="right"
         width={400}
         open={editDrawerVisible}
@@ -313,27 +317,27 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
         }}
         extra={
           <Space>
-            <Button onClick={() => setEditDrawerVisible(false)}>取消</Button>
+            <Button onClick={() => setEditDrawerVisible(false)}>{t('common.cancel')}</Button>
             <Button type="primary" onClick={handleSaveNode}>
-              保存
+              {t('common.save')}
             </Button>
           </Space>
         }
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            label="节点名称"
+            label={t('marketing.workflowBuilder.nodeName')}
             name="name"
-            rules={[{ required: true, message: '请输入节点名称' }]}
+            rules={[{ required: true, message: t('marketing.workflowBuilder.enterNodeName') }]}
           >
-            <Input placeholder="请输入节点名称" />
+            <Input placeholder={t('marketing.workflowBuilder.enterNodeName')} />
           </Form.Item>
 
           {selectedNode?.type === 'trigger' && (
             <Form.Item
-              label="触发类型"
+              label={t('marketing.workflowBuilder.triggerType')}
               name="triggerType"
-              rules={[{ required: true, message: '请选择触发类型' }]}
+              rules={[{ required: true, message: t('marketing.workflowBuilder.selectTriggerType') }]}
             >
               <Select options={triggerTypeOptions} />
             </Form.Item>
@@ -341,28 +345,28 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({
 
           {selectedNode?.type === 'action' && (
             <Form.Item
-              label="动作类型"
+              label={t('marketing.workflowBuilder.actionType')}
               name="actionType"
-              rules={[{ required: true, message: '请选择动作类型' }]}
+              rules={[{ required: true, message: t('marketing.workflowBuilder.selectActionType') }]}
             >
               <Select options={actionTypeOptions} />
             </Form.Item>
           )}
 
-          <Form.Item label="描述" name="description">
+          <Form.Item label={t('marketing.workflowBuilder.nodeDescription')} name="description">
             <TextArea
               rows={4}
-              placeholder="请输入节点描述（可选）"
+              placeholder={t('marketing.workflowBuilder.enterDescription')}
             />
           </Form.Item>
 
           <Divider />
-          <Title level={5}>节点配置</Title>
+          <Title level={5}>{t('marketing.workflowBuilder.nodeConfig')}</Title>
           <Text type="secondary">
-            {selectedNode?.type === 'trigger' && '配置触发条件和时间设置'}
-            {selectedNode?.type === 'action' && '配置动作执行参数和目标'}
-            {selectedNode?.type === 'condition' && '配置判断条件和分支逻辑'}
-            {selectedNode?.type === 'end' && '流程结束节点，无需配置'}
+            {selectedNode?.type === 'trigger' && t('marketing.workflowBuilder.triggerConfigHint')}
+            {selectedNode?.type === 'action' && t('marketing.workflowBuilder.actionConfigHint')}
+            {selectedNode?.type === 'condition' && t('marketing.workflowBuilder.conditionConfigHint')}
+            {selectedNode?.type === 'end' && t('marketing.workflowBuilder.endConfigHint')}
           </Text>
         </Form>
       </Drawer>

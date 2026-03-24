@@ -8,6 +8,7 @@ import {
   message,
   Divider,
 } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { CustomField, ModuleType } from '../../types/customField';
 import { customFieldService } from '../../services/customFieldService';
 import DynamicCustomFields from '../CustomField/DynamicCustomFields';
@@ -49,6 +50,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   onCancel,
   isEdit = false,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         const fields = await customFieldService.getCustomFields(ModuleType.CONTACT);
         setCustomFields(fields);
       } catch (error) {
-        console.error('加载自定义字段失败:', error);
+        console.error(t('contactForm.loadCustomFieldsFailed'), error);
       }
     };
     loadCustomFields();
@@ -80,9 +82,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setLoading(true);
     try {
       await onSubmit(values);
-      message.success(isEdit ? '更新联系人成功' : '创建联系人成功');
+      message.success(isEdit ? t('contactForm.updateSuccess') : t('contactForm.createSuccess'));
     } catch (error) {
-      message.error(isEdit ? '更新联系人失败' : '创建联系人失败');
+      message.error(isEdit ? t('contactForm.updateFailed') : t('contactForm.createFailed'));
     } finally {
       setLoading(false);
     }
@@ -99,68 +101,68 @@ const ContactForm: React.FC<ContactFormProps> = ({
       }}
     >
       {/* 基本信息 */}
-      <Divider orientation="left" orientationMargin="0">基本信息</Divider>
+      <Divider orientation="left" orientationMargin="0">{t('contactForm.basicInfo')}</Divider>
       
       <Form.Item
         name="name"
-        label="姓名"
-        rules={[{ required: true, message: '请输入姓名' }]}
+        label={t('contactForm.name')}
+        rules={[{ required: true, message: t('contactForm.nameRequired') }]}
       >
-        <Input placeholder="请输入姓名" />
+        <Input placeholder={t('contactForm.namePlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="gender" label="性别">
+      <Form.Item name="gender" label={t('contactForm.gender')}>
         <Radio.Group options={genderOptions} />
       </Form.Item>
 
-      <Form.Item name="position" label="职位">
-        <Input placeholder="请输入职位" />
+      <Form.Item name="position" label={t('contactForm.position')}>
+        <Input placeholder={t('contactForm.positionPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="department" label="部门">
-        <Input placeholder="请输入部门" />
+      <Form.Item name="department" label={t('contactForm.department')}>
+        <Input placeholder={t('contactForm.departmentPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="education" label="学历">
-        <Select placeholder="请选择学历" options={educationOptions} />
+      <Form.Item name="education" label={t('contactForm.education')}>
+        <Select placeholder={t('contactForm.educationPlaceholder')} options={educationOptions} />
       </Form.Item>
 
-      <Form.Item name="mobile" label="手机号">
-        <Input placeholder="请输入手机号" />
+      <Form.Item name="mobile" label={t('contactForm.mobile')}>
+        <Input placeholder={t('contactForm.mobilePlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="officePhone" label="办公电话">
-        <Input placeholder="请输入办公电话" />
+      <Form.Item name="officePhone" label={t('contactForm.officePhone')}>
+        <Input placeholder={t('contactForm.officePhonePlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="email" label="邮箱">
-        <Input placeholder="请输入邮箱" />
+      <Form.Item name="email" label={t('contactForm.email')}>
+        <Input placeholder={t('contactForm.emailPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="wechat" label="微信">
-        <Input placeholder="请输入微信号" />
+      <Form.Item name="wechat" label={t('contactForm.wechat')}>
+        <Input placeholder={t('contactForm.wechatPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="address" label="地址">
-        <TextArea rows={2} placeholder="请输入地址" />
+      <Form.Item name="address" label={t('contactForm.address')}>
+        <TextArea rows={2} placeholder={t('contactForm.addressPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="birthday" label="生日">
+      <Form.Item name="birthday" label={t('contactForm.birthday')}>
         <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
       </Form.Item>
 
-      <Form.Item name="school" label="毕业院校">
-        <Input placeholder="请输入毕业院校" />
+      <Form.Item name="school" label={t('contactForm.school')}>
+        <Input placeholder={t('contactForm.schoolPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="major" label="专业">
-        <Input placeholder="请输入专业" />
+      <Form.Item name="major" label={t('contactForm.major')}>
+        <Input placeholder={t('contactForm.majorPlaceholder')} />
       </Form.Item>
 
       {/* 自定义字段 */}
       {customFields.length > 0 && (
         <>
-          <Divider orientation="left" orientationMargin="0">自定义字段</Divider>
+          <Divider orientation="left" orientationMargin="0">{t('contactForm.customFields')}</Divider>
           <DynamicCustomFields
             module="contact"
             fields={customFields}
@@ -171,10 +173,10 @@ const ContactForm: React.FC<ContactFormProps> = ({
       )}
 
       {/* 备注 */}
-      <Divider orientation="left" orientationMargin="0">备注</Divider>
+      <Divider orientation="left" orientationMargin="0">{t('contactForm.remark')}</Divider>
       
-      <Form.Item name="remark" label="备注">
-        <TextArea rows={3} placeholder="请输入备注信息" />
+      <Form.Item name="remark" label={t('contactForm.remark')}>
+        <TextArea rows={3} placeholder={t('contactForm.remarkPlaceholder')} />
       </Form.Item>
     </Form>
   );

@@ -5,6 +5,7 @@
 import React from 'react';
 import { Table, Tag, Space, Button, Popconfirm, message, Progress } from 'antd';
 import { EditOutlined, DeleteOutlined, ThunderboltOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { ColumnsType } from 'antd/es/table';
 import { Lead, LeadStatus, LeadLevel, LeadSource } from '../../types/lead';
 
@@ -36,32 +37,6 @@ interface LeadTableProps {
   onBatchConvert?: (ids: string[]) => void;
 }
 
-/** 线索状态标签颜色映射 */
-const statusColorMap: Record<LeadStatus, string> = {
-  '待跟进': 'default',
-  '跟进中': 'processing',
-  '已转化': 'success',
-  '已关闭': 'error',
-};
-
-/** 线索等级标签颜色映射 */
-const levelColorMap: Record<LeadLevel, string> = {
-  'A': 'red',
-  'B': 'orange',
-  'C': 'blue',
-  'D': 'gray',
-};
-
-/** 线索来源标签颜色映射 */
-const sourceColorMap: Record<LeadSource, string> = {
-  '市场活动': 'purple',
-  '官网': 'blue',
-  '转介绍': 'green',
-  '陌拜': 'orange',
-  '广告': 'cyan',
-  '其他': 'default',
-};
-
 /**
  * 线索表格组件
  */
@@ -77,7 +52,34 @@ export const LeadTable: React.FC<LeadTableProps> = ({
   onBatchAssign,
   onBatchConvert,
 }) => {
+  const { t } = useTranslation();
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+  /** 线索状态标签颜色映射 */
+  const statusColorMap: Record<string, string> = {
+    [t('lead.status.pending')]: 'default',
+    [t('lead.status.following')]: 'processing',
+    [t('lead.status.converted')]: 'success',
+    [t('lead.status.closed')]: 'error',
+  };
+
+  /** 线索等级标签颜色映射 */
+  const levelColorMap: Record<string, string> = {
+    'A': 'red',
+    'B': 'orange',
+    'C': 'blue',
+    'D': 'gray',
+  };
+
+  /** 线索来源标签颜色映射 */
+  const sourceColorMap: Record<string, string> = {
+    [t('lead.source.campaign')]: 'purple',
+    [t('lead.source.website')]: 'blue',
+    [t('lead.source.referral')]: 'green',
+    [t('lead.source.coldCall')]: 'orange',
+    [t('lead.source.ad')]: 'cyan',
+    [t('lead.source.other')]: 'default',
+  };
 
   /** 处理选择变化 */
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -93,7 +95,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
   /** 处理批量分配 */
   const handleBatchAssign = () => {
     if (selectedRowKeys.length === 0) {
-      message.warning('请选择要分配的线索');
+      message.warning(t('lead.batch.selectAssign'));
       return;
     }
     onBatchAssign?.(selectedRowKeys as string[]);
@@ -102,7 +104,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
   /** 处理批量转化 */
   const handleBatchConvert = () => {
     if (selectedRowKeys.length === 0) {
-      message.warning('请选择要转化的线索');
+      message.warning(t('lead.batch.selectConvert'));
       return;
     }
     onBatchConvert?.(selectedRowKeys as string[]);
@@ -111,7 +113,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
   /** 表格列配置 */
   const columns: ColumnsType<Lead> = [
     {
-      title: '线索名称',
+      title: t('lead.column.name'),
       dataIndex: 'name',
       key: 'name',
       width: 220,
@@ -126,7 +128,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
       ),
     },
     {
-      title: '来源',
+      title: t('lead.column.source'),
       dataIndex: 'source',
       key: 'source',
       width: 100,
@@ -135,7 +137,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
       ),
     },
     {
-      title: '状态',
+      title: t('lead.column.status'),
       dataIndex: 'status',
       key: 'status',
       width: 90,
@@ -144,7 +146,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
       ),
     },
     {
-      title: '等级',
+      title: t('lead.column.level'),
       dataIndex: 'level',
       key: 'level',
       width: 70,
@@ -153,7 +155,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
       ),
     },
     {
-      title: '评分',
+      title: t('lead.column.score'),
       dataIndex: 'score',
       key: 'score',
       width: 100,
@@ -174,39 +176,39 @@ export const LeadTable: React.FC<LeadTableProps> = ({
       ),
     },
     {
-      title: '公司名称',
+      title: t('lead.column.company'),
       dataIndex: 'companyName',
       key: 'companyName',
       width: 150,
       ellipsis: true,
     },
     {
-      title: '手机',
+      title: t('lead.column.mobile'),
       dataIndex: 'mobile',
       key: 'mobile',
       width: 130,
     },
     {
-      title: '预算',
+      title: t('lead.column.budget'),
       dataIndex: 'budget',
       key: 'budget',
       width: 100,
     },
     {
-      title: '负责人',
+      title: t('lead.column.owner'),
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 100,
     },
     {
-      title: '创建时间',
+      title: t('lead.column.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
       sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
     {
-      title: '操作',
+      title: t('lead.column.action'),
       key: 'action',
       width: 200,
       fixed: 'right',
@@ -218,45 +220,45 @@ export const LeadTable: React.FC<LeadTableProps> = ({
               size="small"
               onClick={() => onViewDetail(record.id)}
             >
-              详情
+              {t('lead.action.detail')}
             </Button>
-            {onEdit && record.status !== '已转化' && record.status !== '已关闭' && (
+            {onEdit && record.status !== t('lead.status.converted') && record.status !== t('lead.status.closed') && (
               <Button
                 type="link"
                 size="small"
                 icon={<EditOutlined />}
                 onClick={() => onEdit(record.id)}
               >
-                编辑
+                {t('lead.action.edit')}
               </Button>
             )}
-            {onAssign && record.status !== '已转化' && record.status !== '已关闭' && (
+            {onAssign && record.status !== t('lead.status.converted') && record.status !== t('lead.status.closed') && (
               <Button
                 type="link"
                 size="small"
                 onClick={() => onAssign(record.id)}
               >
-                分配
+                {t('lead.action.assign')}
               </Button>
             )}
           </Space>
           <Space size="small">
-            {onConvert && record.status === '跟进中' && (
+            {onConvert && record.status === t('lead.status.following') && (
               <Button
                 type="link"
                 size="small"
                 icon={<CheckCircleOutlined />}
                 onClick={() => onConvert(record.id)}
               >
-                转化
+                {t('lead.action.convert')}
               </Button>
             )}
-            {onDelete && record.status !== '已转化' && (
+            {onDelete && record.status !== t('lead.status.converted') && (
               <Popconfirm
-                title="确定要删除该线索吗？"
+                title={t('lead.delete.confirm')}
                 onConfirm={() => onDelete(record.id)}
-                okText="确定"
-                cancelText="取消"
+                okText={t('common.confirm')}
+                cancelText={t('common.cancel')}
               >
                 <Button
                   type="link"
@@ -264,7 +266,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
                   danger
                   icon={<DeleteOutlined />}
                 >
-                  删除
+                  {t('lead.action.delete')}
                 </Button>
               </Popconfirm>
             )}
@@ -280,22 +282,22 @@ export const LeadTable: React.FC<LeadTableProps> = ({
       {selectedRowKeys.length > 0 && (
         <div style={{ marginBottom: 16, padding: '8px 12px', background: '#e6f7ff', borderRadius: 4 }}>
           <Space>
-            <span>已选择 {selectedRowKeys.length} 项</span>
+            <span>{t('lead.batch.selected', { count: selectedRowKeys.length })}</span>
             {onBatchAssign && (
               <Button size="small" onClick={handleBatchAssign}>
-                批量分配
+                {t('lead.batch.assign')}
               </Button>
             )}
             {onBatchConvert && (
               <Button size="small" type="primary" onClick={handleBatchConvert}>
-                批量转化
+                {t('lead.batch.convert')}
               </Button>
             )}
             <Button
               size="small"
               onClick={() => setSelectedRowKeys([])}
             >
-              取消选择
+              {t('lead.batch.cancel')}
             </Button>
           </Space>
         </div>
@@ -314,3 +316,5 @@ export const LeadTable: React.FC<LeadTableProps> = ({
     </div>
   );
 };
+
+export default LeadTable;

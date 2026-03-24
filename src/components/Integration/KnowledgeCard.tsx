@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { Card, Typography, Space, Tag, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { KnowledgeDocument } from '../../types/knowledge';
 
 const { Title, Text, Paragraph } = Typography;
@@ -22,6 +23,8 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
   onOpen,
   showRelevance = false,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Card
       hoverable
@@ -32,7 +35,7 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
           e.stopPropagation();
           onOpen(document);
         }}>
-          查看详情
+          {t('integration.knowledge.viewDetail')}
         </Button>,
       ] : undefined}
     >
@@ -41,7 +44,7 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
           <Title level={5} style={{ margin: 0, flex: 1 }}>{document.title}</Title>
           {showRelevance && document.relevanceScore && (
             <Tag color="green">
-              相关度：{Math.round(document.relevanceScore * 100)}%
+              {t('integration.knowledge.relevance')}：{Math.round(document.relevanceScore * 100)}%
             </Tag>
           )}
         </Space>
@@ -62,7 +65,7 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
         </Space>
 
         <Text type="secondary" style={{ fontSize: 12 }}>
-          更新于：{document.updatedAt}
+          {t('integration.knowledge.updatedOn')}：{document.updatedAt}
         </Text>
       </Space>
     </Card>

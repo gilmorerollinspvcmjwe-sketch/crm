@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Select, Space, Button, Tag, Modal, Form, message, Popconfirm } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import { Product, ProductCategory } from '../../types/cpq';
 import { getProducts, deleteProduct, createProduct, updateProduct } from '../../services/productService';
 import { ProductForm } from '../../components/Product/ProductForm';
@@ -15,6 +16,7 @@ const { Option } = Select;
  * 产品库列表页面组件
  */
 export const ProductList: React.FC = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -39,7 +41,7 @@ export const ProductList: React.FC = () => {
       setProducts(result.list);
       setTotal(result.total);
     } catch (error) {
-      message.error('加载产品列表失败');
+      message.error(t('product.list.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -65,10 +67,10 @@ export const ProductList: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteProduct(id);
-      message.success('删除成功');
+      message.success(t('product.list.deleteSuccess'));
       loadProducts();
     } catch (error) {
-      message.error('删除失败');
+      message.error(t('product.list.deleteFailed'));
     }
   };
 
@@ -78,15 +80,15 @@ export const ProductList: React.FC = () => {
     try {
       if (editingProduct) {
         await updateProduct(editingProduct.id, values);
-        message.success('产品更新成功');
+        message.success(t('product.form.updateSuccess'));
       } else {
         await createProduct(values);
-        message.success('产品创建成功');
+        message.success(t('product.form.createSuccess'));
       }
       setModalVisible(false);
       loadProducts();
     } catch (error) {
-      message.error('操作失败');
+      message.error(t('common.operationFailed'));
     } finally {
       setFormLoading(false);
     }
@@ -95,19 +97,19 @@ export const ProductList: React.FC = () => {
   /** 表格列定义 */
   const columns: ColumnsType<Product> = [
     {
-      title: '产品编码',
+      title: t('product.list.columnSku'),
       dataIndex: 'sku',
       key: 'sku',
       width: 120,
     },
     {
-      title: '产品名称',
+      title: t('product.list.columnName'),
       dataIndex: 'name',
       key: 'name',
       width: 250,
     },
     {
-      title: '类别',
+      title: t('product.list.columnCategory'),
       dataIndex: 'category',
       key: 'category',
       width: 100,
@@ -116,70 +118,70 @@ export const ProductList: React.FC = () => {
       ),
     },
     {
-      title: '规格',
+      title: t('product.list.columnSpec'),
       dataIndex: 'specification',
       key: 'specification',
       width: 100,
       render: (spec?: string) => spec || '-',
     },
     {
-      title: '型号',
+      title: t('product.list.columnModel'),
       dataIndex: 'model',
       key: 'model',
       width: 100,
       render: (model?: string) => model || '-',
     },
     {
-      title: '单价',
+      title: t('product.list.columnUnitPrice'),
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       width: 100,
       render: (price: number) => `¥${price.toLocaleString()}`,
     },
     {
-      title: '成本价',
+      title: t('product.list.columnCostPrice'),
       dataIndex: 'costPrice',
       key: 'costPrice',
       width: 100,
       render: (price?: number) => price ? `¥${price.toLocaleString()}` : '-',
     },
     {
-      title: '库存',
+      title: t('product.list.columnStock'),
       dataIndex: 'stockQuantity',
       key: 'stockQuantity',
       width: 80,
       render: (qty?: number) => qty ?? '-',
     },
     {
-      title: '状态',
+      title: t('product.list.columnStatus'),
       key: 'status',
       width: 100,
       render: (_: any, record: Product) => (
         <Space>
           <Tag color={record.status === 'active' ? 'green' : 'default'}>
-            {record.status === 'active' ? '上架' : '下架'}
+            {record.status === 'active' ? t('product.list.statusActive') : t('product.list.statusInactive')}
           </Tag>
           <Tag color={record.inStock ? 'green' : 'red'}>
-            {record.inStock ? '有货' : '缺货'}
+            {record.inStock ? t('product.list.inStock') : t('product.list.outOfStock')}
           </Tag>
         </Space>
       ),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 150,
       render: (_: any, record: Product) => (
         <Space>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-            编辑
+            {t('product.list.edit')}
           </Button>
           <Popconfirm
-            title="确定删除此产品吗？"
+            title={t('product.list.deleteConfirm')}
             onConfirm={() => handleDelete(record.id)}
           >
             <Button type="link" size="small" danger icon={<DeleteOutlined />}>
-              删除
+              {t('product.list.delete')}
             </Button>
           </Popconfirm>
         </Space>
@@ -194,7 +196,7 @@ export const ProductList: React.FC = () => {
         <Space style={{ marginBottom: 16, width: '100%', display: 'flex', justifyContent: 'space-between' }}>
           <Space>
             <Input
-              placeholder="搜索产品"
+              placeholder={t('product.list.searchPlaceholder')}
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -203,7 +205,7 @@ export const ProductList: React.FC = () => {
               onPressEnter={loadProducts}
             />
             <Select
-              placeholder="产品类别"
+              placeholder={t('product.list.categoryFilter')}
               value={categoryFilter}
               onChange={setCategoryFilter}
               style={{ width: 150 }}
@@ -215,12 +217,12 @@ export const ProductList: React.FC = () => {
               <Option value={ProductCategory.TRAINING}>培训</Option>
               <Option value={ProductCategory.MAINTENANCE}>维护</Option>
             </Select>
-            <Button onClick={loadProducts}>查询</Button>
+            <Button onClick={loadProducts}>{t('common.query')}</Button>
           </Space>
           <Space>
-            <Button icon={<ImportOutlined />}>导入</Button>
+            <Button icon={<ImportOutlined />}>{t('product.list.import')}</Button>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-              新建产品
+              {t('product.list.newProduct')}
             </Button>
           </Space>
         </Space>
@@ -236,7 +238,7 @@ export const ProductList: React.FC = () => {
             pageSize,
             total,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个产品`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
             onChange: (page, pageSize) => {
               setPage(page);
               setPageSize(pageSize);
@@ -247,7 +249,7 @@ export const ProductList: React.FC = () => {
 
       {/* 新建/编辑产品弹窗 */}
       <Modal
-        title={editingProduct ? '编辑产品' : '新建产品'}
+        title={editingProduct ? t('product.form.basicInfo') : t('product.list.newProduct')}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}

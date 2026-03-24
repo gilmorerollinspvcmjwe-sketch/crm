@@ -7,6 +7,7 @@ import {
   message,
   Divider,
 } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { CustomField, ModuleType } from '../../types/customField';
 import { customFieldService } from '../../services/customFieldService';
 import DynamicCustomFields from '../CustomField/DynamicCustomFields';
@@ -74,6 +75,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   onCancel,
   isEdit = false,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [loading, setLoading] = useState(false);
@@ -85,7 +87,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
         const fields = await customFieldService.getCustomFields(ModuleType.CUSTOMER);
         setCustomFields(fields);
       } catch (error) {
-        console.error('加载自定义字段失败:', error);
+        console.error(t('customerForm.loadCustomFieldsFailed'), error);
       }
     };
     loadCustomFields();
@@ -105,9 +107,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     setLoading(true);
     try {
       await onSubmit(values);
-      message.success(isEdit ? '更新客户成功' : '创建客户成功');
+      message.success(isEdit ? t('customerForm.updateSuccess') : t('customerForm.createSuccess'));
     } catch (error) {
-      message.error(isEdit ? '更新客户失败' : '创建客户失败');
+      message.error(isEdit ? t('customerForm.updateFailed') : t('customerForm.createFailed'));
     } finally {
       setLoading(false);
     }
@@ -126,60 +128,60 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       }}
     >
       {/* 基本信息 */}
-      <Divider orientation="left" orientationMargin="0">基本信息</Divider>
+      <Divider orientation="left" orientationMargin="0">{t('customerForm.basicInfo')}</Divider>
       
       <Form.Item
         name="name"
-        label="客户名称"
-        rules={[{ required: true, message: '请输入客户名称' }]}
+        label={t('customerForm.name')}
+        rules={[{ required: true, message: t('customerForm.nameRequired') }]}
       >
-        <Input placeholder="请输入客户名称" />
+        <Input placeholder={t('customerForm.namePlaceholder')} />
       </Form.Item>
 
       <Form.Item
         name="industry"
-        label="所属行业"
-        rules={[{ required: true, message: '请选择行业' }]}
+        label={t('customerForm.industry')}
+        rules={[{ required: true, message: t('customerForm.industryRequired') }]}
       >
-        <Select placeholder="请选择行业" options={industryOptions} />
+        <Select placeholder={t('customerForm.industryPlaceholder')} options={industryOptions} />
       </Form.Item>
 
-      <Form.Item name="companySize" label="企业规模">
-        <Select placeholder="请选择企业规模" options={companySizeOptions} />
+      <Form.Item name="companySize" label={t('customerForm.companySize')}>
+        <Select placeholder={t('customerForm.companySizePlaceholder')} options={companySizeOptions} />
       </Form.Item>
 
-      <Form.Item name="level" label="客户等级">
+      <Form.Item name="level" label={t('customerForm.level')}>
         <Radio.Group options={levelOptions} />
       </Form.Item>
 
-      <Form.Item name="source" label="客户来源">
-        <Select placeholder="请选择客户来源" options={sourceOptions} />
+      <Form.Item name="source" label={t('customerForm.source')}>
+        <Select placeholder={t('customerForm.sourcePlaceholder')} options={sourceOptions} />
       </Form.Item>
 
-      <Form.Item name="address" label="公司地址">
-        <TextArea rows={2} placeholder="请输入公司地址" />
+      <Form.Item name="address" label={t('customerForm.address')}>
+        <TextArea rows={2} placeholder={t('customerForm.addressPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="contactPerson" label="联系人">
-        <Input placeholder="请输入联系人姓名" />
+      <Form.Item name="contactPerson" label={t('customerForm.contactPerson')}>
+        <Input placeholder={t('customerForm.contactPersonPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="phone" label="联系电话">
-        <Input placeholder="请输入联系电话" />
+      <Form.Item name="phone" label={t('customerForm.phone')}>
+        <Input placeholder={t('customerForm.phonePlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="email" label="邮箱">
-        <Input placeholder="请输入邮箱" />
+      <Form.Item name="email" label={t('customerForm.email')}>
+        <Input placeholder={t('customerForm.emailPlaceholder')} />
       </Form.Item>
 
-      <Form.Item name="website" label="公司官网">
-        <Input placeholder="请输入公司官网" />
+      <Form.Item name="website" label={t('customerForm.website')}>
+        <Input placeholder={t('customerForm.websitePlaceholder')} />
       </Form.Item>
 
       {/* 自定义字段 */}
       {customFields.length > 0 && (
         <>
-          <Divider orientation="left" orientationMargin="0">自定义字段</Divider>
+          <Divider orientation="left" orientationMargin="0">{t('customerForm.customFields')}</Divider>
           <DynamicCustomFields
             module="customer"
             fields={customFields}
@@ -190,10 +192,10 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       )}
 
       {/* 备注 */}
-      <Divider orientation="left" orientationMargin="0">备注</Divider>
+      <Divider orientation="left" orientationMargin="0">{t('customerForm.remark')}</Divider>
       
-      <Form.Item name="remark" label="备注">
-        <TextArea rows={3} placeholder="请输入备注信息" />
+      <Form.Item name="remark" label={t('customerForm.remark')}>
+        <TextArea rows={3} placeholder={t('customerForm.remarkPlaceholder')} />
       </Form.Item>
     </Form>
   );

@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button, Modal, Transfer, Space, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import { User, Role } from '../../types/permission';
 
 interface UserRoleAssignProps {
@@ -21,6 +22,7 @@ export const UserRoleAssign: React.FC<UserRoleAssignProps> = ({
   roles,
   onAssignRoles,
 }) => {
+  const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -40,10 +42,10 @@ export const UserRoleAssign: React.FC<UserRoleAssignProps> = ({
     setLoading(true);
     try {
       await onAssignRoles(selectedUser.id, targetKeys);
-      message.success('角色分配成功');
+      message.success(t('permission.userRoleAssign.assignSuccess'));
       setModalVisible(false);
     } catch (error) {
-      message.error('角色分配失败');
+      message.error(t('permission.userRoleAssign.assignFailed'));
     } finally {
       setLoading(false);
     }
@@ -59,37 +61,37 @@ export const UserRoleAssign: React.FC<UserRoleAssignProps> = ({
 
   const columns: ColumnsType<User> = [
     {
-      title: '用户名',
+      title: t('permission.users.columnUser'),
       dataIndex: 'username',
       key: 'username',
       width: 120,
     },
     {
-      title: '姓名',
+      title: t('permission.users.realName', { defaultValue: '姓名' }),
       dataIndex: 'name',
       key: 'name',
       width: 100,
     },
     {
-      title: '邮箱',
+      title: t('permission.users.columnEmail'),
       dataIndex: 'email',
       key: 'email',
       width: 200,
     },
     {
-      title: '部门',
+      title: t('permission.users.columnDepartment'),
       dataIndex: 'department',
       key: 'department',
       width: 120,
     },
     {
-      title: '职位',
+      title: t('permission.users.position', { defaultValue: '职位' }),
       dataIndex: 'position',
       key: 'position',
       width: 120,
     },
     {
-      title: '当前角色',
+      title: t('permission.users.columnRoles'),
       key: 'roles',
       render: (_: any, record: User) => (
         <Space wrap>
@@ -105,23 +107,23 @@ export const UserRoleAssign: React.FC<UserRoleAssignProps> = ({
       ),
     },
     {
-      title: '状态',
+      title: t('permission.users.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       width: 80,
       render: (status: string) => (
         <Tag color={status === 'active' ? 'green' : 'default'}>
-          {status === 'active' ? '正常' : '停用'}
+          {status === 'active' ? t('permission.users.statusActive') : t('permission.users.statusInactive')}
         </Tag>
       ),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 120,
       render: (_: any, record: User) => (
         <Button type="link" onClick={() => handleOpenModal(record)}>
-          分配角色
+          {t('permission.userRoleAssign.assignRole')}
         </Button>
       ),
     },
@@ -137,7 +139,7 @@ export const UserRoleAssign: React.FC<UserRoleAssignProps> = ({
       />
 
       <Modal
-        title={`分配角色 - ${selectedUser?.name}`}
+        title={`${t('permission.userRoleAssign.assignRole')} - ${selectedUser?.name}`}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         onOk={handleAssign}
@@ -147,7 +149,7 @@ export const UserRoleAssign: React.FC<UserRoleAssignProps> = ({
         <div style={{ padding: '20px 0' }}>
           <Transfer
             dataSource={transferData}
-            titles={['可选角色', '已选角色']}
+            titles={[t('permission.userRoleAssign.availableRoles'), t('permission.userRoleAssign.selectedRoles')]}
             targetKeys={targetKeys}
             onChange={(newTargetKeys) => setTargetKeys(newTargetKeys as string[])}
             render={item => item.title}

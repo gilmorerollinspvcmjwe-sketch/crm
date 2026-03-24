@@ -3,6 +3,7 @@
  * 用于空数据展示
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Empty, Button, Typography } from 'antd';
 import {
   InboxOutlined,
@@ -33,39 +34,6 @@ export interface EmptyStateProps {
   image?: string;
 }
 
-const typeConfig = {
-  default: {
-    icon: <InboxOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
-    title: '暂无数据',
-    description: '这里还没有任何内容',
-  },
-  search: {
-    icon: <SearchOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
-    title: '未找到相关结果',
-    description: '尝试使用其他关键词搜索',
-  },
-  table: {
-    icon: <FileTextOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
-    title: '暂无数据',
-    description: '点击新建按钮添加第一条数据',
-  },
-  list: {
-    icon: <TeamOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
-    title: '列表为空',
-    description: '暂无列表数据',
-  },
-  data: {
-    icon: <BulbOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
-    title: '暂无数据',
-    description: '开始添加数据吧',
-  },
-  error: {
-    icon: <WarningOutlined style={{ fontSize: 48, color: colors.danger }} />,
-    title: '加载失败',
-    description: '数据加载出错，请重试',
-  },
-};
-
 /**
  * EmptyState 空状态组件
  */
@@ -78,6 +46,41 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
   image,
 }) => {
+  const { t } = useTranslation();
+
+  const typeConfig = {
+    default: {
+      icon: <InboxOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
+      title: t('components.emptyState.noData'),
+      description: t('components.emptyState.noContent'),
+    },
+    search: {
+      icon: <SearchOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
+      title: t('components.emptyState.noSearchResult'),
+      description: t('components.emptyState.tryOtherKeywords'),
+    },
+    table: {
+      icon: <FileTextOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
+      title: t('components.emptyState.noData'),
+      description: t('components.emptyState.clickToAdd'),
+    },
+    list: {
+      icon: <TeamOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
+      title: t('components.emptyState.emptyList'),
+      description: t('components.emptyState.noListData'),
+    },
+    data: {
+      icon: <BulbOutlined style={{ fontSize: 48, color: colors.text.tertiary }} />,
+      title: t('components.emptyState.noData'),
+      description: t('components.emptyState.startAdding'),
+    },
+    error: {
+      icon: <WarningOutlined style={{ fontSize: 48, color: colors.danger }} />,
+      title: t('components.emptyState.loadFailed'),
+      description: t('components.emptyState.loadFailedRetry'),
+    },
+  };
+
   const config = typeConfig[type];
 
   return (
@@ -118,13 +121,15 @@ export const TableEmptyState: React.FC<{
   onCreate?: () => void;
   searchText?: string;
 }> = ({ onCreate, searchText }) => {
+  const { t } = useTranslation();
+
   if (searchText) {
     return (
       <EmptyState
         type="search"
-        title="未找到匹配的数据"
-        description={`没有找到包含「${searchText}」的结果`}
-        actionText="清除筛选"
+        title={t('components.emptyState.noMatchFound')}
+        description={t('components.emptyState.noMatchFor', { text: searchText })}
+        actionText={t('components.emptyState.clearFilter')}
         onAction={onCreate}
       />
     );
@@ -133,7 +138,7 @@ export const TableEmptyState: React.FC<{
   return (
     <EmptyState
       type="table"
-      actionText={onCreate ? '新建' : undefined}
+      actionText={onCreate ? t('components.emptyState.newButton') : undefined}
       onAction={onCreate}
     />
   );
@@ -146,12 +151,14 @@ export const ErrorState: React.FC<{
   message?: string;
   onRetry?: () => void;
 }> = ({ message, onRetry }) => {
+  const { t } = useTranslation();
+
   return (
     <EmptyState
       type="error"
-      title="加载失败"
-      description={message || '数据加载出错，请重试'}
-      actionText={onRetry ? '重试' : undefined}
+      title={t('components.emptyState.loadFailed')}
+      description={message || t('components.emptyState.loadFailedRetry')}
+      actionText={onRetry ? t('components.emptyState.retry') : undefined}
       onAction={onRetry}
     />
   );

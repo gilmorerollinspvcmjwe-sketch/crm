@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { Card, Row, Col, List, Tag, Space, Button, Divider, Typography, Tree, Checkbox, Empty } from 'antd';
 import { SettingOutlined, SaveOutlined } from '@ant-design/icons';
 import type { DataNode } from 'antd/es/tree';
+import { useTranslation } from 'react-i18next';
 import { Permission, PermissionType, DataScope, Role as RoleType } from '../types/permission';
 
 const { Title, Text } = Typography;
@@ -167,6 +168,7 @@ const mockRoles: RoleType[] = [
 ];
 
 const PermissionSettings: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedRoleId, setSelectedRoleId] = useState<string>(mockRoles[0].id);
   const [checkedKeys, setCheckedKeys] = useState<string[]>(mockRoles[0].permissions);
   const [dataScope, setDataScope] = useState<DataScope>(mockRoles[0].dataScope);
@@ -180,7 +182,7 @@ const PermissionSettings: React.FC = () => {
         <Space>
           <Text>{perm.name}</Text>
           <Tag color={perm.type === PermissionType.MENU ? 'blue' : 'green'}>
-            {perm.type === PermissionType.MENU ? '菜单' : '按钮'}
+            {perm.type === PermissionType.MENU ? t('permission.permissionTree.menuType') : t('permission.permissionTree.buttonType')}
           </Tag>
           {perm.code && (
             <Text type="secondary" style={{ fontSize: 12 }}>
@@ -210,23 +212,23 @@ const PermissionSettings: React.FC = () => {
   };
 
   const dataScopeOptions = [
-    { label: '全部数据', value: DataScope.ALL, desc: '可查看所有数据' },
-    { label: '部门数据', value: DataScope.DEPARTMENT, desc: '仅查看本部门数据' },
-    { label: '团队数据', value: DataScope.TEAM, desc: '仅查看本团队数据' },
-    { label: '个人数据', value: DataScope.SELF, desc: '仅查看自己创建的数据' },
+    { label: t('permission.settings.allData'), value: DataScope.ALL, desc: t('permission.settings.allDataDesc') },
+    { label: t('permission.settings.departmentData'), value: DataScope.DEPARTMENT, desc: t('permission.settings.departmentDataDesc') },
+    { label: t('permission.settings.teamData'), value: DataScope.TEAM, desc: t('permission.settings.teamDataDesc') },
+    { label: t('permission.settings.selfData'), value: DataScope.SELF, desc: t('permission.settings.selfDataDesc') },
   ];
 
   return (
     <div style={{ background: '#f0f2f5', minHeight: '100vh', padding: 16 }}>
-      <Card title="⚙️ 权限配置中心">
+      <Card title={`⚙️ ${t('permission.settings.title')}`}>
         <p style={{ color: '#999', marginBottom: 16 }}>
-          集中管理角色权限配置，包括菜单权限、按钮权限和数据权限
+          {t('permission.settings.subtitle')}
         </p>
 
         <Row gutter={16}>
           {/* 左侧：角色列表 */}
           <Col span={6}>
-            <Card title="角色列表" size="small">
+            <Card title={t('permission.settings.roleList')} size="small">
               <List
                 dataSource={mockRoles}
                 renderItem={(role) => (
@@ -244,7 +246,7 @@ const PermissionSettings: React.FC = () => {
                       title={
                         <Space>
                           <span>{role.name}</span>
-                          {role.isSystem && <Tag color="purple">系统</Tag>}
+                          {role.isSystem && <Tag color="purple">{t('permission.roles.systemTag')}</Tag>}
                         </Space>
                       }
                       description={
@@ -259,7 +261,7 @@ const PermissionSettings: React.FC = () => {
               />
             </Card>
 
-            <Divider orientation="left" orientationMargin="0">数据权限</Divider>
+            <Divider orientation="left" orientationMargin="0">{t('permission.settings.dataPermission')}</Divider>
 
             <Card size="small">
               <Space direction="vertical" style={{ width: '100%' }}>
@@ -288,18 +290,18 @@ const PermissionSettings: React.FC = () => {
             <Card
               title={
                 <Space>
-                  <span>权限配置</span>
+                  <span>{t('permission.settings.permissionConfig')}</span>
                   {selectedRole && (
                     <>
                       <Tag color="blue">{selectedRole.name}</Tag>
-                      <Tag>{checkedKeys.length} 个权限已选择</Tag>
+                      <Tag>{t('permission.settings.selectedPermissions', { count: checkedKeys.length })}</Tag>
                     </>
                   )}
                 </Space>
               }
               extra={
                 <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-                  保存配置
+                  {t('permission.settings.saveConfig')}
                 </Button>
               }
             >
@@ -314,7 +316,7 @@ const PermissionSettings: React.FC = () => {
                           setCheckedKeys(allKeys);
                         }}
                       >
-                        全选
+                        {t('permission.settings.selectAll')}
                       </Button>
                       <Button 
                         size="small" 
@@ -323,13 +325,13 @@ const PermissionSettings: React.FC = () => {
                           setCheckedKeys(menuKeys);
                         }}
                       >
-                        仅菜单
+                        {t('permission.settings.menuOnly')}
                       </Button>
                       <Button 
                         size="small" 
                         onClick={() => setCheckedKeys([])}
                       >
-                        清空
+                        {t('permission.settings.clearAll')}
                       </Button>
                     </Space>
                   </div>
@@ -345,7 +347,7 @@ const PermissionSettings: React.FC = () => {
                   />
                 </>
               ) : (
-                <Empty description="请选择一个角色进行权限配置" />
+                <Empty description={t('permission.settings.selectRoleHint')} />
               )}
             </Card>
           </Col>

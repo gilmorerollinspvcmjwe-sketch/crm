@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { Card, Table, Typography, Divider, Row, Col, Tag } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { QuoteProduct } from '../../types/cpq';
 
 const { Title, Text } = Typography;
@@ -38,22 +39,24 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
   notes,
   terms,
 }) => {
+  const { t } = useTranslation();
+
   const productColumns = [
     {
-      title: '产品名称',
+      title: t('quote.preview.productName'),
       dataIndex: 'productName',
       key: 'productName',
       width: 250,
     },
     {
-      title: '数量',
+      title: t('quote.preview.quantity'),
       dataIndex: 'quantity',
       key: 'quantity',
       width: 80,
       align: 'right' as const,
     },
     {
-      title: '单价',
+      title: t('quote.preview.unitPrice'),
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       width: 120,
@@ -61,7 +64,7 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
       render: (price: number) => `¥${price.toLocaleString()}`,
     },
     {
-      title: '折扣',
+      title: t('quote.preview.discount'),
       dataIndex: 'discount',
       key: 'discount',
       width: 80,
@@ -69,7 +72,7 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
       render: (discount: number) => `${discount}%`,
     },
     {
-      title: '小计',
+      title: t('quote.preview.subtotal'),
       dataIndex: 'subtotal',
       key: 'subtotal',
       width: 120,
@@ -77,7 +80,7 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
       render: (price: number) => `¥${price.toLocaleString()}`,
     },
     {
-      title: '税费',
+      title: t('quote.preview.tax'),
       dataIndex: 'tax',
       key: 'tax',
       width: 100,
@@ -85,7 +88,7 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
       render: (tax: number) => `¥${tax.toLocaleString()}`,
     },
     {
-      title: '总计',
+      title: t('quote.preview.total'),
       dataIndex: 'total',
       key: 'total',
       width: 120,
@@ -95,27 +98,27 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
   ];
 
   return (
-    <Card title="报价单预览" bordered={false}>
+    <Card title={t('quote.preview.title')} bordered={false}>
       {/* 报价单头部 */}
       <div style={{ marginBottom: 24 }}>
         <Row gutter={16}>
           <Col span={12}>
-            <Text strong>报价单号：</Text>
-            <Text>{quoteNumber || '待生成'}</Text>
+            <Text strong>{t('quote.preview.quoteNumber')}：</Text>
+            <Text>{quoteNumber || t('quote.preview.toBeGenerated')}</Text>
           </Col>
           <Col span={12}>
-            <Text strong>有效期：</Text>
-            <Text>{validUntil || '未设置'}</Text>
+            <Text strong>{t('quote.preview.validUntil')}：</Text>
+            <Text>{validUntil || t('quote.preview.notSet')}</Text>
           </Col>
         </Row>
         <Row gutter={16} style={{ marginTop: 8 }}>
           <Col span={12}>
-            <Text strong>客户：</Text>
-            <Text>{customerName || '未选择'}</Text>
+            <Text strong>{t('quote.preview.customer')}：</Text>
+            <Text>{customerName || t('quote.preview.notSelected')}</Text>
           </Col>
           <Col span={12}>
-            <Text strong>联系人：</Text>
-            <Text>{contactName || '未选择'}</Text>
+            <Text strong>{t('quote.preview.contact')}：</Text>
+            <Text>{contactName || t('quote.preview.notSelected')}</Text>
           </Col>
         </Row>
       </div>
@@ -123,7 +126,7 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
       <Divider />
 
       {/* 产品明细表格 */}
-      <Title level={5}>产品明细</Title>
+      <Title level={5}>{t('quote.preview.productDetails')}</Title>
       <Table
         columns={productColumns}
         dataSource={products}
@@ -134,25 +137,25 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
           <div style={{ textAlign: 'right', padding: '12px 0' }}>
             <Row justify="end" gutter={[24, 8]}>
               <Col span={6}>
-                <Text>小计：</Text>
+                <Text>{t('quote.preview.subtotal')}：</Text>
                 <Text strong>¥{subtotal.toLocaleString()}</Text>
               </Col>
             </Row>
             <Row justify="end" gutter={[24, 8]}>
               <Col span={6}>
-                <Text>折扣：</Text>
+                <Text>{t('quote.preview.discount')}：</Text>
                 <Text type="danger">-¥{totalDiscount.toLocaleString()}</Text>
               </Col>
             </Row>
             <Row justify="end" gutter={[24, 8]}>
               <Col span={6}>
-                <Text>税费 (13%)：</Text>
+                <Text>{t('quote.preview.tax')}：</Text>
                 <Text>¥{totalTax.toLocaleString()}</Text>
               </Col>
             </Row>
             <Row justify="end" gutter={[24, 8]}>
               <Col span={6}>
-                <Text strong style={{ fontSize: 16 }}>总计：</Text>
+                <Text strong style={{ fontSize: 16 }}>{t('quote.preview.total')}：</Text>
                 <Text strong style={{ fontSize: 16, color: '#1890ff' }}>
                   ¥{grandTotal.toLocaleString()}
                 </Text>
@@ -167,12 +170,12 @@ export const QuotePreview: React.FC<QuotePreviewProps> = ({
       {/* 备注和条款 */}
       <Row gutter={16}>
         <Col span={12}>
-          <Title level={5}>备注</Title>
-          <Text type="secondary">{notes || '无'}</Text>
+          <Title level={5}>{t('quote.preview.notes')}</Title>
+          <Text type="secondary">{notes || t('quote.preview.none')}</Text>
         </Col>
         <Col span={12}>
-          <Title level={5}>条款</Title>
-          <Text type="secondary">{terms || '无'}</Text>
+          <Title level={5}>{t('quote.preview.terms')}</Title>
+          <Text type="secondary">{terms || t('quote.preview.none')}</Text>
         </Col>
       </Row>
     </Card>

@@ -2,13 +2,16 @@
  * 测试页面
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, Button, Table } from 'antd';
 
 const TestPage: React.FC = () => {
+  const { t } = useTranslation();
+
   const columns = [
-    { title: '姓名', dataIndex: 'name', key: 'name' },
-    { title: '年龄', dataIndex: 'age', key: 'age' },
-    { title: '地址', dataIndex: 'address', key: 'address' },
+    { title: t('components.testPage.name'), dataIndex: 'name', key: 'name' },
+    { title: t('components.testPage.age'), dataIndex: 'age', key: 'age' },
+    { title: t('components.testPage.address'), dataIndex: 'address', key: 'address' },
   ];
 
   const data = [
@@ -18,9 +21,9 @@ const TestPage: React.FC = () => {
   ];
 
   return (
-    <Card title="🧪 测试页面" bordered={false}>
-      <p>如果能看到这个页面，说明页面渲染正常！</p>
-      <Button type="primary" style={{ marginBottom: 16 }}>测试按钮</Button>
+    <Card title={t('components.testPage.title')} bordered={false}>
+      <p>{t('components.testPage.renderOk')}</p>
+      <Button type="primary" style={{ marginBottom: 16 }}>{t('components.testPage.testButton')}</Button>
       <Table columns={columns} dataSource={data} />
     </Card>
   );

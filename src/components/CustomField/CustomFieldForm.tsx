@@ -14,42 +14,10 @@ import {
   message,
 } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { CustomField, FieldType, ModuleType, FieldValidation } from '../../types/customField';
 
 const { TextArea } = Input;
-
-/**
- * 模块选项
- */
-const MODULE_OPTIONS = [
-  { label: '客户管理', value: ModuleType.CUSTOMER },
-  { label: '联系人', value: ModuleType.CONTACT },
-  { label: '线索管理', value: ModuleType.LEAD },
-  { label: '商机管理', value: ModuleType.OPPORTUNITY },
-  { label: '合同管理', value: ModuleType.CONTRACT },
-  { label: '产品库', value: ModuleType.PRODUCT },
-  { label: '报价单', value: ModuleType.QUOTE },
-  { label: '工单系统', value: ModuleType.TICKET },
-  { label: '活动管理', value: ModuleType.CAMPAIGN },
-];
-
-/**
- * 字段类型选项
- */
-const FIELD_TYPE_OPTIONS = [
-  { label: '文本', value: FieldType.TEXT },
-  { label: '多行文本', value: FieldType.TEXTAREA },
-  { label: '数字', value: FieldType.NUMBER },
-  { label: '日期', value: FieldType.DATE },
-  { label: '日期时间', value: FieldType.DATETIME },
-  { label: '单选', value: FieldType.SELECT },
-  { label: '多选', value: FieldType.MULTISELECT },
-  { label: '开关', value: FieldType.SWITCH },
-  { label: '人员', value: FieldType.USER },
-  { label: '部门', value: FieldType.DEPARTMENT },
-  { label: '关联', value: FieldType.RELATION },
-  { label: '附件', value: FieldType.FILE },
-];
 
 interface CustomFieldFormProps {
   initialValues?: Partial<CustomField>;
@@ -62,6 +30,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
   onSave,
   onCancel,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [fieldType, setFieldType] = useState<FieldType>(
     initialValues?.type || FieldType.TEXT
@@ -69,6 +38,39 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
   const [options, setOptions] = useState<string[]>(
     initialValues?.options || []
   );
+
+  /**
+   * 模块选项
+   */
+  const MODULE_OPTIONS = [
+    { label: t('customField.modules.customer'), value: ModuleType.CUSTOMER },
+    { label: t('customField.modules.contact'), value: ModuleType.CONTACT },
+    { label: t('customField.modules.lead'), value: ModuleType.LEAD },
+    { label: t('customField.modules.opportunity'), value: ModuleType.OPPORTUNITY },
+    { label: t('customField.modules.contract'), value: ModuleType.CONTRACT },
+    { label: t('customField.modules.product'), value: ModuleType.PRODUCT },
+    { label: t('customField.modules.quote'), value: ModuleType.QUOTE },
+    { label: t('customField.modules.ticket'), value: ModuleType.TICKET },
+    { label: t('customField.modules.campaign'), value: ModuleType.CAMPAIGN },
+  ];
+
+  /**
+   * 字段类型选项
+   */
+  const FIELD_TYPE_OPTIONS = [
+    { label: t('customField.types.text'), value: FieldType.TEXT },
+    { label: t('customField.types.textarea'), value: FieldType.TEXTAREA },
+    { label: t('customField.types.number'), value: FieldType.NUMBER },
+    { label: t('customField.types.date'), value: FieldType.DATE },
+    { label: t('customField.types.datetime'), value: FieldType.DATETIME },
+    { label: t('customField.types.select'), value: FieldType.SELECT },
+    { label: t('customField.types.multiselect'), value: FieldType.MULTISELECT },
+    { label: t('customField.types.switch'), value: FieldType.SWITCH },
+    { label: t('customField.types.user'), value: FieldType.USER },
+    { label: t('customField.types.department'), value: FieldType.DEPARTMENT },
+    { label: t('customField.types.relation'), value: FieldType.RELATION },
+    { label: t('customField.types.file'), value: FieldType.FILE },
+  ];
 
   // 字段类型变化时重置选项
   useEffect(() => {
@@ -80,9 +82,10 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
 
   // 添加选项
   const handleAddOption = () => {
-    setOptions([...options, `选项${options.length + 1}`]);
+    const newOption = t('customField.form.enterOption', { index: options.length + 1 });
+    setOptions([...options, newOption]);
     form.setFieldsValue({
-      options: [...options, `选项${options.length + 1}`],
+      options: [...options, newOption],
     });
   };
 
@@ -131,7 +134,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
 
       await onSave(submitData);
     } catch (error) {
-      message.error('保存失败，请检查表单数据');
+      message.error(t('common.saveFailed'));
     }
   };
 
@@ -148,18 +151,18 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
     >
       {/* 基本信息 */}
       <Card 
-        title="基本信息" 
+        title={t('customField.form.basicInfo')} 
         size="small" 
         style={{ marginBottom: '16px' }}
       >
         <Form.Item
           name="modules"
-          label="绑定模块"
-          rules={[{ required: true, message: '请至少选择一个模块' }]}
+          label={t('customField.form.bindModule')}
+          rules={[{ required: true, message: t('customField.form.selectModule') }]}
         >
           <Select
             mode="multiple"
-            placeholder="选择绑定模块"
+            placeholder={t('customField.form.selectModule')}
             options={MODULE_OPTIONS}
             maxTagCount="responsive"
           />
@@ -169,27 +172,27 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={12}>
             <Form.Item
               name="name"
-              label="字段名称"
+              label={t('customField.form.fieldName')}
               rules={[
-                { required: true, message: '请输入字段名称' },
+                { required: true, message: t('customField.form.fieldName') },
                 { 
                   pattern: /^[a-z_][a-z0-9_]*$/,
-                  message: '只能包含小写字母、数字和下划线，且不能以数字开头'
+                  message: t('customField.form.fieldNamePatternError')
                 },
               ]}
-              extra="用于 API 和数据库，如：customer_type"
+              extra={t('customField.form.fieldNameExtra')}
             >
-              <Input placeholder="customer_type" />
+              <Input placeholder={t('customField.form.enterFieldName')} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="label"
-              label="显示标签"
-              rules={[{ required: true, message: '请输入显示标签' }]}
-              extra="用于 UI 展示，如：客户类型"
+              label={t('customField.form.displayLabel')}
+              rules={[{ required: true, message: t('customField.form.displayLabel') }]}
+              extra={t('customField.form.displayLabelExtra')}
             >
-              <Input placeholder="客户类型" />
+              <Input placeholder={t('customField.form.enterDisplayLabel')} />
             </Form.Item>
           </Col>
         </Row>
@@ -198,11 +201,11 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={12}>
             <Form.Item
               name="type"
-              label="字段类型"
-              rules={[{ required: true, message: '请选择字段类型' }]}
+              label={t('customField.form.fieldType')}
+              rules={[{ required: true, message: t('customField.form.selectFieldType') }]}
             >
               <Select
-                placeholder="选择字段类型"
+                placeholder={t('customField.form.selectFieldType')}
                 options={FIELD_TYPE_OPTIONS}
                 onChange={(value) => setFieldType(value)}
               />
@@ -211,13 +214,13 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={12}>
             <Form.Item
               name="sortOrder"
-              label="排序"
+              label={t('customField.form.sortOrder')}
               initialValue={0}
             >
               <InputNumber 
                 min={0} 
                 style={{ width: '100%' }} 
-                placeholder="数字越小越靠前"
+                placeholder={t('customField.form.sortOrderPlaceholder')}
               />
             </Form.Item>
           </Col>
@@ -225,33 +228,33 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
 
         <Form.Item
           name="placeholder"
-          label="占位符"
+          label={t('customField.form.placeholder')}
         >
-          <Input placeholder="输入框提示文字" />
+          <Input placeholder={t('customField.form.placeholderExtra')} />
         </Form.Item>
 
         <Form.Item
           name="defaultValue"
-          label="默认值"
+          label={t('customField.form.defaultValue')}
         >
-          <Input placeholder="字段默认值" />
+          <Input placeholder={t('customField.form.defaultValueExtra')} />
         </Form.Item>
       </Card>
 
       {/* 选项配置 */}
       {showOptionsConfig && (
         <Card 
-          title="选项配置" 
+          title={t('customField.form.optionsConfig')} 
           size="small" 
           style={{ marginBottom: '16px' }}
         >
           <Form.Item
             name="options"
-            label="选项列表"
+            label={t('customField.form.optionsList')}
             rules={[
               { 
                 required: true,
-                message: '请至少添加一个选项',
+                message: t('customField.form.atLeastOneOption'),
                 validator: (_, value) => {
                   if (!value || value.length === 0) {
                     return Promise.reject();
@@ -267,7 +270,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
                   <Input
                     value={option}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
-                    placeholder={`选项${index + 1}`}
+                    placeholder={t('customField.form.enterOption', { index: index + 1 })}
                     style={{ flex: 1 }}
                   />
                   <Button
@@ -285,7 +288,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
                 onClick={handleAddOption}
                 block
               >
-                添加选项
+                {t('customField.form.addOption')}
               </Button>
             </div>
           </Form.Item>
@@ -294,26 +297,26 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
 
       {/* 验证规则 */}
       <Card 
-        title="验证规则" 
+        title={t('customField.form.validationRules')} 
         size="small" 
         style={{ marginBottom: '16px' }}
       >
         <Form.Item
           name="required"
-          label="必填"
+          label={t('customField.form.required')}
           valuePropName="checked"
         >
-          <Checkbox>该字段为必填项</Checkbox>
+          <Checkbox>{t('customField.form.requiredExtra')}</Checkbox>
         </Form.Item>
 
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
               name="unique"
-              label="唯一性"
+              label={t('customField.form.unique')}
               valuePropName="checked"
             >
-              <Checkbox>字段值必须唯一</Checkbox>
+              <Checkbox>{t('customField.form.uniqueExtra')}</Checkbox>
             </Form.Item>
           </Col>
         </Row>
@@ -324,7 +327,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={8}>
             <Form.Item
               name="minLength"
-              label="最小长度"
+              label={t('customField.form.minLength')}
             >
               <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
@@ -332,7 +335,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={8}>
             <Form.Item
               name="maxLength"
-              label="最大长度"
+              label={t('customField.form.maxLength')}
             >
               <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
@@ -340,7 +343,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={8}>
             <Form.Item
               name="pattern"
-              label="正则表达式"
+              label={t('customField.form.regexPattern')}
             >
               <Input placeholder="^[0-9]+$" />
             </Form.Item>
@@ -351,7 +354,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={8}>
             <Form.Item
               name="min"
-              label="最小值"
+              label={t('customField.form.minValue')}
             >
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
@@ -359,7 +362,7 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={8}>
             <Form.Item
               name="max"
-              label="最大值"
+              label={t('customField.form.maxValue')}
             >
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
@@ -368,18 +371,18 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
 
         <Form.Item
           name="errorMessage"
-          label="自定义错误消息"
+          label={t('customField.form.customErrorMsg')}
         >
           <TextArea 
             rows={2} 
-            placeholder="验证失败时显示的提示文字"
+            placeholder={t('customField.form.errorMsgPlaceholder')}
           />
         </Form.Item>
       </Card>
 
       {/* 显示设置 */}
       <Card 
-        title="显示设置" 
+        title={t('customField.form.displaySettings')} 
         size="small" 
         style={{ marginBottom: '16px' }}
       >
@@ -387,29 +390,29 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
           <Col span={8}>
             <Form.Item
               name="listVisible"
-              label="列表显示"
+              label={t('customField.form.listVisible')}
               valuePropName="checked"
             >
-              <Checkbox>在列表中显示该字段</Checkbox>
+              <Checkbox>{t('customField.form.listVisibleExtra')}</Checkbox>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
               name="detailVisible"
-              label="详情显示"
+              label={t('customField.form.detailVisible')}
               valuePropName="checked"
             >
-              <Checkbox>在详情页显示该字段</Checkbox>
+              <Checkbox>{t('customField.form.detailVisibleExtra')}</Checkbox>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
               name="enabled"
-              label="启用"
+              label={t('customField.form.enabled')}
               valuePropName="checked"
               initialValue={true}
             >
-              <Checkbox>启用该字段</Checkbox>
+              <Checkbox>{t('customField.form.enabledExtra')}</Checkbox>
             </Form.Item>
           </Col>
         </Row>
@@ -419,10 +422,10 @@ const CustomFieldForm: React.FC<CustomFieldFormProps> = ({
       <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
         <Space>
           <Button onClick={onCancel}>
-            取消
+            {t('customField.form.cancel')}
           </Button>
           <Button type="primary" htmlType="submit">
-            保存
+            {t('customField.form.save')}
           </Button>
         </Space>
       </Form.Item>

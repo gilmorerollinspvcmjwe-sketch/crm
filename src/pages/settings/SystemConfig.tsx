@@ -1,7 +1,7 @@
 /**
- * 系统设置页面
+ * 系统配置页面
+ * 包含销售阶段设置、跟进类型设置
  */
-
 import React, { useState } from 'react';
 import {
   Card,
@@ -9,32 +9,29 @@ import {
   Input,
   InputNumber,
   Select,
-  Checkbox,
   Button,
   Space,
   Table,
   Modal,
   message,
-  Upload,
-  Tabs,
   Switch,
-  Divider,
+  Tabs,
 } from 'antd';
 import {
-  UploadOutlined,
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   UpOutlined,
   DownOutlined,
 } from '@ant-design/icons';
-import { systemSettings, WORK_DAY_OPTIONS, RETENTION_OPTIONS, AVAILABLE_ICONS, AVAILABLE_COLORS } from '../mock/settingsData';
-import { SalesStage, FollowUpType } from '../types/settings';
+import { useTranslation } from 'react-i18next';
+import { systemSettings, AVAILABLE_ICONS, AVAILABLE_COLORS } from '../../mock/settingsData';
+import { SalesStage, FollowUpType } from '../../types/settings';
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 
-const SystemSettings: React.FC = () => {
+const SystemConfig: React.FC = () => {
+  const { t } = useTranslation();
   const [settings] = useState(systemSettings);
   const [salesStages, setSalesStages] = useState<SalesStage[]>(settings.salesStages);
   const [followUpTypes, setFollowUpTypes] = useState<FollowUpType[]>(settings.followUpTypes);
@@ -44,12 +41,6 @@ const SystemSettings: React.FC = () => {
   const [editingFollowUp, setEditingFollowUp] = useState<FollowUpType | null>(null);
   const [stageForm] = Form.useForm();
   const [followUpForm] = Form.useForm();
-
-  // 基础设置保存
-  const handleBasicSave = (values: any) => {
-    message.success('基础设置保存成功！');
-    console.log('基础设置:', values);
-  };
 
   // 销售阶段管理
   const handleAddStage = () => {
@@ -66,11 +57,11 @@ const SystemSettings: React.FC = () => {
 
   const handleDeleteStage = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除此销售阶段吗？',
+      title: t('common.confirm'),
+      content: t('settings.systemConfig.deleteConfirm', { type: t('settings.systemConfig.salesStagesTitle') }),
       onOk: () => {
         setSalesStages(salesStages.filter((s) => s.id !== id));
-        message.success('删除成功');
+        message.success(t('settings.systemConfig.deleteSuccess'));
       },
     });
   };
@@ -78,7 +69,7 @@ const SystemSettings: React.FC = () => {
   const handleSaveStage = (values: any) => {
     if (editingStage) {
       setSalesStages(salesStages.map((s) => (s.id === editingStage.id ? { ...s, ...values } : s)));
-      message.success('更新成功');
+      message.success(t('settings.systemConfig.updateSuccess'));
     } else {
       const newStage: SalesStage = {
         ...values,
@@ -86,7 +77,7 @@ const SystemSettings: React.FC = () => {
         order: salesStages.length + 1,
       };
       setSalesStages([...salesStages, newStage]);
-      message.success('添加成功');
+      message.success(t('settings.systemConfig.addSuccess'));
     }
     setIsStageModalVisible(false);
   };
@@ -119,11 +110,11 @@ const SystemSettings: React.FC = () => {
 
   const handleDeleteFollowUp = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除此跟进类型吗？',
+      title: t('common.confirm'),
+      content: t('settings.systemConfig.deleteConfirm', { type: t('settings.systemConfig.followUpTypesTitle') }),
       onOk: () => {
         setFollowUpTypes(followUpTypes.filter((f) => f.id !== id));
-        message.success('删除成功');
+        message.success(t('settings.systemConfig.deleteSuccess'));
       },
     });
   };
@@ -139,33 +130,33 @@ const SystemSettings: React.FC = () => {
       setFollowUpTypes(followUpTypes.map((f) =>
         f.id === editingFollowUp.id ? { ...f, ...values } : f
       ));
-      message.success('更新成功');
+      message.success(t('settings.systemConfig.updateSuccess'));
     } else {
       const newFollowUp: FollowUpType = {
         ...values,
         id: `follow${Date.now()}`,
       };
       setFollowUpTypes([...followUpTypes, newFollowUp]);
-      message.success('添加成功');
+      message.success(t('settings.systemConfig.addSuccess'));
     }
     setIsFollowUpModalVisible(false);
   };
 
   const stageColumns = [
     {
-      title: '顺序',
+      title: t('settings.systemConfig.columnOrder'),
       dataIndex: 'order',
       key: 'order',
       width: 80,
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: '阶段名称',
+      title: t('settings.systemConfig.columnStageName'),
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '颜色',
+      title: t('settings.systemConfig.columnColor'),
       dataIndex: 'color',
       key: 'color',
       width: 80,
@@ -174,14 +165,14 @@ const SystemSettings: React.FC = () => {
       ),
     },
     {
-      title: '成功率',
+      title: t('settings.systemConfig.columnSuccessRate'),
       dataIndex: 'successRate',
       key: 'successRate',
       width: 100,
       render: (rate: number) => `${rate}%`,
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 180,
       render: (_: any, record: SalesStage, index: number) => (
@@ -220,18 +211,18 @@ const SystemSettings: React.FC = () => {
 
   const followUpColumns = [
     {
-      title: '类型名称',
+      title: t('settings.systemConfig.columnTypeName'),
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '图标',
+      title: t('settings.systemConfig.columnIcon'),
       dataIndex: 'icon',
       key: 'icon',
       width: 80,
     },
     {
-      title: '颜色',
+      title: t('settings.systemConfig.columnColor'),
       dataIndex: 'color',
       key: 'color',
       width: 80,
@@ -240,7 +231,7 @@ const SystemSettings: React.FC = () => {
       ),
     },
     {
-      title: '启用',
+      title: t('settings.systemConfig.columnEnabled'),
       dataIndex: 'enabled',
       key: 'enabled',
       width: 80,
@@ -249,7 +240,7 @@ const SystemSettings: React.FC = () => {
       ),
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 120,
       render: (_: any, record: FollowUpType) => (
@@ -271,138 +262,83 @@ const SystemSettings: React.FC = () => {
   ];
 
   return (
-    <div style={{ background: '#f0f2f5', minHeight: '100vh', padding: 16 }}>
-      <Card style={{ marginBottom: 16 }}>
-        <h2 style={{ margin: 0 }}>⚙️ 系统设置</h2>
-        <p style={{ margin: '8px 0 0 0', color: '#999' }}>
-          配置系统基础参数、销售阶段和跟进类型
-        </p>
-      </Card>
+    <div style={{ padding: 24 }}>
+      <Card
+        bordered={false}
+        style={{ maxWidth: 900 }}
+      >
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>
+            {t('settings.systemConfig.title')}
+          </h2>
+          <p style={{ margin: '8px 0 0', color: '#999', fontSize: 14 }}>
+            {t('settings.systemConfig.subtitle')}
+          </p>
+        </div>
 
-      <Tabs defaultActiveKey="basic">
-        <TabPane tab="基础设置" key="basic">
-          <Card>
-            <Form
-              layout="vertical"
-              initialValues={{
-                companyName: settings.basic.companyName,
-                workDays: settings.basic.workDays,
-                dataRetentionDays: settings.basic.dataRetentionDays,
-              }}
-              onFinish={handleBasicSave}
-            >
-              <Form.Item
-                label="公司名称"
-                name="companyName"
-                rules={[{ required: true, message: '请输入公司名称' }]}
-              >
-                <Input placeholder="请输入公司名称" />
-              </Form.Item>
-
-              <Form.Item label="公司 Logo">
-                <Upload>
-                  <Button icon={<UploadOutlined />}>点击上传</Button>
-                </Upload>
-              </Form.Item>
-
-              <Form.Item
-                label="工作日设置"
-                name="workDays"
-                rules={[{ required: true, message: '请至少选择一个工作日' }]}
-              >
-                <Checkbox.Group>
-                  <Space>
-                    {WORK_DAY_OPTIONS.map((day) => (
-                      <Checkbox key={day.value} value={day.value}>
-                        {day.label}
-                      </Checkbox>
-                    ))}
-                  </Space>
-                </Checkbox.Group>
-              </Form.Item>
-
-              <Form.Item
-                label="数据保留策略"
-                name="dataRetentionDays"
-                rules={[{ required: true, message: '请选择数据保留时长' }]}
-              >
-                <Select>
-                  {RETENTION_OPTIONS.map((option) => (
-                    <Option key={option.value} value={option.value}>
-                      {option.label}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  保存设置
+        <Tabs defaultActiveKey="salesStages">
+          <Tabs.TabPane tab={t('settings.systemConfig.salesStagesTab')} key="salesStages">
+            <Card
+              title={t('settings.systemConfig.salesStagesTitle')}
+              extra={
+                <Button type="primary" icon={<PlusOutlined />} onClick={handleAddStage}>
+                  {t('settings.systemConfig.addStage')}
                 </Button>
-              </Form.Item>
-            </Form>
-          </Card>
-        </TabPane>
+              }
+              bordered={false}
+            >
+              <Table
+                columns={stageColumns}
+                dataSource={salesStages}
+                rowKey="id"
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Tabs.TabPane>
 
-        <TabPane tab="销售阶段设置" key="salesStages">
-          <Card
-            title="销售阶段管理"
-            extra={
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleAddStage}>
-                添加阶段
-              </Button>
-            }
-          >
-            <Table
-              columns={stageColumns}
-              dataSource={salesStages}
-              rowKey="id"
-              pagination={false}
-              size="small"
-            />
-          </Card>
-        </TabPane>
-
-        <TabPane tab="跟进类型设置" key="followUpTypes">
-          <Card
-            title="跟进类型管理"
-            extra={
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleAddFollowUp}>
-                添加类型
-              </Button>
-            }
-          >
-            <Table
-              columns={followUpColumns}
-              dataSource={followUpTypes}
-              rowKey="id"
-              pagination={false}
-              size="small"
-            />
-          </Card>
-        </TabPane>
-      </Tabs>
+          <Tabs.TabPane tab={t('settings.systemConfig.followUpTypesTab')} key="followUpTypes">
+            <Card
+              title={t('settings.systemConfig.followUpTypesTitle')}
+              extra={
+                <Button type="primary" icon={<PlusOutlined />} onClick={handleAddFollowUp}>
+                  {t('settings.systemConfig.addType')}
+                </Button>
+              }
+              bordered={false}
+            >
+              <Table
+                columns={followUpColumns}
+                dataSource={followUpTypes}
+                rowKey="id"
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Tabs.TabPane>
+        </Tabs>
+      </Card>
 
       {/* 销售阶段编辑弹窗 */}
       <Modal
-        title={editingStage ? '编辑销售阶段' : '添加销售阶段'}
+        title={editingStage ? t('settings.systemConfig.editSalesStage') : t('settings.systemConfig.addSalesStage')}
         open={isStageModalVisible}
         onOk={() => stageForm.submit()}
         onCancel={() => setIsStageModalVisible(false)}
       >
         <Form form={stageForm} layout="vertical" onFinish={handleSaveStage}>
           <Form.Item
-            label="阶段名称"
+            label={t('settings.systemConfig.stageName')}
             name="name"
-            rules={[{ required: true, message: '请输入阶段名称' }]}
+            rules={[{ required: true, message: t('settings.systemConfig.enterStageName') }]}
           >
-            <Input placeholder="如：初步接洽" />
+            <Input placeholder={t('settings.systemConfig.enterStageName')} />
           </Form.Item>
 
           <Form.Item
-            label="颜色"
+            label={t('settings.systemConfig.columnColor')}
             name="color"
-            rules={[{ required: true, message: '请选择颜色' }]}
+            rules={[{ required: true, message: t('settings.systemConfig.selectColor') }]}
           >
             <Select>
               {AVAILABLE_COLORS.map((color) => (
@@ -424,9 +360,9 @@ const SystemSettings: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            label="成功率 (%)"
+            label={t('settings.systemConfig.columnSuccessRate')}
             name="successRate"
-            rules={[{ required: true, message: '请输入成功率' }]}
+            rules={[{ required: true, message: t('settings.systemConfig.enterSuccessRate') }]}
           >
             <InputNumber min={0} max={100} style={{ width: '100%' }} />
           </Form.Item>
@@ -435,24 +371,24 @@ const SystemSettings: React.FC = () => {
 
       {/* 跟进类型编辑弹窗 */}
       <Modal
-        title={editingFollowUp ? '编辑跟进类型' : '添加跟进类型'}
+        title={editingFollowUp ? t('settings.systemConfig.editFollowUpType') : t('settings.systemConfig.addFollowUpType')}
         open={isFollowUpModalVisible}
         onOk={() => followUpForm.submit()}
         onCancel={() => setIsFollowUpModalVisible(false)}
       >
         <Form form={followUpForm} layout="vertical" onFinish={handleSaveFollowUp}>
           <Form.Item
-            label="类型名称"
+            label={t('settings.systemConfig.typeName')}
             name="name"
-            rules={[{ required: true, message: '请输入类型名称' }]}
+            rules={[{ required: true, message: t('settings.systemConfig.enterTypeName') }]}
           >
-            <Input placeholder="如：电话" />
+            <Input placeholder={t('settings.systemConfig.enterTypeName')} />
           </Form.Item>
 
           <Form.Item
-            label="图标"
+            label={t('settings.systemConfig.columnIcon')}
             name="icon"
-            rules={[{ required: true, message: '请选择图标' }]}
+            rules={[{ required: true, message: t('settings.systemConfig.selectIcon') }]}
           >
             <Select>
               {AVAILABLE_ICONS.map((icon) => (
@@ -464,9 +400,9 @@ const SystemSettings: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            label="颜色"
+            label={t('settings.systemConfig.columnColor')}
             name="color"
-            rules={[{ required: true, message: '请选择颜色' }]}
+            rules={[{ required: true, message: t('settings.systemConfig.selectColor') }]}
           >
             <Select>
               {AVAILABLE_COLORS.map((color) => (
@@ -487,7 +423,7 @@ const SystemSettings: React.FC = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="启用" name="enabled" valuePropName="checked">
+          <Form.Item label={t('settings.systemConfig.columnEnabled')} name="enabled" valuePropName="checked">
             <Switch />
           </Form.Item>
         </Form>
@@ -496,4 +432,4 @@ const SystemSettings: React.FC = () => {
   );
 };
 
-export default SystemSettings;
+export default SystemConfig;

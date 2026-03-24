@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, Space, Button, message, Row, Col, Statistic, Modal, Form, Input, Select, InputNumber } from 'antd';
 import { PlusOutlined, DollarOutlined, FileTextOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Contract, ContractStatus, ContractFilter } from '../types/contract';
 import { contractData, generateContractStats, filterContracts } from '../mock/contractData';
 import { ContractTable } from '../components/Opportunity/ContractTable';
@@ -16,6 +17,7 @@ import { SearchFilter } from '../components/Opportunity/SearchFilter';
  */
 export const ContractList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<ContractFilter>({});
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -40,7 +42,7 @@ export const ContractList: React.FC = () => {
     // 模拟异步加载
     setTimeout(() => {
       setLoading(false);
-      message.success('搜索完成');
+      message.success(t('common.messages.searchComplete'));
     }, 500);
   };
 
@@ -62,13 +64,13 @@ export const ContractList: React.FC = () => {
   // 处理删除
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除该合同吗？删除后无法恢复。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t('contract.list.deleteConfirm'),
+      content: t('contract.list.deleteContent'),
+      okText: t('contract.list.deleteConfirm'),
+      cancelText: t('common.actions.cancel'),
       okType: 'danger',
       onOk: () => {
-        message.success('删除合同成功');
+        message.success(t('common.messages.deleteSuccess'));
       },
     });
   };
@@ -81,12 +83,12 @@ export const ContractList: React.FC = () => {
   // 处理归档
   const handleArchive = (id: string) => {
     Modal.confirm({
-      title: '确认归档',
-      content: '确定要归档该合同吗？归档后将不可修改。',
-      okText: '确认归档',
-      cancelText: '取消',
+      title: t('contract.list.archiveConfirm'),
+      content: t('contract.list.archiveContent'),
+      okText: t('contract.list.archiveConfirm'),
+      cancelText: t('common.actions.cancel'),
       onOk: () => {
-        message.success('合同已归档');
+        message.success(t('contract.list.archiveSuccess'));
       },
     });
   };
@@ -100,21 +102,21 @@ export const ContractList: React.FC = () => {
   // 处理新建提交
   const handleCreateSubmit = (values: any) => {
     console.log('新建合同:', values);
-    message.success('新建合同成功');
+    message.success(t('common.messages.createSuccess'));
     setCreateModalVisible(false);
   };
 
   // 处理编辑提交
   const handleEditSubmit = (values: any) => {
     console.log('编辑合同:', values);
-    message.success('编辑合同成功');
+    message.success(t('common.messages.updateSuccess'));
     setEditModalVisible(false);
   };
 
   // 处理审批提交
   const handleApprovalSubmit = (values: any) => {
     console.log('提交审批:', values);
-    message.success('合同已提交审批');
+    message.success(t('common.messages.operationSuccess'));
     setApprovalModalVisible(false);
   };
 
@@ -142,9 +144,9 @@ export const ContractList: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="合同总数"
+              title={t('contract.list.totalCount')}
               value={stats.totalCount}
-              suffix="个"
+              suffix={t('common.unit.count')}
               prefix={<FileTextOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -153,9 +155,9 @@ export const ContractList: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="合同总金额"
+              title={t('contract.list.totalAmount')}
               value={formatAmount(stats.totalAmount)}
-              suffix="万元"
+              suffix={t('common.unit.tenThousand')}
               prefix={<DollarOutlined />}
               valueStyle={{ color: '#faad14' }}
               precision={0}
@@ -165,9 +167,9 @@ export const ContractList: React.FC = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title="本月签订金额"
+              title={t('contract.list.monthlyAmount')}
               value={formatAmount(stats.monthlyAmount)}
-              suffix="万元"
+              suffix={t('common.unit.tenThousand')}
               prefix={<CalendarOutlined />}
               valueStyle={{ color: '#52c41a' }}
               precision={0}
@@ -180,13 +182,13 @@ export const ContractList: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 24 }}>合同管理</h1>
+            <h1 style={{ margin: 0, fontSize: 24 }}>{t('contract.list.title')}</h1>
             <p style={{ margin: '8px 0 0', color: '#666' }}>
-              当前共 {filteredData.length} 个合同
+              {t('contract.list.currentCount', { count: filteredData.length })}
             </p>
           </div>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            新建合同
+            {t('contract.list.newContract')}
           </Button>
         </Space>
       </Card>
@@ -217,14 +219,14 @@ export const ContractList: React.FC = () => {
       </Card>
 
       {/* 状态分布 */}
-      <Card title="合同状态分布" style={{ marginTop: 16 }}>
+      <Card title={t('contract.list.statusDistribution')} style={{ marginTop: 16 }}>
         <Row gutter={16}>
           {Object.entries(stats.byStatus).map(([status, count]) => (
             <Col span={4} key={status}>
               <Statistic
                 title={status}
                 value={count}
-                suffix="个"
+                suffix={t('common.unit.count')}
                 valueStyle={{
                   color: status === '已生效' ? '#52c41a' : status === '审批中' ? '#1890ff' : status === '已归档' ? '#722ed1' : status === '已终止' ? '#ff4d4f' : '#666'
                 }}
@@ -236,12 +238,12 @@ export const ContractList: React.FC = () => {
 
       {/* 新建合同弹窗 */}
       <Modal
-        title="新建合同"
+        title={t('contract.list.createModal.title')}
         open={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('common.actions.confirm')}
+        cancelText={t('common.actions.cancel')}
         width={600}
       >
         <Form
@@ -251,38 +253,38 @@ export const ContractList: React.FC = () => {
         >
           <Form.Item
             name="name"
-            label="合同名称"
-            rules={[{ required: true, message: '请输入合同名称' }]}
+            label={t('contract.list.createModal.name')}
+            rules={[{ required: true, message: t('contract.list.createModal.namePlaceholder') }]}
           >
-            <Input placeholder="请输入合同名称" />
+            <Input placeholder={t('contract.list.createModal.namePlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerName" label="客户名称">
-            <Input placeholder="请输入客户名称" />
+          <Form.Item name="customerName" label={t('contract.list.createModal.customerName')}>
+            <Input placeholder={t('contract.list.createModal.customerNamePlaceholder')} />
           </Form.Item>
-          <Form.Item name="amount" label="合同金额 (元)">
-            <InputNumber style={{ width: '100%' }} placeholder="请输入金额" min={0} />
+          <Form.Item name="amount" label={t('contract.list.createModal.amount')}>
+            <InputNumber style={{ width: '100%' }} placeholder={t('contract.list.createModal.amountPlaceholder')} min={0} />
           </Form.Item>
-          <Form.Item name="type" label="合同类型">
-            <Select placeholder="请选择合同类型">
-              <Select.Option value="销售合同">销售合同</Select.Option>
-              <Select.Option value="采购合同">采购合同</Select.Option>
-              <Select.Option value="服务合同">服务合同</Select.Option>
+          <Form.Item name="type" label={t('contract.list.createModal.type')}>
+            <Select placeholder={t('contract.list.createModal.typePlaceholder')}>
+              <Select.Option value="销售合同">{t('contract.list.createModal.typeSales')}</Select.Option>
+              <Select.Option value="采购合同">{t('contract.list.createModal.typePurchase')}</Select.Option>
+              <Select.Option value="服务合同">{t('contract.list.createModal.typeService')}</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('contract.list.createModal.remark')}>
+            <Input.TextArea rows={3} placeholder={t('contract.list.createModal.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
 
       {/* 编辑合同弹窗 */}
       <Modal
-        title="编辑合同"
+        title={t('contract.list.editModal.title')}
         open={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('common.actions.confirm')}
+        cancelText={t('common.actions.cancel')}
         width={600}
       >
         <Form
@@ -292,40 +294,40 @@ export const ContractList: React.FC = () => {
         >
           <Form.Item
             name="name"
-            label="合同名称"
-            rules={[{ required: true, message: '请输入合同名称' }]}
+            label={t('contract.list.createModal.name')}
+            rules={[{ required: true, message: t('contract.list.createModal.namePlaceholder') }]}
           >
-            <Input placeholder="请输入合同名称" />
+            <Input placeholder={t('contract.list.createModal.namePlaceholder')} />
           </Form.Item>
-          <Form.Item name="customerName" label="客户名称">
-            <Input placeholder="请输入客户名称" />
+          <Form.Item name="customerName" label={t('contract.list.createModal.customerName')}>
+            <Input placeholder={t('contract.list.createModal.customerNamePlaceholder')} />
           </Form.Item>
-          <Form.Item name="amount" label="合同金额 (元)">
-            <InputNumber style={{ width: '100%' }} placeholder="请输入金额" min={0} />
+          <Form.Item name="amount" label={t('contract.list.createModal.amount')}>
+            <InputNumber style={{ width: '100%' }} placeholder={t('contract.list.createModal.amountPlaceholder')} min={0} />
           </Form.Item>
-          <Form.Item name="status" label="合同状态">
-            <Select placeholder="请选择合同状态">
-              <Select.Option value="草稿">草稿</Select.Option>
-              <Select.Option value="审批中">审批中</Select.Option>
-              <Select.Option value="已生效">已生效</Select.Option>
-              <Select.Option value="已归档">已归档</Select.Option>
-              <Select.Option value="已终止">已终止</Select.Option>
+          <Form.Item name="status" label={t('contract.list.editModal.status')}>
+            <Select placeholder={t('contract.list.editModal.statusPlaceholder')}>
+              <Select.Option value="草稿">{t('contract.status.draft')}</Select.Option>
+              <Select.Option value="审批中">{t('contract.status.pendingApproval')}</Select.Option>
+              <Select.Option value="已生效">{t('contract.status.active')}</Select.Option>
+              <Select.Option value="已归档">{t('contract.status.archived')}</Select.Option>
+              <Select.Option value="已终止">{t('contract.status.terminated')}</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="remark" label="备注">
-            <Input.TextArea rows={3} placeholder="请输入备注信息" />
+          <Form.Item name="remark" label={t('contract.list.createModal.remark')}>
+            <Input.TextArea rows={3} placeholder={t('contract.list.createModal.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
 
       {/* 合同审批弹窗 */}
       <Modal
-        title="提交审批"
+        title={t('contract.list.approvalModal.title')}
         open={approvalModalVisible}
         onCancel={() => setApprovalModalVisible(false)}
         onOk={() => form.submit()}
-        okText="确定"
-        cancelText="取消"
+        okText={t('common.actions.confirm')}
+        cancelText={t('common.actions.cancel')}
         width={500}
       >
         <Form
@@ -333,14 +335,14 @@ export const ContractList: React.FC = () => {
           layout="vertical"
           onFinish={handleApprovalSubmit}
         >
-          <Form.Item name="approver" label="审批人">
-            <Select placeholder="请选择审批人">
+          <Form.Item name="approver" label={t('contract.list.approvalModal.approver')}>
+            <Select placeholder={t('contract.list.approvalModal.approverPlaceholder')}>
               <Select.Option value="1">张经理</Select.Option>
               <Select.Option value="2">李总监</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="remark" label="审批说明">
-            <Input.TextArea rows={3} placeholder="请输入审批说明" />
+          <Form.Item name="remark" label={t('contract.list.approvalModal.remark')}>
+            <Input.TextArea rows={3} placeholder={t('contract.list.approvalModal.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Button, Space, Tag, Progress, Modal, Form, Input, Select, message, Descriptions } from 'antd';
 import { PlusOutlined, PhoneOutlined, PlayCircleOutlined, PauseCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import { OutboundTask, OutboundTaskStatus, CallScript } from '../../types/callcenter';
 import { getOutboundTaskList, updateOutboundTask, getCallScripts } from '../../services/callcenterService';
 
@@ -14,6 +15,7 @@ const { Option } = Select;
  * 外呼任务页面组件
  */
 export const OutboundTasks: React.FC = () => {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<OutboundTask[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -33,7 +35,7 @@ export const OutboundTasks: React.FC = () => {
       setTasks(result.list);
       setTotal(result.total);
     } catch (error) {
-      console.error('加载任务失败:', error);
+      console.error(t('integration.callcenter.loadFailed') + ':', error);
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,7 @@ export const OutboundTasks: React.FC = () => {
       const scripts = await getCallScripts();
       setScripts(scripts);
     } catch (error) {
-      console.error('加载脚本失败:', error);
+      console.error(t('integration.callcenter.scriptLoadFailed') + ':', error);
     }
   };
 
@@ -56,7 +58,7 @@ export const OutboundTasks: React.FC = () => {
 
   /** 处理创建任务 */
   const handleCreate = async (values: any) => {
-    message.success('外呼任务创建成功（模拟）');
+    message.success(t('integration.callcenter.taskCreated'));
     setCreateModalVisible(false);
     form.resetFields();
     loadTasks();
@@ -80,13 +82,13 @@ export const OutboundTasks: React.FC = () => {
   /** 表格列定义 */
   const columns: ColumnsType<OutboundTask> = [
     {
-      title: '任务名称',
+      title: t('integration.callcenter.columnName'),
       dataIndex: 'taskName',
       key: 'taskName',
       width: 200,
     },
     {
-      title: '状态',
+      title: t('marketing.campaigns.columnStatus'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -95,14 +97,14 @@ export const OutboundTasks: React.FC = () => {
       ),
     },
     {
-      title: '呼叫脚本',
+      title: t('integration.callcenter.columnScript'),
       dataIndex: 'scriptName',
       key: 'scriptName',
       width: 150,
       render: (name?: string) => name || '-',
     },
     {
-      title: '进度',
+      title: t('integration.callcenter.columnProgress'),
       key: 'progress',
       width: 200,
       render: (_: any, record: OutboundTask) => (
@@ -115,34 +117,34 @@ export const OutboundTasks: React.FC = () => {
       ),
     },
     {
-      title: '接通数',
+      title: t('integration.callcenter.columnConnected'),
       key: 'connected',
       width: 100,
       render: (_: any, record: OutboundTask) => (
         <Space>
           <Tag color="green">{record.connectedCount}</Tag>
           <span style={{ fontSize: 12, color: '#999' }}>
-            未接:{record.noAnswerCount} 忙:{record.busyCount}
+            {t('integration.callcenter.noAnswerCount')}:{record.noAnswerCount} {t('integration.callcenter.busyCount')}:{record.busyCount}
           </span>
         </Space>
       ),
     },
     {
-      title: '负责人',
+      title: t('integration.callcenter.columnAssignee'),
       dataIndex: 'assignedToName',
       key: 'assignedToName',
       width: 100,
-      render: (name?: string) => name || '未分配',
+      render: (name?: string) => name || t('integration.callcenter.unassigned'),
     },
     {
-      title: '计划时间',
+      title: t('integration.callcenter.columnScheduledTime'),
       dataIndex: 'scheduledAt',
       key: 'scheduledAt',
       width: 160,
       render: (time?: string) => time || '-',
     },
     {
-      title: '操作',
+      title: t('common.edit'),
       key: 'action',
       width: 180,
       render: (_: any, record: OutboundTask) => (
@@ -152,10 +154,10 @@ export const OutboundTasks: React.FC = () => {
             size="small"
             icon={record.status === OutboundTaskStatus.RUNNING ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
           >
-            {record.status === OutboundTaskStatus.RUNNING ? '暂停' : '开始'}
+            {record.status === OutboundTaskStatus.RUNNING ? t('integration.callcenter.pause') : t('integration.callcenter.start')}
           </Button>
           <Button type="link" size="small" onClick={() => handleViewDetail(record)}>
-            详情
+            {t('integration.callcenter.viewDetail')}
           </Button>
         </Space>
       ),
@@ -168,10 +170,10 @@ export const OutboundTasks: React.FC = () => {
         {/* 顶部操作栏 */}
         <Space style={{ marginBottom: 16, width: '100%', display: 'flex', justifyContent: 'space-between' }}>
           <Space>
-            <span style={{ color: '#666' }}>呼叫中心外呼任务管理</span>
+            <span style={{ color: '#666' }}>{t('integration.callcenter.title')}</span>
           </Space>
           <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalVisible(true)}>
-            新建外呼任务
+            {t('integration.callcenter.newTask')}
           </Button>
         </Space>
 
@@ -186,7 +188,7 @@ export const OutboundTasks: React.FC = () => {
             pageSize,
             total,
             showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个任务`,
+            showTotal: (total) => `${t('common.total')} ${total} ${t('marketing.campaigns.unit')}`,
             onChange: (page, pageSize) => {
               setPage(page);
               setPageSize(pageSize);
@@ -197,7 +199,7 @@ export const OutboundTasks: React.FC = () => {
 
       {/* 创建任务弹窗 */}
       <Modal
-        title="新建外呼任务"
+        title={t('integration.callcenter.newTask')}
         open={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onOk={() => form.submit()}
@@ -205,18 +207,18 @@ export const OutboundTasks: React.FC = () => {
         <Form form={form} layout="vertical" onFinish={handleCreate}>
           <Form.Item
             name="taskName"
-            label="任务名称"
-            rules={[{ required: true, message: '请输入任务名称' }]}
+            label={t('integration.callcenter.taskName')}
+            rules={[{ required: true, message: t('integration.callcenter.enterTaskName') }]}
           >
-            <Input placeholder="例如：3 月客户回访任务" />
+            <Input placeholder={t('integration.callcenter.enterTaskName')} />
           </Form.Item>
 
           <Form.Item
             name="scriptId"
-            label="呼叫脚本"
-            rules={[{ required: true, message: '请选择呼叫脚本' }]}
+            label={t('integration.callcenter.callScript')}
+            rules={[{ required: true, message: t('integration.callcenter.selectScript') }]}
           >
-            <Select placeholder="请选择脚本">
+            <Select placeholder={t('integration.callcenter.selectScript')}>
               {scripts.map(script => (
                 <Option key={script.id} value={script.id}>
                   {script.name}
@@ -227,21 +229,21 @@ export const OutboundTasks: React.FC = () => {
 
           <Form.Item
             name="totalNumbers"
-            label="号码数量"
-            rules={[{ required: true, message: '请输入号码数量' }]}
+            label={t('integration.callcenter.totalNumbers')}
+            rules={[{ required: true, message: t('integration.callcenter.enterNumberCount') }]}
           >
             <Input type="number" placeholder="100" />
           </Form.Item>
 
-          <Form.Item name="assignedTo" label="负责人">
-            <Select placeholder="请选择负责人" allowClear>
+          <Form.Item name="assignedTo" label={t('integration.callcenter.columnAssignee')}>
+            <Select placeholder={t('integration.callcenter.selectAssignee')} allowClear>
               <Option value="USER004">王五</Option>
               <Option value="USER005">赵六</Option>
               <Option value="USER006">钱七</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="scheduledAt" label="计划执行时间">
+          <Form.Item name="scheduledAt" label={t('integration.callcenter.scheduledAt')}>
             <Input type="datetime-local" />
           </Form.Item>
         </Form>
@@ -249,7 +251,7 @@ export const OutboundTasks: React.FC = () => {
 
       {/* 任务详情弹窗 */}
       <Modal
-        title="任务详情"
+        title={t('integration.callcenter.taskDetail')}
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={null}
@@ -257,23 +259,23 @@ export const OutboundTasks: React.FC = () => {
       >
         {selectedTask && (
           <Descriptions column={2} bordered>
-            <Descriptions.Item label="任务名称">{selectedTask.taskName}</Descriptions.Item>
-            <Descriptions.Item label="状态">
+            <Descriptions.Item label={t('integration.callcenter.taskName')}>{selectedTask.taskName}</Descriptions.Item>
+            <Descriptions.Item label={t('marketing.campaigns.columnStatus')}>
               <Tag color={statusColorMap[selectedTask.status]}>{selectedTask.status}</Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="呼叫脚本">{selectedTask.scriptName || '-'}</Descriptions.Item>
-            <Descriptions.Item label="负责人">{selectedTask.assignedToName || '未分配'}</Descriptions.Item>
-            <Descriptions.Item label="总号码数">{selectedTask.totalNumbers}</Descriptions.Item>
-            <Descriptions.Item label="已完成">{selectedTask.completedNumbers}</Descriptions.Item>
-            <Descriptions.Item label="接通数">{selectedTask.connectedCount}</Descriptions.Item>
-            <Descriptions.Item label="未接听">{selectedTask.noAnswerCount}</Descriptions.Item>
-            <Descriptions.Item label="占线">{selectedTask.busyCount}</Descriptions.Item>
-            <Descriptions.Item label="拒接">{selectedTask.rejectedCount}</Descriptions.Item>
-            <Descriptions.Item label="计划时间">{selectedTask.scheduledAt || '-'}</Descriptions.Item>
-            <Descriptions.Item label="开始时间">{selectedTask.startedAt || '-'}</Descriptions.Item>
-            <Descriptions.Item label="完成时间">{selectedTask.completedAt || '-'}</Descriptions.Item>
-            <Descriptions.Item label="创建人">{selectedTask.createdByName}</Descriptions.Item>
-            <Descriptions.Item label="创建时间">{selectedTask.createdAt}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.callScript')}>{selectedTask.scriptName || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.columnAssignee')}>{selectedTask.assignedToName || t('integration.callcenter.unassigned')}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.totalNumbers')}>{selectedTask.totalNumbers}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.completedNumbers')}>{selectedTask.completedNumbers}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.connectedCount')}>{selectedTask.connectedCount}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.noAnswerCount')}>{selectedTask.noAnswerCount}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.busyCount')}>{selectedTask.busyCount}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.rejectedCount')}>{selectedTask.rejectedCount}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.scheduledAt')}>{selectedTask.scheduledAt || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.startedAt')}>{selectedTask.startedAt || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.completedAt')}>{selectedTask.completedAt || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.creator')}>{selectedTask.createdByName}</Descriptions.Item>
+            <Descriptions.Item label={t('integration.callcenter.createdTime')}>{selectedTask.createdAt}</Descriptions.Item>
           </Descriptions>
         )}
       </Modal>

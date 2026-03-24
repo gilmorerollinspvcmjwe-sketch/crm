@@ -2,7 +2,7 @@
  * 对象属性管理页面
  */
 import React, { useState, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Card,
@@ -15,28 +15,19 @@ import {
   Input,
   Select,
   Switch,
-  InputNumber,
   message,
   Typography,
-  Dropdown,
   Tooltip,
-  Divider,
   Tabs,
   Checkbox,
   ColorPicker,
   Empty,
-  Spin,
+  Divider,
 } from 'antd';
 import {
-  ArrowLeftOutlined,
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SettingOutlined,
-  DatabaseOutlined,
-  FormOutlined,
-  ApartmentOutlined,
-  MoreOutlined,
   HolderOutlined,
   StarOutlined,
   StarFilled,
@@ -151,7 +142,6 @@ const PROPERTY_TYPE_GROUPS = [
 
 const ObjectFields: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { objectId } = useParams();
   
   const {
@@ -434,34 +424,9 @@ const ObjectFields: React.FC = () => {
   }
   
   return (
-    <div className={styles.container}>
-      {/* 页面标题 */}
-      <div className={styles.header}>
-        <Space>
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/settings/custom-objects')}
-          />
-          <Title level={3} className={styles.title}>
-            {objectDef.pluralName} - {t('customObjects.fields', 'Fields')}
-          </Title>
-        </Space>
-        <Space>
-          <Button icon={<ApartmentOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/relationships`)}>
-            {t('customObjects.relationships', 'Relationships')}
-          </Button>
-          <Button icon={<FormOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/form`)}>
-            {t('customObjects.formDesigner', 'Form Designer')}
-          </Button>
-          <Button icon={<DatabaseOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/data`)}>
-            {t('customObjects.data', 'Data')}
-          </Button>
-        </Space>
-      </div>
-      
+    <div className={styles.container} style={{ padding: 0 }}>
       {/* 对象信息 */}
-      <Card className={styles.infoCard}>
+      <Card className={styles.infoCard} style={{ marginBottom: 16 }}>
         <Space split={<Divider type="vertical" />}>
           <Space>
             <Text type="secondary">{t('customObjects.objectName', 'Object Name')}:</Text>

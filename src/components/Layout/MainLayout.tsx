@@ -79,6 +79,7 @@ const getMenuItems = (t: (key: string) => string): MenuItem[] => [
     getItem(t('nav.activityRecords'), '/activity/list'),
   ]),
   getItem(t('nav.orderManagement'), 'order', <FileTextOutlined />, [
+    getItem(t('nav.orderList'), '/order/list'),
     getItem(t('nav.quotes'), '/quote/list'),
     getItem(t('nav.contractManagement'), '/contract/list'),
     getItem(t('nav.paymentManagement'), '/payment/list'),
@@ -381,16 +382,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   // 渲染侧边栏内容
   const renderSiderContent = () => (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div
         style={{
           height: 64,
+          minHeight: 64,
           display: 'flex',
           alignItems: 'center',
           justifyContent: collapsed ? 'center' : 'flex-start',
           padding: collapsed ? 0 : '0 24px',
           borderBottom: `1px solid ${colors.border.default}`,
           transition: 'padding 0.2s',
+          flexShrink: 0,
         }}
       >
         {collapsed ? (
@@ -399,17 +402,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <Text strong style={{ fontSize: 18 }}>{t('nav.crmSystem')}</Text>
         )}
       </div>
-      <Menu
-        mode="inline"
-        selectedKeys={getSelectedKey()}
-        openKeys={collapsed ? [] : openKeys}
-        onOpenChange={handleOpenChange}
-        items={menuItems}
-        onClick={handleMenuClick}
-        style={{ borderRight: 0 }}
-        inlineCollapsed={collapsed}
-      />
-    </>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <Menu
+          mode="inline"
+          selectedKeys={getSelectedKey()}
+          openKeys={collapsed ? [] : openKeys}
+          onOpenChange={handleOpenChange}
+          items={menuItems}
+          onClick={handleMenuClick}
+          style={{ borderRight: 0 }}
+          inlineCollapsed={collapsed}
+        />
+      </div>
+    </div>
   );
 
   // 渲染顶部栏

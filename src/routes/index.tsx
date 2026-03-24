@@ -1,12 +1,13 @@
 /**
  * 统一路由配置
+ * Unified Route Configuration
  */
 import React, { Suspense } from 'react';
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import SettingsLayout from '../components/Settings/SettingsLayout';
 
-const LoadingFallback = () => <div style={{ padding: 24 }}>加载中...</div>;
+const LoadingFallback = () => <div style={{ padding: 24 }}>Loading...</div>;
 
 // 带布局的路由包装器
 const LayoutWrapper: React.FC = () => (
@@ -83,14 +84,14 @@ const PricebookForm = React.lazy(() => import('../components/Pricebook/Pricebook
 // Custom Objects
 const CustomObjects = React.lazy(() => import('../pages/settings/CustomObjects'));
 const CreateCustomObject = React.lazy(() => import('../pages/settings/CreateCustomObject'));
-const ObjectFields = React.lazy(() => import('../pages/settings/ObjectFields'));
-const FormDesigner = React.lazy(() => import('../pages/settings/FormDesigner'));
-const ObjectData = React.lazy(() => import('../pages/settings/ObjectData'));
-const ObjectRelationships = React.lazy(() => import('../pages/settings/ObjectRelationships'));
+const ObjectConfig = React.lazy(() => import('../pages/settings/ObjectConfig'));
 // 对接 Demo
 const TicketList = React.lazy(() => import('../pages/tickets/TicketList'));
 const KnowledgeSearch = React.lazy(() => import('../pages/knowledge/KnowledgeSearch'));
 const OutboundTasks = React.lazy(() => import('../pages/callcenter/OutboundTasks'));
+// 订单管理
+const OrderList = React.lazy(() => import('../pages/OrderList'));
+const OrderDetail = React.lazy(() => import('../pages/OrderDetail'));
 
 const router = createBrowserRouter([
   {
@@ -232,6 +233,15 @@ const router = createBrowserRouter([
         path: 'payment/:id',
         element: <Suspense fallback={<LoadingFallback />}><PaymentDetail /></Suspense>,
       },
+      // 订单管理
+      {
+        path: 'order/list',
+        element: <Suspense fallback={<LoadingFallback />}><OrderList /></Suspense>,
+      },
+      {
+        path: 'order/:id',
+        element: <Suspense fallback={<LoadingFallback />}><OrderDetail /></Suspense>,
+      },
       // CPQ 报价管理
       {
         path: 'quote/list',
@@ -358,24 +368,41 @@ const router = createBrowserRouter([
             element: <Suspense fallback={<LoadingFallback />}><CreateCustomObject /></Suspense>,
           },
           {
+            path: 'custom-objects/:objectId',
+            element: <Suspense fallback={<LoadingFallback />}><ObjectConfig /></Suspense>,
+          },
+          {
             path: 'custom-objects/:objectId/edit',
             element: <Suspense fallback={<LoadingFallback />}><CreateCustomObject /></Suspense>,
           },
+          // 旧路由重定向到新的对象配置中心
           {
             path: 'custom-objects/:objectId/fields',
-            element: <Suspense fallback={<LoadingFallback />}><ObjectFields /></Suspense>,
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=properties" replace />,
           },
           {
             path: 'custom-objects/:objectId/form',
-            element: <Suspense fallback={<LoadingFallback />}><FormDesigner /></Suspense>,
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=forms" replace />,
           },
           {
             path: 'custom-objects/:objectId/data',
-            element: <Suspense fallback={<LoadingFallback />}><ObjectData /></Suspense>,
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=data" replace />,
           },
           {
             path: 'custom-objects/:objectId/relationships',
-            element: <Suspense fallback={<LoadingFallback />}><ObjectRelationships /></Suspense>,
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=relationships" replace />,
+          },
+          {
+            path: 'custom-objects/:objectId/pipeline',
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=pipeline" replace />,
+          },
+          {
+            path: 'custom-objects/:objectId/views',
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=views" replace />,
+          },
+          {
+            path: 'page-builder/:objectId',
+            element: <Navigate to="/settings/custom-objects/:objectId?tab=pageLayout" replace />,
           },
           {
             path: 'audit-log',

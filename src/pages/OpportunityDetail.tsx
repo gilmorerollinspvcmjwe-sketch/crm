@@ -1,426 +1,815 @@
-import React, { useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Descriptions, Tag, Space, Button, Typography, Timeline, Divider, Modal, message, Table, Tabs, Progress, Steps } from 'antd';
-import { ArrowLeftOutlined, EditOutlined, ThunderboltOutlined, DeleteOutlined, PlusOutlined, TrophyOutlined, BulbOutlined } from '@ant-design/icons';
+/**
+ * Opportunity Detail Page - Three Column Layout with Stage Progress
+ * 
+ * Layout:
+ * - Left Sidebar (240px): Opportunity info + Stage progress + Action buttons
+ * - Middle Content (flex: 1): Tabs with Overview/Activity/Products/AI Insights
+ * - Right Sidebar (320px): Related customer/contacts/quotes/contracts
+ */
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Card,
+  Button,
+  Space,
+  Tabs,
+  Tag,
+  Table,
+  Timeline,
+  message,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Typography,
+  Avatar,
+  Divider,
+  Tooltip,
+  Collapse,
+  Badge,
+  Steps,
+  Progress,
+  Descriptions,
+  Result,
+} from 'antd';
+import {
+  ArrowLeftOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  BulbOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  UserOutlined,
+  TeamOutlined,
+  EnvironmentOutlined,
+  GlobalOutlined,
+  CalendarOutlined,
+  FileTextOutlined,
+  RightOutlined,
+  TrophyOutlined,
+  ThunderboltOutlined,
+  DollarOutlined,
+  SwapOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Opportunity, OpportunityStage, Competitor } from '../types/opportunity';
 import { opportunityData } from '../mock/opportunityData';
 import { activityData } from '../mock/activityData';
+import { Opportunity, OpportunityStage, Competitor } from '../types/opportunity';
 import { ActivityType } from '../types/activity';
+import { colors } from '../styles/tokens';
+import {
+  CustomerSummaryAI,
+  InteractionAnalysisAI,
+  RelationshipChangeAI,
+  SmartSuggestionsAI,
+} from '../components/AI';
 
-const { Title, Text, Paragraph } = Typography;
-// Descriptions.Meta 在较新版本的 antd 中已移除，使用 Descriptions.Item 替代
+const { Text, Title, Paragraph } = Typography;
+
+/** Stage colors */
+const STAGE_COLORS: Record<OpportunityStage, { bg: string; color: string }> = {
+  [OpportunityStage.LEAD_CONFIRMATION]: { bg: '#E3F2FD', color: '#1565C0' },
+  [OpportunityStage.INITIAL_CONTACT]: { bg: '#E1F5FE', color: '#0277BD' },
+  [OpportunityStage.REQUIREMENT_CONFIRMATION]: { bg: '#E0F7FA', color: '#00838F' },
+  [OpportunityStage.PROPOSAL_QUOTATION]: { bg: '#E8F5E9', color: '#2E7D32' },
+  [OpportunityStage.NEGOTIATION_APPROVAL]: { bg: '#FFF3E0', color: '#EF6C00' },
+  [OpportunityStage.CLOSED_WON]: { bg: '#C8E6C9', color: '#1B5E20' },
+  [OpportunityStage.CLOSED_LOST]: { bg: '#FFEBEE', color: '#C62828' },
+};
+
+/** Stage order */
+const STAGE_ORDER: OpportunityStage[] = [
+  OpportunityStage.LEAD_CONFIRMATION,
+  OpportunityStage.INITIAL_CONTACT,
+  OpportunityStage.REQUIREMENT_CONFIRMATION,
+  OpportunityStage.PROPOSAL_QUOTATION,
+  OpportunityStage.NEGOTIATION_APPROVAL,
+  OpportunityStage.CLOSED_WON,
+];
+
+/** Stage labels */
+const STAGE_LABELS: Record<OpportunityStage, string> = {
+  [OpportunityStage.LEAD_CONFIRMATION]: 'Lead Confirmation',
+  [OpportunityStage.INITIAL_CONTACT]: 'Initial Contact',
+  [OpportunityStage.REQUIREMENT_CONFIRMATION]: 'Requirement',
+  [OpportunityStage.PROPOSAL_QUOTATION]: 'Proposal',
+  [OpportunityStage.NEGOTIATION_APPROVAL]: 'Negotiation',
+  [OpportunityStage.CLOSED_WON]: 'Won',
+  [OpportunityStage.CLOSED_LOST]: 'Lost',
+};
+
+/** Stage probabilities */
+const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
+  [OpportunityStage.LEAD_CONFIRMATION]: 10,
+  [OpportunityStage.INITIAL_CONTACT]: 20,
+  [OpportunityStage.REQUIREMENT_CONFIRMATION]: 40,
+  [OpportunityStage.PROPOSAL_QUOTATION]: 60,
+  [OpportunityStage.NEGOTIATION_APPROVAL]: 80,
+  [OpportunityStage.CLOSED_WON]: 100,
+  [OpportunityStage.CLOSED_LOST]: 0,
+};
 
 /**
- * 商机详情页
- * 功能：
- * - 基本信息展示
- * - 竞争对手列表
- * - 跟进记录时间线
- * - 操作按钮：编辑、变更阶段、删除
+ * Opportunity Detail Page Component
  */
 export const OpportunityDetail: React.FC = () => {
   const { t } = useTranslation();
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
+  const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [stageChangeModal, setStageChangeModal] = useState(false);
+  const [selectedStage, setSelectedStage] = useState<OpportunityStage | null>(null);
+  const [form] = Form.useForm();
 
-  // 阶段颜色配置
-  const STAGE_COLORS: Record<OpportunityStage, string> = {
-    [OpportunityStage.LEAD_CONFIRMATION]: 'default',
-    [OpportunityStage.INITIAL_CONTACT]: 'blue',
-    [OpportunityStage.REQUIREMENT_CONFIRMATION]: 'cyan',
-    [OpportunityStage.PROPOSAL_QUOTATION]: 'geekblue',
-    [OpportunityStage.NEGOTIATION_APPROVAL]: 'orange',
-    [OpportunityStage.CLOSED_WON]: 'green',
-    [OpportunityStage.CLOSED_LOST]: 'red'
-  };
-
-  // 阶段顺序映射
-  const STAGE_ORDER: OpportunityStage[] = [
-    OpportunityStage.LEAD_CONFIRMATION,
-    OpportunityStage.INITIAL_CONTACT,
-    OpportunityStage.REQUIREMENT_CONFIRMATION,
-    OpportunityStage.PROPOSAL_QUOTATION,
-    OpportunityStage.NEGOTIATION_APPROVAL,
-    OpportunityStage.CLOSED_WON,
-  ];
-
-  // 阶段中文名称
-  const STAGE_LABELS: Record<OpportunityStage, string> = {
-    [OpportunityStage.LEAD_CONFIRMATION]: t('opportunity.stage.leadConfirmation'),
-    [OpportunityStage.INITIAL_CONTACT]: t('opportunity.stage.initialContact'),
-    [OpportunityStage.REQUIREMENT_CONFIRMATION]: t('opportunity.stage.requirementConfirmation'),
-    [OpportunityStage.PROPOSAL_QUOTATION]: t('opportunity.stage.proposalQuotation'),
-    [OpportunityStage.NEGOTIATION_APPROVAL]: t('opportunity.stage.negotiationApproval'),
-    [OpportunityStage.CLOSED_WON]: t('opportunity.stage.closedWon'),
-    [OpportunityStage.CLOSED_LOST]: t('opportunity.stage.closedLost'),
-  };
-
-  // 查找商机数据
-  const opportunity = useMemo(() => {
+  /** Find opportunity */
+  const opportunityRecord = useMemo(() => {
     return opportunityData.find(opp => opp.id === id);
   }, [id]);
 
-  // 查找相关跟进记录
+  /** Find related activities */
   const relatedActivities = useMemo(() => {
-    if (!opportunity) return [];
+    if (!opportunityRecord) return [];
     return activityData.filter(activity => activity.opportunityId === id);
-  }, [id, opportunity]);
+  }, [id, opportunityRecord]);
 
-  // 格式化金额
-  const formatAmount = (amount: number) => {
-    return `¥${(amount / 10000).toFixed(1)}${t('opportunity.table.tenThousand')}`;
-  };
+  /** Load opportunity detail */
+  useEffect(() => {
+    if (opportunityRecord) {
+      setOpportunity(opportunityRecord);
+    }
+  }, [opportunityRecord]);
 
-  // 格式化日期
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('zh-CN');
-  };
-
-  // 处理返回
+  /** Back to list */
   const handleBack = () => {
     navigate('/opportunity/list');
   };
 
-  // 处理编辑
+  /** Edit opportunity */
   const handleEdit = () => {
-    message.info(`${t('opportunity.detail.editInfo')}：${id}`);
-    // TODO: 打开编辑表单
+    if (opportunity) {
+      form.setFieldsValue(opportunity);
+      setEditModalVisible(true);
+    }
   };
 
-  // 处理变更阶段
-  const handleChangeStage = () => {
-    message.info(`${t('opportunity.detail.changeStageInfo')}：${id}`);
-    // TODO: 打开阶段变更弹窗
-  };
-
-  // 处理删除
+  /** Delete opportunity */
   const handleDelete = () => {
     Modal.confirm({
-      title: t('opportunity.detail.confirmDelete'),
-      content: t('opportunity.detail.confirmDeleteContent'),
-      okText: t('commonBatch.confirm'),
-      cancelText: t('commonBatch.cancel'),
+      title: t('common.confirm') + ' ' + t('common.delete'),
+      content: `Are you sure you want to delete "${opportunity?.name}"? This action cannot be undone.`,
+      okText: t('common.delete'),
+      cancelText: t('common.cancel'),
+      okType: 'danger',
       onOk: () => {
-        message.success(t('opportunity.detail.deleteSuccess'));
-        // TODO: 调用删除 API
-      }
+        message.success(t('common.deleteSuccess'));
+        navigate('/opportunity/list');
+      },
     });
   };
 
-  // 如果没有找到商机
+  /** Change stage */
+  const handleChangeStage = (stage: OpportunityStage) => {
+    setSelectedStage(stage);
+    setStageChangeModal(true);
+  };
+
+  /** Confirm stage change */
+  const handleConfirmStageChange = () => {
+    message.success(t('opportunity.detail.stageChanged'));
+    setStageChangeModal(false);
+  };
+
+  /** Create quote */
+  const handleCreateQuote = () => {
+    navigate('/quote/create', { state: { opportunityId: id } });
+  };
+
+  /** Mark as won */
+  const handleMarkWon = () => {
+    Modal.confirm({
+      title: t('opportunity.detail.markWon'),
+      content: t('opportunity.detail.markWonContent'),
+      onOk: () => {
+        message.success(t('common.success'));
+      },
+    });
+  };
+
+  /** Mark as lost */
+  const handleMarkLost = () => {
+    Modal.confirm({
+      title: t('opportunity.detail.markLost'),
+      content: t('opportunity.detail.markLostContent'),
+      onOk: () => {
+        message.success(t('common.success'));
+      },
+    });
+  };
+
   if (!opportunity) {
     return (
-      <div style={{ padding: 24 }}>
-        <Card>
-          <Title level={3}>{t('opportunity.detail.notFound')}</Title>
-          <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-            {t('opportunity.detail.back')}
-          </Button>
-        </Card>
+      <div style={{ padding: 24, textAlign: 'center' }}>
+        <Result
+          status="404"
+          title={t('opportunity.detail.notFound')}
+          extra={<Button type="primary" onClick={handleBack}>{t('common.back')}</Button>}
+        />
       </div>
     );
   }
 
-  // 跟进记录表格列
-  const activityColumns = [
-    {
-      title: t('activity.table.activityTime'),
-      dataIndex: 'activityTime',
-      key: 'activityTime',
-      width: 160,
-      render: (time: string) => new Date(time).toLocaleString('zh-CN')
-    },
-    {
-      title: t('activity.table.type'),
-      dataIndex: 'type',
-      key: 'type',
-      width: 100,
-      render: (type: ActivityType) => <Tag>{type}</Tag>
-    },
-    {
-      title: t('activity.table.content'),
-      dataIndex: 'content',
-      key: 'content',
-      ellipsis: true,
-      render: (content: string) => {
-        const text = content.replace(/<[^>]*>/g, '');
-        return text.length > 100 ? text.substring(0, 100) + '...' : text;
-      }
-    },
-    {
-      title: t('activity.table.createdBy'),
-      dataIndex: 'createdByName',
-      key: 'createdByName',
-      width: 100
-    }
-  ];
-
-  // 计算当前阶段索引
+  /** Current stage index */
   const currentStageIndex = STAGE_ORDER.indexOf(opportunity.stage);
 
-  // 阶段步骤项
-  const stageSteps = STAGE_ORDER.map((stage, index) => ({
-    key: index,
-    title: STAGE_LABELS[stage],
-    icon: index <= currentStageIndex ? <TrophyOutlined /> : undefined,
-    status: (index < currentStageIndex ? 'finish' : index === currentStageIndex ? 'process' : 'wait') as 'finish' | 'process' | 'wait',
-  }));
+  /** Action buttons */
+  const actionButtons = [
+    { key: 'edit', icon: <EditOutlined />, label: t('common.edit'), onClick: handleEdit },
+    { key: 'delete', icon: <DeleteOutlined />, label: t('common.delete'), onClick: handleDelete, danger: true },
+    { divider: true },
+    { key: 'changeStage', icon: <SwapOutlined />, label: t('opportunity.detail.changeStage'), onClick: () => setStageChangeModal(true) },
+    { key: 'createQuote', icon: <FileTextOutlined />, label: t('opportunity.detail.createQuote'), onClick: handleCreateQuote },
+    { divider: true },
+    { key: 'markWon', icon: <TrophyOutlined />, label: t('opportunity.detail.markWon'), onClick: handleMarkWon },
+    { key: 'markLost', icon: <CloseCircleOutlined />, label: t('opportunity.detail.markLost'), onClick: handleMarkLost, danger: true },
+  ];
+
+  /** Related contacts mock data */
+  const relatedContacts = [
+    { id: '1', name: '张伟', position: '技术总监', role: '决策者' },
+    { id: '2', name: '李娜', position: '采购经理', role: '影响者' },
+  ];
+
+  /** Related quotes mock data */
+  const relatedQuotes = [
+    { id: '1', number: 'QT-2026-00001', amount: 850000, status: 'Sent' },
+    { id: '2', number: 'QT-2026-00002', amount: 780000, status: 'Draft' },
+  ];
+
+  /** Related contracts mock data */
+  const relatedContracts = [
+    { id: '1', number: 'CONT-2026-00001', amount: 800000, status: 'Active' },
+  ];
+
+  /** Tab items */
+  const tabItems = [
+    {
+      key: 'overview',
+      label: t('customer.detail.tabs.overview'),
+      children: (
+        <div style={{ padding: '16px 0' }}>
+          {/* Basic Information */}
+          <Collapse
+            defaultActiveKey={['basic', 'detail']}
+            ghost
+            expandIconPosition="end"
+            items={[
+              {
+                key: 'basic',
+                label: <Text strong>{t('opportunity.detail.basicInfo')}</Text>,
+                children: (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 24px' }}>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Opportunity ID</Text>
+                      <div><Text>{opportunity.id}</Text></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Opportunity Name</Text>
+                      <div><Text strong>{opportunity.name}</Text></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Amount</Text>
+                      <div>
+                        <Text strong style={{ color: colors.primary, fontSize: 16 }}>
+                          ¥{(opportunity.amount / 10000).toFixed(1)}万
+                        </Text>
+                      </div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Current Stage</Text>
+                      <div>
+                        <Tag style={{
+                          background: STAGE_COLORS[opportunity.stage]?.bg,
+                          color: STAGE_COLORS[opportunity.stage]?.color,
+                          border: 'none',
+                        }}>
+                          {STAGE_LABELS[opportunity.stage]}
+                        </Tag>
+                      </div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Win Probability</Text>
+                      <div><Text strong>{opportunity.probability}%</Text></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Expected Close Date</Text>
+                      <div><Text>{new Date(opportunity.estimatedCloseDate).toLocaleDateString('zh-CN')}</Text></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Customer</Text>
+                      <div>
+                        <a onClick={() => navigate(`/customer/${opportunity.customerId}`)}>
+                          {opportunity.customerName}
+                        </a>
+                      </div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Owner</Text>
+                      <div><Text>{opportunity.ownerName}</Text></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Source</Text>
+                      <div><Tag>{opportunity.source}</Tag></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Created At</Text>
+                      <div><Text>{new Date(opportunity.createdAt).toLocaleDateString('zh-CN')}</Text></div>
+                    </div>
+                    {opportunity.description && (
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <Text type="secondary" style={{ fontSize: 12 }}>Customer Needs</Text>
+                        <div><Text>{opportunity.description}</Text></div>
+                      </div>
+                    )}
+                  </div>
+                ),
+              },
+              {
+                key: 'detail',
+                label: <Text strong>{t('opportunity.detail.detailInfo')}</Text>,
+                children: (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 24px' }}>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Budget</Text>
+                      <div><Text>{opportunity.budget || '-'}</Text></div>
+                    </div>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Next Follow-up</Text>
+                      <div><Text>{opportunity.nextFollowupTime ? new Date(opportunity.nextFollowupTime).toLocaleDateString('zh-CN') : '-'}</Text></div>
+                    </div>
+                    {opportunity.decisionProcess && (
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <Text type="secondary" style={{ fontSize: 12 }}>Decision Process</Text>
+                        <div><Text>{opportunity.decisionProcess}</Text></div>
+                      </div>
+                    )}
+                  </div>
+                ),
+              },
+            ]}
+          />
+
+          {/* Competitors */}
+          {opportunity.competitors && opportunity.competitors.length > 0 && (
+            <>
+              <Divider />
+              <Text strong style={{ display: 'block', marginBottom: 12 }}>{t('opportunity.detail.competitors')}</Text>
+              <Table
+                rowKey="id"
+                size="small"
+                columns={[
+                  { title: t('opportunity.detail.competitorName'), dataIndex: 'name', key: 'name', width: 120 },
+                  { title: t('opportunity.detail.productOrSolution'), dataIndex: 'product', key: 'product', width: 120 },
+                  { title: t('opportunity.detail.competitiveAdvantage'), dataIndex: 'advantage', key: 'advantage', render: (text) => <Text type="success">{text}</Text> },
+                  { title: t('opportunity.detail.competitiveDisadvantage'), dataIndex: 'disadvantage', key: 'disadvantage', render: (text) => <Text type="danger">{text}</Text> },
+                ]}
+                dataSource={opportunity.competitors}
+                pagination={false}
+              />
+            </>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'activity',
+      label: t('customer.detail.tabs.activity'),
+      children: (
+        <div style={{ padding: '16px 0' }}>
+          {relatedActivities.length > 0 ? (
+            relatedActivities.map((item, index) => {
+              const typeIcons: Record<string, React.ReactNode> = {
+                email: <MailOutlined style={{ color: colors.primary }} />,
+                call: <PhoneOutlined style={{ color: colors.success }} />,
+                meeting: <CalendarOutlined style={{ color: colors.warning }} />,
+                note: <FileTextOutlined style={{ color: colors.info }} />,
+              };
+              return (
+                <div
+                  key={item.id}
+                  style={{
+                    display: 'flex',
+                    gap: 12,
+                    padding: '12px 0',
+                    borderBottom: index < relatedActivities.length - 1 ? `1px solid ${colors.border.light}` : 'none',
+                  }}
+                >
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: colors.background.default, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {typeIcons[item.type] || <FileTextOutlined style={{ color: colors.info }} />}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <Text strong>{item.type}</Text>
+                      <Text type="secondary" style={{ fontSize: 12 }}>{new Date(item.activityTime).toLocaleDateString('zh-CN')}</Text>
+                    </div>
+                    <Text type="secondary" style={{ fontSize: 13 }}>
+                      {item.content.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                    </Text>
+                    <div style={{ marginTop: 4 }}>
+                      <Text type="secondary" style={{ fontSize: 12 }}>by {item.createdByName}</Text>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div style={{ textAlign: 'center', padding: 40 }}>
+              <Text type="secondary">{t('opportunity.detail.noFollowUpRecords')}</Text>
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'products',
+      label: t('opportunity.detail.products'),
+      children: (
+        <div style={{ padding: '16px 0' }}>
+          <Table
+            rowKey="id"
+            size="small"
+            columns={[
+              { title: 'Product Name', dataIndex: 'name', key: 'name', width: 200 },
+              { title: 'Unit Price', dataIndex: 'price', key: 'price', width: 120, render: (p) => `¥${p?.toLocaleString() || 0}` },
+              { title: 'Quantity', dataIndex: 'quantity', key: 'quantity', width: 80 },
+              { title: 'Subtotal', dataIndex: 'subtotal', key: 'subtotal', render: (s) => <Text strong>¥{s?.toLocaleString() || 0}</Text> },
+            ]}
+            dataSource={[
+              { id: '1', name: 'ERP Enterprise Edition', price: 500000, quantity: 1, subtotal: 500000 },
+              { id: '2', name: 'Implementation Service', price: 200000, quantity: 1, subtotal: 200000 },
+              { id: '3', name: 'Annual Maintenance', price: 100000, quantity: 1, subtotal: 100000 },
+            ]}
+            pagination={false}
+            summary={() => (
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0} colSpan={3} align="right">
+                  <Text strong>Total</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={1} align="right">
+                  <Text strong style={{ color: colors.primary }}>¥800,000</Text>
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            )}
+          />
+        </div>
+      ),
+    },
+    {
+      key: 'ai',
+      label: (
+        <span>
+          {t('customer.detail.tabs.aiInsights')}
+          <Badge dot style={{ marginLeft: 4 }} />
+        </span>
+      ),
+      children: (
+        <div style={{ padding: '16px 0' }}>
+          <Space direction="vertical" style={{ width: '100%' }} size={16}>
+            <Card size="small" title={<><BulbOutlined style={{ marginRight: 4 }} />{t('opportunity.detail.predictionAnalysis')}</>}>
+              <div style={{ marginBottom: 16 }}>
+                <Text type="secondary" style={{ fontSize: 12 }}>{t('opportunity.detail.winProbability')}</Text>
+                <Progress
+                  percent={opportunity.probability}
+                  strokeColor={
+                    opportunity.probability >= 80 ? '#52c41a' :
+                    opportunity.probability >= 50 ? '#faad14' : '#ff4d4f'
+                  }
+                  format={(percent) => `${percent}%`}
+                />
+              </div>
+              <div style={{ marginBottom: 16 }}>
+                <Text type="secondary" style={{ fontSize: 12 }}>{t('opportunity.detail.recommendedAction')}</Text>
+                <div style={{ marginTop: 4 }}>
+                  <Text type="success" style={{ fontSize: 13 }}>
+                    {opportunity.probability >= 80 ? t('opportunity.detail.recommendHigh') :
+                     opportunity.probability >= 50 ? t('opportunity.detail.recommendMedium') :
+                     t('opportunity.detail.recommendLow')}
+                  </Text>
+                </div>
+              </div>
+              <div>
+                <Text type="secondary" style={{ fontSize: 12 }}>{t('opportunity.detail.trendAnalysis')}</Text>
+                <div style={{ marginTop: 4 }}>
+                  <Text style={{ fontSize: 13 }}>
+                    {t('opportunity.detail.weeklyFollowUps')} <Text strong>2</Text> {t('opportunity.detail.times')}，
+                    {t('opportunity.detail.customerIntention')} <Text type="success">{t('opportunity.detail.rising')}</Text>
+                  </Text>
+                </div>
+              </div>
+            </Card>
+            <CustomerSummaryAI customerId={id} customerName={opportunity.name} />
+            <SmartSuggestionsAI customerId={id} />
+          </Space>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div style={{ padding: 24 }}>
-      {/* 头部操作区 */}
-      <Card style={{ marginBottom: 16 }}>
-        <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
-          <Space>
-            <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-              {t('opportunity.detail.back')}
-            </Button>
-            <div>
-              <Title level={3} style={{ margin: 0 }}>{opportunity.name}</Title>
-              <Text type="secondary" style={{ marginLeft: 16 }}>💼 {opportunity.customerName}</Text>
-            </div>
-          </Space>
-          <Space>
-            <Button icon={<EditOutlined />} onClick={handleEdit}>
-              {t('opportunity.detail.edit')}
-            </Button>
-            <Button icon={<ThunderboltOutlined />} onClick={handleChangeStage}>
-              {t('opportunity.detail.changeStage')}
-            </Button>
-            <Button danger icon={<DeleteOutlined />} onClick={handleDelete}>
-              {t('opportunity.detail.delete')}
-            </Button>
-          </Space>
-        </Space>
-      </Card>
-
-      {/* 商机头信息卡片 */}
-      <Card style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <div style={{ fontSize: 16, marginBottom: 8 }}>
-              <Tag color={STAGE_COLORS[opportunity.stage]} style={{ fontSize: 14 }}>
-                🏆 {STAGE_LABELS[opportunity.stage]}
-              </Tag>
-            </div>
-            <div style={{ color: '#666', fontSize: 14 }}>
-              <span>{t('opportunity.detail.opportunityId')}：{opportunity.id}</span>
-              <span style={{ margin: '0 16px' }}>|</span>
-              <span>{t('opportunity.detail.amount')}：<Text strong style={{ color: '#faad14' }}>{formatAmount(opportunity.amount)}</Text></span>
-              <span style={{ margin: '0 16px' }}>|</span>
-              <span>{t('opportunity.detail.estimatedCloseDate')}：{formatDate(opportunity.estimatedCloseDate)}</span>
-              <span style={{ margin: '0 16px' }}>|</span>
-              <span>{t('opportunity.detail.owner')}：{opportunity.ownerName}</span>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* 阶段进度条 + AI 预测分析 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16, marginBottom: 16 }}>
-        <Card title={`📊 ${t('opportunity.detail.stageProgress')}`}>
-          <Steps
-            current={currentStageIndex}
-            items={stageSteps}
-            size="small"
-            style={{ marginBottom: 16 }}
-          />
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {STAGE_ORDER.map((stage, index) => (
-              <Button
-                key={stage}
-                size="small"
-                type={index <= currentStageIndex ? 'primary' : 'default'}
-                onClick={() => index <= currentStageIndex && message.info(`${t('opportunity.detail.switchToStage')}：${STAGE_LABELS[stage]}`)}
-                disabled={index > currentStageIndex}
-              >
-                {STAGE_LABELS[stage]}
-              </Button>
-            ))}
-          </div>
-        </Card>
-
-        <Card title={`🤖 ${t('opportunity.detail.predictionAnalysis')}`}>
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>{t('opportunity.detail.winProbability')}</div>
-            <Progress
-              percent={opportunity.probability}
-              strokeColor={
-                opportunity.probability >= 80 ? '#52c41a' :
-                opportunity.probability >= 50 ? '#faad14' : '#ff4d4f'
-              }
-              format={(percent) => `${percent}%`}
-            />
-          </div>
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>{t('opportunity.detail.estimatedCloseDate')}</div>
-            <div style={{ fontSize: 16, fontWeight: 600 }}>{formatDate(opportunity.estimatedCloseDate)}</div>
-          </div>
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>
-              <BulbOutlined style={{ marginRight: 4 }} />
-              {t('opportunity.detail.recommendedAction')}
-            </div>
-            <div style={{ fontSize: 14, color: '#1890ff' }}>
-              {opportunity.probability >= 80 ? t('opportunity.detail.recommendHigh') :
-               opportunity.probability >= 50 ? t('opportunity.detail.recommendMedium') :
-               t('opportunity.detail.recommendLow')}
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>{t('opportunity.detail.trendAnalysis')}</div>
-            <div style={{ fontSize: 14 }}>
-              {t('opportunity.detail.weeklyFollowUps')} <Text strong>2</Text> {t('opportunity.detail.times')}，{t('opportunity.detail.customerIntention')} <Text strong type="success">{t('opportunity.detail.rising')}</Text>
-            </div>
-          </div>
-        </Card>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <div style={{ padding: '12px 16px', borderBottom: `1px solid ${colors.border.default}`, background: '#fff' }}>
+        <Button type="text" icon={<ArrowLeftOutlined />} onClick={handleBack}>
+          {t('opportunity.detail.back')}
+        </Button>
       </div>
 
-      {/* Tab 区域 */}
-      <Card>
-        <Tabs
-          items={[
-            {
-              key: 'basic',
-              label: t('opportunity.detail.basicInfo'),
-              children: (
-                <Descriptions column={3} bordered>
-                  <Descriptions.Item label={t('opportunity.form.name')}>{opportunity.name}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.customer')}>{opportunity.customerName}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.form.amount')}>
-                    <Text strong style={{ color: '#faad14' }}>{formatAmount(opportunity.amount)}</Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.source')}>{opportunity.source}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.owner')}>{opportunity.ownerName}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.status')}>
-                    <Tag>{opportunity.status}</Tag>
-                  </Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.budget')}>{opportunity.budget}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.createdAt')}>{formatDate(opportunity.createdAt)}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.updatedAt')}>{formatDate(opportunity.updatedAt)}</Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.nextFollowup')} span={3}>
-                    {opportunity.nextFollowupTime ? formatDate(opportunity.nextFollowupTime) : '-'}
-                  </Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.customerNeeds')} span={3}>
-                    <Paragraph style={{ marginBottom: 0 }}>{opportunity.description}</Paragraph>
-                  </Descriptions.Item>
-                  <Descriptions.Item label={t('opportunity.detail.decisionProcess')} span={3}>
-                    <Paragraph style={{ marginBottom: 0 }}>{opportunity.decisionProcess}</Paragraph>
-                  </Descriptions.Item>
-                </Descriptions>
-              ),
-            },
-            {
-              key: 'competitors',
-              label: `${t('opportunity.detail.competitors')} (${opportunity.competitors.length})`,
-              children: opportunity.competitors.length > 0 ? (
-                <Table
-                  dataSource={opportunity.competitors}
-                  rowKey="id"
-                  pagination={false}
-                  size="small"
-                  columns={[
-                    {
-                      title: t('opportunity.detail.competitorName'),
-                      dataIndex: 'name',
-                      key: 'name',
-                      width: 200,
-                      render: (name: string) => <Text strong>{name}</Text>
-                    },
-                    {
-                      title: t('opportunity.detail.productOrSolution'),
-                      dataIndex: 'product',
-                      key: 'product',
-                      width: 150,
-                    },
-                    {
-                      title: t('opportunity.detail.competitiveAdvantage'),
-                      dataIndex: 'advantage',
-                      key: 'advantage',
-                      render: (text: string) => <Text type="success">{text}</Text>
-                    },
-                    {
-                      title: t('opportunity.detail.competitiveDisadvantage'),
-                      dataIndex: 'disadvantage',
-                      key: 'disadvantage',
-                      render: (text: string) => <Text type="danger">{text}</Text>
-                    },
-                    {
-                      title: t('opportunity.detail.ourStrategy'),
-                      dataIndex: 'strategy',
-                      key: 'strategy',
-                      render: (text: string) => text || '-',
-                    },
-                  ]}
-                />
-              ) : (
-                <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>
-                  <Button type="primary" icon={<PlusOutlined />}>+ {t('opportunity.detail.addCompetitor')}</Button>
+      {/* Main Content - Three Column Layout */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Left Sidebar - Stage Progress & Actions (240px) */}
+        <div
+          style={{
+            width: 240,
+            borderRight: `1px solid ${colors.border.default}`,
+            background: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Opportunity Info */}
+          <div style={{ padding: 16, borderBottom: `1px solid ${colors.border.light}` }}>
+            <Text strong style={{ display: 'block', fontSize: 15, marginBottom: 8 }}>
+              {opportunity.name}
+            </Text>
+            <Text strong style={{ fontSize: 18, color: colors.primary, display: 'block', marginBottom: 8 }}>
+              ¥{(opportunity.amount / 10000).toFixed(1)}万
+            </Text>
+            <Tag
+              style={{
+                background: STAGE_COLORS[opportunity.stage]?.bg,
+                color: STAGE_COLORS[opportunity.stage]?.color,
+                border: 'none',
+              }}
+            >
+              {STAGE_LABELS[opportunity.stage]}
+            </Tag>
+          </div>
+
+          {/* Stage Progress Indicator */}
+          <div style={{ padding: 16, borderBottom: `1px solid ${colors.border.light}` }}>
+            <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 12 }}>
+              {t('opportunity.detail.stageProgress')}
+            </Text>
+            <Steps
+              direction="vertical"
+              size="small"
+              current={currentStageIndex}
+              items={STAGE_ORDER.slice(0, -1).map((stage, index) => ({
+                title: STAGE_LABELS[stage],
+                description: `${STAGE_PROBABILITY[stage]}%`,
+                status: index < currentStageIndex ? 'finish' : index === currentStageIndex ? 'process' : 'wait',
+              }))}
+            />
+            {/* Quick stage change */}
+            <div style={{ marginTop: 12 }}>
+              <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 8 }}>
+                {t('opportunity.detail.quickChange')}
+              </Text>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {STAGE_ORDER.slice(0, -1).map((stage, index) => (
+                  <Button
+                    key={stage}
+                    size="small"
+                    type={stage === opportunity.stage ? 'primary' : 'default'}
+                    onClick={() => handleChangeStage(stage)}
+                    style={{ fontSize: 11 }}
+                  >
+                    {STAGE_LABELS[stage]}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ padding: 12, flex: 1, overflow: 'auto' }}>
+            <Space direction="vertical" style={{ width: '100%' }} size={4}>
+              {actionButtons.map((btn, index) => {
+                if ('divider' in btn && btn.divider) {
+                  return <Divider key={`divider-${index}`} style={{ margin: '8px 0' }} />;
+                }
+                return (
+                  <Button
+                    key={btn.key}
+                    type="text"
+                    icon={btn.icon}
+                    style={{
+                      width: '100%',
+                      justifyContent: 'flex-start',
+                      color: btn.danger ? colors.danger : undefined,
+                    }}
+                    onClick={btn.onClick}
+                  >
+                    {btn.label}
+                  </Button>
+                );
+              })}
+            </Space>
+          </div>
+        </div>
+
+        {/* Middle Content - Tabs (flex: 1) */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', overflow: 'hidden' }}>
+          <Tabs
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            items={tabItems}
+            style={{ flex: 1, overflow: 'hidden' }}
+            tabBarStyle={{ padding: '0 16px', marginBottom: 0 }}
+            className="opportunity-detail-tabs"
+          />
+        </div>
+
+        {/* Right Sidebar - Related Info (320px) */}
+        <div
+          style={{
+            width: 320,
+            borderLeft: `1px solid ${colors.border.default}`,
+            background: '#fff',
+            overflow: 'auto',
+            padding: 16,
+          }}
+        >
+          {/* Customer Card */}
+          <Card
+            size="small"
+            title={
+              <Space>
+                <TeamOutlined style={{ color: colors.primary }} />
+                <span>{t('opportunity.detail.relatedCustomer')}</span>
+              </Space>
+            }
+            styles={{ body: { padding: 12 } }}
+            style={{ marginBottom: 12 }}
+          >
+            <div style={{ marginBottom: 8 }}>
+              <Text type="secondary" style={{ fontSize: 12 }}>Customer</Text>
+              <div>
+                <a onClick={() => navigate(`/customer/${opportunity.customerId}`)}>
+                  <Text strong>{opportunity.customerName}</Text>
+                </a>
+              </div>
+            </div>
+          </Card>
+
+          {/* Contacts Card */}
+          <Card
+            size="small"
+            title={
+              <Space>
+                <UserOutlined style={{ color: colors.warning }} />
+                <span>{t('opportunity.detail.contacts')} ({relatedContacts.length})</span>
+              </Space>
+            }
+            styles={{ body: { padding: 0 } }}
+            style={{ marginBottom: 12 }}
+          >
+            {relatedContacts.map((contact, index) => (
+              <div
+                key={contact.id}
+                style={{
+                  padding: '10px 12px',
+                  borderBottom: index < relatedContacts.length - 1 ? `1px solid ${colors.border.light}` : 'none',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <Avatar size="small" icon={<UserOutlined />} />
+                  <Text strong style={{ fontSize: 13 }}>{contact.name}</Text>
+                  <Tag color={decisionRoleColorMap[contact.role] || 'default'} style={{ margin: 0, fontSize: 11 }}>
+                    {contact.role}
+                  </Tag>
                 </div>
-              ),
-            },
-            {
-              key: 'followups',
-              label: `${t('opportunity.detail.followUpRecords')} (${relatedActivities.length})`,
-              children: relatedActivities.length > 0 ? (
-                <Table
-                  columns={activityColumns}
-                  dataSource={relatedActivities}
-                  rowKey="id"
-                  pagination={{ pageSize: 10 }}
-                  size="middle"
-                />
-              ) : (
-                <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>
-                  <Button type="primary" icon={<PlusOutlined />}>+ {t('opportunity.detail.addFollowUp')}</Button>
+                <Text type="secondary" style={{ fontSize: 12 }}>{contact.position}</Text>
+              </div>
+            ))}
+          </Card>
+
+          {/* Quotes Card */}
+          <Card
+            size="small"
+            title={
+              <Space>
+                <FileTextOutlined style={{ color: colors.info }} />
+                <span>{t('opportunity.detail.quotes')} ({relatedQuotes.length})</span>
+              </Space>
+            }
+            styles={{ body: { padding: 0 } }}
+            style={{ marginBottom: 12 }}
+          >
+            {relatedQuotes.map((quote, index) => (
+              <div
+                key={quote.id}
+                style={{
+                  padding: '10px 12px',
+                  borderBottom: index < relatedQuotes.length - 1 ? `1px solid ${colors.border.light}` : 'none',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text strong style={{ fontSize: 13 }}>{quote.number}</Text>
+                  <Text strong style={{ color: colors.primary, fontSize: 13 }}>
+                    ¥{quote.amount.toLocaleString()}
+                  </Text>
                 </div>
-              ),
-            },
-            {
-              key: 'quotes',
-              label: t('opportunity.detail.quoteRecords'),
-              children: <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>{t('opportunity.detail.noQuoteRecords')}</div>,
-            },
-            {
-              key: 'contracts',
-              label: t('opportunity.detail.relatedContracts'),
-              children: <div style={{ padding: 40, textAlign: 'center', color: '#999' }}>{t('opportunity.detail.noRelatedContracts')}</div>,
-            },
-            {
-              key: 'logs',
-              label: t('opportunity.detail.operationLog'),
-              children: (
-                <Timeline
-                  items={[
-                    {
-                      color: 'blue',
-                      children: (
-                        <div>
-                          <p>{t('opportunity.detail.logModifiedInfo')}</p>
-                          <p style={{ fontSize: 12, color: '#999' }}>2026-03-15 10:30</p>
-                        </div>
-                      ),
-                    },
-                    {
-                      color: 'green',
-                      children: (
-                        <div>
-                          <p>{t('opportunity.detail.logAutoCreated')}</p>
-                          <p style={{ fontSize: 12, color: '#999' }}>2026-03-01 09:00</p>
-                        </div>
-                      ),
-                    },
-                  ]}
-                />
-              ),
-            },
-          ]}
-        />
-      </Card>
+                <Tag style={{ margin: 0, fontSize: 11 }}>{quote.status}</Tag>
+              </div>
+            ))}
+          </Card>
+
+          {/* Contracts Card */}
+          <Card
+            size="small"
+            title={
+              <Space>
+                <CheckCircleOutlined style={{ color: colors.success }} />
+                <span>{t('opportunity.detail.contracts')} ({relatedContracts.length})</span>
+              </Space>
+            }
+            styles={{ body: { padding: 0 } }}
+          >
+            {relatedContracts.map((contract, index) => (
+              <div
+                key={contract.id}
+                style={{
+                  padding: '10px 12px',
+                  borderBottom: index < relatedContracts.length - 1 ? `1px solid ${colors.border.light}` : 'none',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text strong style={{ fontSize: 13 }}>{contract.number}</Text>
+                  <Text strong style={{ color: colors.primary, fontSize: 13 }}>
+                    ¥{contract.amount.toLocaleString()}
+                  </Text>
+                </div>
+                <Tag color="green" style={{ margin: 0, fontSize: 11 }}>{contract.status}</Tag>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+
+      {/* Stage Change Modal */}
+      <Modal
+        title={t('opportunity.detail.changeStage')}
+        open={stageChangeModal}
+        onCancel={() => setStageChangeModal(false)}
+        onOk={handleConfirmStageChange}
+        okText={t('common.confirm')}
+        cancelText={t('common.cancel')}
+      >
+        <Form layout="vertical">
+          <Form.Item label={t('opportunity.detail.selectStage')}>
+            <Select
+              value={selectedStage || opportunity.stage}
+              onChange={(value) => setSelectedStage(value)}
+              options={STAGE_ORDER.slice(0, -1).map(stage => ({
+                label: `${STAGE_LABELS[stage]} (${STAGE_PROBABILITY[stage]}%)`,
+                value: stage,
+              }))}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* CSS */}
+      <style>{`
+        .opportunity-detail-tabs .ant-tabs-content {
+          height: 100%;
+          overflow: auto;
+          padding: 0 16px;
+        }
+        .opportunity-detail-tabs .ant-tabs-tabpane {
+          height: 100%;
+        }
+      `}</style>
     </div>
   );
+};
+
+/** Decision role color mapping */
+const decisionRoleColorMap: Record<string, string> = {
+  '决策者': 'red',
+  '影响者': 'orange',
+  '使用者': 'green',
+  '技术评估人': 'purple',
+  'Decision Maker': 'red',
+  'Influencer': 'orange',
+  'User': 'green',
+  'Evaluator': 'purple',
 };
 
 export default OpportunityDetail;

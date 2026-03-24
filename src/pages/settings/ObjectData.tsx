@@ -423,34 +423,9 @@ const ObjectData: React.FC = () => {
   }
   
   return (
-    <div className={styles.container}>
-      {/* 页面标题 */}
-      <div className={styles.header}>
-        <Space>
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/settings/custom-objects')}
-          />
-          <Title level={3} className={styles.title}>
-            {objectDef.pluralName} - {t('customObjects.data', 'Data')}
-          </Title>
-        </Space>
-        <Space>
-          <Button icon={<SettingOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/fields`)}>
-            {t('customObjects.fields', 'Fields')}
-          </Button>
-          <Button icon={<FormOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/form`)}>
-            {t('customObjects.formDesigner', 'Form Designer')}
-          </Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenDrawer()}>
-            {t('customObjects.newRecord', 'New Record')}
-          </Button>
-        </Space>
-      </div>
-      
+    <div className={styles.container} style={{ padding: 0 }}>
       {/* 筛选器 */}
-      <Card className={styles.filterCard}>
+      <Card className={styles.filterCard} style={{ marginBottom: 16 }}>
         <Space wrap>
           <FilterOutlined />
           {properties.slice(0, 4).map((property) => {
@@ -470,6 +445,9 @@ const ObjectData: React.FC = () => {
             return null;
           })}
           <Button onClick={() => setFilters({})}>{t('common.reset', 'Reset')}</Button>
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenDrawer()} style={{ marginLeft: 16 }}>
+            {t('customObjects.newRecord', 'New Record')}
+          </Button>
         </Space>
       </Card>
       

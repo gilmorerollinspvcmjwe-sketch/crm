@@ -2,7 +2,7 @@
  * 表单设计器页面
  */
 import React, { useState, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Card,
@@ -16,21 +16,15 @@ import {
   Form,
   Input,
   Select,
-  Switch,
   Modal,
-  Tooltip,
   Dropdown,
 } from 'antd';
 import {
-  ArrowLeftOutlined,
   SaveOutlined,
-  DatabaseOutlined,
   SettingOutlined,
-  ApartmentOutlined,
   PlusOutlined,
   DeleteOutlined,
   HolderOutlined,
-  FormOutlined,
   EyeOutlined,
 } from '@ant-design/icons';
 import {
@@ -106,7 +100,6 @@ const SortableField: React.FC<SortableFieldProps> = ({ property, onRemove }) => 
 
 const FormDesigner: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { objectId } = useParams();
   
   const {
@@ -275,38 +268,19 @@ const FormDesigner: React.FC = () => {
   }
   
   return (
-    <div className={styles.container}>
-      {/* 页面标题 */}
-      <div className={styles.header}>
-        <Space>
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/settings/custom-objects')}
-          />
-          <Title level={3} className={styles.title}>
-            {objectDef.pluralName} - {t('customObjects.formDesigner', 'Form Designer')}
-          </Title>
-        </Space>
-        <Space>
-          <Button icon={<EyeOutlined />} onClick={() => setPreviewVisible(true)}>
-            {t('customObjects.preview', 'Preview')}
-          </Button>
-          <Button icon={<SettingOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/fields`)}>
-            {t('customObjects.fields', 'Fields')}
-          </Button>
-          <Button icon={<DatabaseOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/data`)}>
-            {t('customObjects.data', 'Data')}
-          </Button>
-          <Button type="primary" icon={<SaveOutlined />} loading={saving} onClick={handleSave}>
-            {t('common.save', 'Save')}
-          </Button>
-        </Space>
-      </div>
-      
+    <div className={styles.container} style={{ padding: 0 }}>
       <div className={styles.designerLayout}>
         {/* 左侧：可用字段 */}
-        <Card className={styles.designerSidebar} title={t('customObjects.availableFields', 'Available Fields')}>
+        <Card className={styles.designerSidebar} title={t('customObjects.availableFields', 'Available Fields')} extra={
+          <Space>
+            <Button icon={<EyeOutlined />} onClick={() => setPreviewVisible(true)}>
+              {t('customObjects.preview', 'Preview')}
+            </Button>
+            <Button type="primary" icon={<SaveOutlined />} loading={saving} onClick={handleSave}>
+              {t('common.save', 'Save')}
+            </Button>
+          </Space>
+        }>
           {availableFields.length === 0 ? (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}

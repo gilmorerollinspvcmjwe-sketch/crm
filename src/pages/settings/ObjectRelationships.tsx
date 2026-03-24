@@ -255,34 +255,9 @@ const ObjectRelationships: React.FC = () => {
   }
   
   return (
-    <div className={styles.container}>
-      {/* 页面标题 */}
-      <div className={styles.header}>
-        <Space>
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/settings/custom-objects')}
-          />
-          <Title level={3} className={styles.title}>
-            {objectDef.pluralName} - {t('customObjects.relationships', 'Relationships')}
-          </Title>
-        </Space>
-        <Space>
-          <Button icon={<SettingOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/fields`)}>
-            {t('customObjects.fields', 'Fields')}
-          </Button>
-          <Button icon={<FormOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/form`)}>
-            {t('customObjects.formDesigner', 'Form Designer')}
-          </Button>
-          <Button icon={<DatabaseOutlined />} onClick={() => navigate(`/settings/custom-objects/${objectId}/data`)}>
-            {t('customObjects.data', 'Data')}
-          </Button>
-        </Space>
-      </div>
-      
+    <div className={styles.container} style={{ padding: 0 }}>
       {/* 说明 */}
-      <Card className={styles.infoCard}>
+      <Card className={styles.infoCard} style={{ marginBottom: 16 }}>
         <Space>
           <InfoCircleOutlined style={{ color: '#2359A2' }} />
           <Text>

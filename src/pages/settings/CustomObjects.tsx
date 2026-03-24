@@ -125,28 +125,10 @@ const CustomObjects: React.FC = () => {
     const propertyCount = properties[obj.id]?.length || 0;
     const menuItems: any[] = [
       {
-        key: 'fields',
+        key: 'config',
         icon: <SettingOutlined />,
-        label: t('customObjects.manageFields', 'Manage Fields'),
-        onClick: () => navigate(`/settings/custom-objects/${obj.id}/fields`),
-      },
-      {
-        key: 'form',
-        icon: <FormOutlined />,
-        label: t('customObjects.formDesigner', 'Form Designer'),
-        onClick: () => navigate(`/settings/custom-objects/${obj.id}/form`),
-      },
-      {
-        key: 'relationships',
-        icon: <ApartmentOutlined />,
-        label: t('customObjects.relationships', 'Relationships'),
-        onClick: () => navigate(`/settings/custom-objects/${obj.id}/relationships`),
-      },
-      {
-        key: 'data',
-        icon: <DatabaseOutlined />,
-        label: t('customObjects.manageData', 'Manage Data'),
-        onClick: () => navigate(`/settings/custom-objects/${obj.id}/data`),
+        label: t('customObjects.configure', 'Configure'),
+        onClick: () => navigate(`/settings/custom-objects/${obj.id}`),
       },
     ];
 
@@ -172,7 +154,7 @@ const CustomObjects: React.FC = () => {
         <Card
           className={styles.objectCard}
           hoverable
-          onClick={() => navigate(`/settings/custom-objects/${obj.id}/fields`)}
+          onClick={() => navigate(`/settings/custom-objects/${obj.id}`)}
         >
           <div className={styles.cardHeader}>
             <div

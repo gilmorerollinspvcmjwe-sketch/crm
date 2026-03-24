@@ -641,7 +641,7 @@ export const CustomerDetail: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <Avatar size="small" icon={<UserOutlined />} />
                   <Text strong style={{ fontSize: 13 }}>{contact.name}</Text>
-                  {contact.decisionRole === '决策人' && (
+                  {contact.decisionRole === '决策者' && (
                     <Tag color="red" style={{ margin: 0, fontSize: 11 }}>Decision Maker</Tag>
                   )}
                 </div>

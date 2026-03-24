@@ -1,0 +1,232 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "reset": "Reset",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "actions": "Actions",
+    "status": "Status",
+    "details": "Details",
+    "viewAll": "View All",
+    "noData": "No data",
+    "selectAll": "Select All",
+    "clearSelection": "Clear Selection",
+    "showMore": "Show More",
+    "showLess": "Show Less"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "customers": "Customers",
+    "opportunities": "Opportunities",
+    "leads": "Leads",
+    "contacts": "Contacts",
+    "contracts": "Contracts",
+    "products": "Products",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "customer": {
+    "title": "Customers",
+    "list": {
+      "title": "Customer List",
+      "totalRecords": "{{count}} records",
+      "createCustomer": "Create Customer",
+      "batchAssign": "Batch Assign",
+      "batchDelete": "Batch Delete",
+      "columns": {
+        "name": "Customer Name",
+        "industry": "Industry",
+        "companySize": "Company Size",
+        "source": "Source",
+        "level": "Level",
+        "status": "Status",
+        "owner": "Owner",
+        "createdAt": "Created At"
+      },
+      "filters": {
+        "name": "Customer Name",
+        "industry": "Industry",
+        "level": "Level",
+        "status": "Status",
+        "source": "Source"
+      },
+      "actions": {
+        "viewDetail": "View Details",
+        "edit": "Edit",
+        "assign": "Assign",
+        "delete": "Delete"
+      },
+      "levelOptions": {
+        "A": "A - Key Account",
+        "B": "B - Standard",
+        "C": "C - General",
+        "D": "D - Potential"
+      },
+      "statusOptions": {
+        "prospect": "Prospect",
+        "interested": "Interested",
+        "negotiating": "Negotiating",
+        "closed": "Closed",
+        "churned": "Churned"
+      }
+    },
+    "detail": {
+      "title": "Customer Details",
+      "backToList": "Back to Customer List",
+      "tabs": {
+        "overview": "Overview",
+        "activity": "Activity",
+        "aiInsights": "AI Insights"
+      },
+      "sections": {
+        "basicInfo": "Basic Information",
+        "contactInfo": "Contact Information",
+        "customFields": "Custom Fields"
+      },
+      "actions": {
+        "edit": "Edit",
+        "assign": "Assign",
+        "delete": "Delete",
+        "newDeal": "New Deal",
+        "newContact": "New Contact",
+        "followUp": "Follow Up",
+        "returnToPool": "Return to Pool",
+        "export": "Export",
+        "more": "More"
+      },
+      "related": {
+        "company": "Company",
+        "deals": "Deals",
+        "tickets": "Tickets",
+        "contacts": "Contacts"
+      }
+    }
+  },
+  "opportunity": {
+    "title": "Opportunities",
+    "list": {
+      "title": "Opportunity List",
+      "totalOpportunities": "{{count}} opportunities",
+      "totalAmount": "Total Amount: {{amount}}",
+      "createView": "List View",
+      "kanbanView": "Kanban View",
+      "showFunnel": "Show Funnel",
+      "hideFunnel": "Hide Funnel",
+      "createOpportunity": "Create Opportunity",
+      "columns": {
+        "name": "Opportunity Name",
+        "customer": "Customer",
+        "amount": "Amount",
+        "stage": "Stage",
+        "probability": "Probability",
+        "closeDate": "Close Date",
+        "owner": "Owner",
+        "createdAt": "Created At"
+      },
+      "stages": {
+        "leadConfirmation": "Lead Confirmation",
+        "initialContact": "Initial Contact",
+        "requirementConfirmation": "Requirement Confirmation",
+        "proposalQuotation": "Proposal/Quotation",
+        "negotiationApproval": "Negotiation/Approval",
+        "closedWon": "Closed Won",
+        "closedLost": "Closed Lost"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "viewToday": "My Today",
+    "viewManager": "Manager View",
+    "viewFinance": "Finance View",
+    "metrics": {
+      "todayLeads": "Today's Leads",
+      "conversionRate": "Conversion Rate",
+      "pendingFollowUps": "Pending Follow-ups",
+      "closedAmount": "Closed Amount"
+    },
+    "sections": {
+      "todos": "To-Do Items",
+      "funnel": "Sales Funnel",
+      "performance": "Performance Ranking"
+    }
+  },
+  "ai": {
+    "customerSummary": {
+      "title": "AI Customer Summary",
+      "refresh": "Refresh",
+      "generating": "Generating summary...",
+      "sections": {
+        "highlights": "Key Highlights",
+        "risks": "Risk Factors",
+        "opportunities": "Opportunities",
+        "actions": "Recommended Actions"
+      }
+    },
+    "interactionAnalysis": {
+      "title": "Interaction Analysis",
+      "sentimentScore": "Sentiment Score",
+      "keyTopics": "Key Topics",
+      "frequency": "Communication Frequency",
+      "noData": "No recent interactions"
+    },
+    "relationshipChange": {
+      "title": "Relationship Changes",
+      "healthScore": "Relationship Health Score",
+      "changeIndicators": "Change Indicators",
+      "alertTimeline": "Alert Timeline"
+    },
+    "smartSuggestions": {
+      "title": "Smart Suggestions",
+      "priority": {
+        "P0": "Urgent",
+        "P1": "Important",
+        "P2": "Normal"
+      },
+      "impact": "Expected Impact",
+      "takeAction": "Take Action"
+    },
+    "riskAlert": {
+      "title": "Risk Alerts",
+      "level": {
+        "high": "High Risk",
+        "medium": "Medium Risk",
+        "low": "Low Risk"
+      },
+      "suggestedAction": "Suggested Action"
+    },
+    "contentGenerator": {
+      "title": "AI Content Generator",
+      "selectScenario": "Select Scenario",
+      "scenarios": {
+        "followUp": "Follow-up Email",
+        "meetingRequest": "Meeting Request",
+        "thankYou": "Thank You Email",
+        "proposal": "Proposal Email"
+      },
+      "generate": "Generate",
+      "copy": "Copy",
+      "edit": "Edit",
+      "regenerate": "Regenerate",
+      "generating": "Generating content..."
+    }
+  },
+  "format": {
+    "date": "MMM DD, YYYY",
+    "dateTime": "MMM DD, YYYY HH:mm",
+    "currency": "${{amount}}"
+  }
+}

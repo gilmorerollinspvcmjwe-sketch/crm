@@ -1,0 +1,232 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "新建",
+    "confirm": "确认",
+    "back": "返回",
+    "search": "搜索",
+    "reset": "重置",
+    "export": "导出",
+    "import": "导入",
+    "refresh": "刷新",
+    "loading": "加载中...",
+    "success": "成功",
+    "error": "错误",
+    "warning": "警告",
+    "info": "提示",
+    "actions": "操作",
+    "status": "状态",
+    "details": "详情",
+    "viewAll": "查看全部",
+    "noData": "暂无数据",
+    "selectAll": "全选",
+    "clearSelection": "清除选择",
+    "showMore": "展开更多",
+    "showLess": "收起"
+  },
+  "nav": {
+    "dashboard": "工作台",
+    "customers": "客户管理",
+    "opportunities": "商机管理",
+    "leads": "线索管理",
+    "contacts": "联系人",
+    "contracts": "合同管理",
+    "products": "产品管理",
+    "reports": "报表分析",
+    "settings": "系统设置"
+  },
+  "customer": {
+    "title": "客户管理",
+    "list": {
+      "title": "客户列表",
+      "totalRecords": "共 {{count}} 条记录",
+      "createCustomer": "新建客户",
+      "batchAssign": "批量分配",
+      "batchDelete": "批量删除",
+      "columns": {
+        "name": "客户名称",
+        "industry": "行业",
+        "companySize": "企业规模",
+        "source": "来源",
+        "level": "等级",
+        "status": "状态",
+        "owner": "负责人",
+        "createdAt": "创建时间"
+      },
+      "filters": {
+        "name": "客户名称",
+        "industry": "行业",
+        "level": "等级",
+        "status": "状态",
+        "source": "来源"
+      },
+      "actions": {
+        "viewDetail": "查看详情",
+        "edit": "编辑",
+        "assign": "分配",
+        "delete": "删除"
+      },
+      "levelOptions": {
+        "A": "A - 重点客户",
+        "B": "B - 普通客户",
+        "C": "C - 一般客户",
+        "D": "D - 潜在客户"
+      },
+      "statusOptions": {
+        "prospect": "潜在",
+        "interested": "意向",
+        "negotiating": "谈判",
+        "closed": "成交",
+        "churned": "流失"
+      }
+    },
+    "detail": {
+      "title": "客户详情",
+      "backToList": "返回客户列表",
+      "tabs": {
+        "overview": "概览",
+        "activity": "活动记录",
+        "aiInsights": "AI 洞察"
+      },
+      "sections": {
+        "basicInfo": "基本信息",
+        "contactInfo": "联系方式",
+        "customFields": "自定义字段"
+      },
+      "actions": {
+        "edit": "编辑",
+        "assign": "分配",
+        "delete": "删除",
+        "newDeal": "新建商机",
+        "newContact": "新建联系人",
+        "followUp": "新建跟进",
+        "returnToPool": "退回公海",
+        "export": "导出",
+        "more": "更多"
+      },
+      "related": {
+        "company": "公司信息",
+        "deals": "关联交易",
+        "tickets": "关联工单",
+        "contacts": "关联联系人"
+      }
+    }
+  },
+  "opportunity": {
+    "title": "商机管理",
+    "list": {
+      "title": "商机列表",
+      "totalOpportunities": "共 {{count}} 个商机",
+      "totalAmount": "预计总金额 {{amount}}",
+      "createView": "列表视图",
+      "kanbanView": "看板视图",
+      "showFunnel": "显示漏斗",
+      "hideFunnel": "隐藏漏斗",
+      "createOpportunity": "新建商机",
+      "columns": {
+        "name": "商机名称",
+        "customer": "客户",
+        "amount": "金额",
+        "stage": "阶段",
+        "probability": "概率",
+        "closeDate": "预计成交",
+        "owner": "负责人",
+        "createdAt": "创建时间"
+      },
+      "stages": {
+        "leadConfirmation": "线索确认",
+        "initialContact": "初步接触",
+        "requirementConfirmation": "需求确认",
+        "proposalQuotation": "方案报价",
+        "negotiationApproval": "谈判审批",
+        "closedWon": "赢单",
+        "closedLost": "输单"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "工作台",
+    "viewToday": "我的今日",
+    "viewManager": "经理视图",
+    "viewFinance": "财务视图",
+    "metrics": {
+      "todayLeads": "今日线索",
+      "conversionRate": "转化率",
+      "pendingFollowUps": "待跟进",
+      "closedAmount": "成交金额"
+    },
+    "sections": {
+      "todos": "待办事项",
+      "funnel": "销售漏斗",
+      "performance": "业绩排行"
+    }
+  },
+  "ai": {
+    "customerSummary": {
+      "title": "AI 客户概览",
+      "refresh": "刷新",
+      "generating": "正在生成摘要...",
+      "sections": {
+        "highlights": "关键亮点",
+        "risks": "风险因素",
+        "opportunities": "机会点",
+        "actions": "建议行动"
+      }
+    },
+    "interactionAnalysis": {
+      "title": "交互分析",
+      "sentimentScore": "情感分数",
+      "keyTopics": "关键话题",
+      "frequency": "沟通频率",
+      "noData": "暂无近期交互"
+    },
+    "relationshipChange": {
+      "title": "关系变化",
+      "healthScore": "关系健康度",
+      "changeIndicators": "变化指标",
+      "alertTimeline": "预警时间线"
+    },
+    "smartSuggestions": {
+      "title": "智能建议",
+      "priority": {
+        "P0": "紧急",
+        "P1": "重要",
+        "P2": "一般"
+      },
+      "impact": "预期影响",
+      "takeAction": "立即执行"
+    },
+    "riskAlert": {
+      "title": "风险预警",
+      "level": {
+        "high": "高风险",
+        "medium": "中风险",
+        "low": "低风险"
+      },
+      "suggestedAction": "建议行动"
+    },
+    "contentGenerator": {
+      "title": "AI 内容生成",
+      "selectScenario": "选择场景",
+      "scenarios": {
+        "followUp": "跟进邮件",
+        "meetingRequest": "会议邀请",
+        "thankYou": "感谢邮件",
+        "proposal": "方案邮件"
+      },
+      "generate": "生成",
+      "copy": "复制",
+      "edit": "编辑",
+      "regenerate": "重新生成",
+      "generating": "正在生成内容..."
+    }
+  },
+  "format": {
+    "date": "YYYY年MM月DD日",
+    "dateTime": "YYYY年MM月DD日 HH:mm",
+    "currency": "¥{{amount}}"
+  }
+}

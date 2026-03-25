@@ -39,13 +39,13 @@ const { Text } = Typography;
 
 /** Get industry options with translation */
 const getIndustryOptions = (t: Function) => [
-  { label: t('customerForm.industryOptions.internet'), value: '互联网/软件/IT 服务' },
+  { label: t('customerForm.industryOptions.internet'), value: '互联�?软件/IT 服务' },
   { label: t('customerForm.industryOptions.manufacturing'), value: '制造业' },
-  { label: t('customerForm.industryOptions.finance'), value: '金融业' },
-  { label: t('customerForm.industryOptions.retail'), value: '零售业' },
+  { label: t('customerForm.industryOptions.finance'), value: '金融�? },
+  { label: t('customerForm.industryOptions.retail'), value: '零售�? },
   { label: t('customerForm.industryOptions.healthcare'), value: '医疗健康' },
   { label: t('customerForm.industryOptions.education'), value: '教育培训' },
-  { label: t('customerForm.industryOptions.realEstate'), value: '房地产' },
+  { label: t('customerForm.industryOptions.realEstate'), value: '房地�? },
   { label: t('customerForm.industryOptions.energy'), value: '能源/化工' },
   { label: t('customerForm.industryOptions.logistics'), value: '物流/运输' },
   { label: t('customerForm.industryOptions.other'), value: '其他' },
@@ -75,7 +75,7 @@ const levelColorMap: Record<CustomerLevel, string> = {
   'D': colors.text.tertiary,
 };
 
-/** 客户状态标签颜色映射 */
+/** 客户状态标签颜色映�?*/
 const statusColorMap: Record<CustomerStatus, string> = {
   '潜在': 'default',
   '意向': 'processing',
@@ -138,7 +138,7 @@ export const CustomerList: React.FC = () => {
     loadCustomerList();
   }, [page, pageSize, filters]);
 
-  /** 处理筛选变化 */
+  /** 处理筛选变�?*/
   const handleFilterChange = (values: Record<string, any>) => {
     setFilters(values);
     setPage(1);
@@ -345,7 +345,7 @@ export const CustomerList: React.FC = () => {
       options: [
         { label: t('lead.source.campaign'), value: '市场活动' },
         { label: t('lead.source.website'), value: '官网' },
-        { label: t('lead.source.referral'), value: '转介绍' },
+        { label: t('lead.source.referral'), value: '转介�? },
         { label: t('lead.source.coldCall'), value: '陌拜' },
         { label: t('lead.source.advertisement'), value: '广告' },
         { label: t('lead.source.other'), value: '其他' },
@@ -576,7 +576,7 @@ export const CustomerList: React.FC = () => {
             <Input placeholder="Enter customer name" />
           </Form.Item>
           <Form.Item name="industry" label="Industry" rules={[{ required: true, message: 'Please select industry' }]}>
-            <Select placeholder="Select industry" options={industryOptions} />
+            <Select placeholder="Select industry" options={getIndustryOptions(t)} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
             <Select placeholder="Select company size">
@@ -599,7 +599,7 @@ export const CustomerList: React.FC = () => {
             <Select placeholder="Select source">
               <Select.Option value="市场活动">Marketing Event</Select.Option>
               <Select.Option value="官网">Website</Select.Option>
-              <Select.Option value="转介绍">Referral</Select.Option>
+              <Select.Option value="转介�?>Referral</Select.Option>
               <Select.Option value="陌拜">Cold Call</Select.Option>
               <Select.Option value="广告">Advertisement</Select.Option>
               <Select.Option value="其他">Other</Select.Option>
@@ -640,7 +640,7 @@ export const CustomerList: React.FC = () => {
             <Input placeholder="Enter customer name" />
           </Form.Item>
           <Form.Item name="industry" label="Industry" rules={[{ required: true, message: 'Please select industry' }]}>
-            <Select placeholder="Select industry" options={industryOptions} />
+            <Select placeholder="Select industry" options={getIndustryOptions(t)} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
             <Select placeholder="Select company size">

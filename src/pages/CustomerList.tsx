@@ -103,6 +103,16 @@ export const CustomerList: React.FC = () => {
   const [form] = Form.useForm();
   const [savedFilters, setSavedFilters] = useState<{ name: string; filters: Record<string, any> }[]>([]);
   const [columnSettingsVisible, setColumnSettingsVisible] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>({
+    name: true,
+    industry: true,
+    companySize: true,
+    source: true,
+    level: true,
+    status: true,
+    ownerName: true,
+    createdAt: true,
+  });
 
   /** 加载客户列表 */
   const loadCustomerList = () => {
@@ -240,9 +250,39 @@ export const CustomerList: React.FC = () => {
       message.warning('No filters to save');
       return;
     }
-    const name = `Filter ${savedFilters.length + 1}`;
-    setSavedFilters([...savedFilters, { name, filters }]);
-    message.success('Filter saved successfully');
+    Modal.prompt({
+      title: 'Save Filter',
+      content: 'Enter a name for this filter:',
+      placeholder: 'e.g., High Priority Customers',
+      onOk: (name) => {
+        const filterName = name || `Filter ${savedFilters.length + 1}`;
+        setSavedFilters([...savedFilters, { name: filterName, filters }]);
+        message.success(`Filter "${filterName}" saved`);
+      },
+    });
+  };
+
+  /** Toggle column visibility */
+  const handleToggleColumn = (columnKey: string) => {
+    setVisibleColumns(prev => ({
+      ...prev,
+      [columnKey]: !prev[columnKey],
+    }));
+  };
+
+  /** Reset columns to default */
+  const handleResetColumns = () => {
+    setVisibleColumns({
+      name: true,
+      industry: true,
+      companySize: true,
+      source: true,
+      level: true,
+      status: true,
+      ownerName: true,
+      createdAt: true,
+    });
+    message.success('Columns reset to default');
   };
 
   /** Remove a filter tag */
@@ -338,6 +378,7 @@ export const CustomerList: React.FC = () => {
       key: 'name',
       width: 180,
       fixed: 'left',
+      hidden: !visibleColumns.name,
       render: (text, record) => (
         <a onClick={() => handleViewDetail(record.id)}>{text}</a>
       ),
@@ -348,24 +389,28 @@ export const CustomerList: React.FC = () => {
       key: 'industry',
       width: 130,
       ellipsis: true,
+      hidden: !visibleColumns.industry,
     },
     {
       title: t('customer.list.columns.companySize'),
       dataIndex: 'companySize',
       key: 'companySize',
       width: 100,
+      hidden: !visibleColumns.companySize,
     },
     {
       title: t('customer.list.columns.source'),
       dataIndex: 'source',
       key: 'source',
       width: 90,
+      hidden: !visibleColumns.source,
     },
     {
       title: t('customer.list.columns.level'),
       dataIndex: 'level',
       key: 'level',
       width: 70,
+      hidden: !visibleColumns.level,
       render: (level: CustomerLevel) => (
         <Tag color={levelColorMap[level]} style={{ margin: 0 }}>{level}</Tag>
       ),
@@ -375,6 +420,7 @@ export const CustomerList: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 80,
+      hidden: !visibleColumns.status,
       render: (status: CustomerStatus) => (
         <Tag color={statusColorMap[status]} style={{ margin: 0 }}>{status}</Tag>
       ),
@@ -384,12 +430,14 @@ export const CustomerList: React.FC = () => {
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 90,
+      hidden: !visibleColumns.ownerName,
     },
     {
       title: t('customer.list.columns.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 140,
+      hidden: !visibleColumns.createdAt,
       sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
     {
@@ -639,6 +687,45 @@ export const CustomerList: React.FC = () => {
             <Input.TextArea rows={2} placeholder="Enter address" />
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* Column settings modal */}
+      <Modal
+        title="Column Settings"
+        open={columnSettingsVisible}
+        onCancel={() => setColumnSettingsVisible(false)}
+        footer={
+          <Space>
+            <Button onClick={handleResetColumns}>Reset to Default</Button>
+            <Button onClick={() => setColumnSettingsVisible(false)}>Close</Button>
+          </Space>
+        }
+      >
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          {Object.entries(visibleColumns).map(([key, visible]) => (
+            <div
+              key={key}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 12px',
+                background: visible ? colors.primary + '10' : 'transparent',
+                borderRadius: 6,
+                cursor: 'pointer',
+              }}
+              onClick={() => handleToggleColumn(key)}
+            >
+              <input
+                type="checkbox"
+                checked={visible}
+                onChange={() => handleToggleColumn(key)}
+                style={{ cursor: 'pointer' }}
+              />
+              <span>{key}</span>
+            </div>
+          ))}
+        </div>
       </Modal>
     </div>
   );

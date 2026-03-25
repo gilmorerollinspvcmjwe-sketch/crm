@@ -151,6 +151,46 @@ export const CustomerDetail: React.FC = () => {
     });
   };
 
+  /** New deal */
+  const handleNewDeal = () => {
+    if (customer) {
+      navigate(`/opportunity/new?customerId=${customer.id}&customerName=${encodeURIComponent(customer.name)}`);
+    }
+  };
+
+  /** New contact */
+  const handleNewContact = () => {
+    if (customer) {
+      navigate(`/contact/new?customerId=${customer.id}&customerName=${encodeURIComponent(customer.name)}`);
+    }
+  };
+
+  /** New follow-up */
+  const handleNewFollowUp = () => {
+    if (customer) {
+      navigate(`/activity/new?customerId=${customer.id}&customerName=${encodeURIComponent(customer.name)}`);
+    }
+  };
+
+  /** Return to pool */
+  const handleReturnToPool = () => {
+    Modal.confirm({
+      title: t('customer.detail.actions.returnToPool'),
+      content: `Are you sure you want to return "${customer?.name}" to the public pool?`,
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: () => {
+        message.success('Customer returned to pool');
+        navigate('/customer/list');
+      },
+    });
+  };
+
+  /** Export customer */
+  const handleExport = () => {
+    message.info('Export functionality coming soon');
+  };
+
   /** Delete customer */
   const handleDelete = () => {
     Modal.confirm({
@@ -188,12 +228,12 @@ export const CustomerDetail: React.FC = () => {
     { key: 'assign', icon: <UserSwitchOutlined />, label: t('customer.detail.actions.assign'), onClick: handleAssign },
     { key: 'delete', icon: <DeleteOutlined />, label: t('customer.detail.actions.delete'), onClick: handleDelete, danger: true },
     { divider: true },
-    { key: 'newDeal', icon: <BulbOutlined />, label: t('customer.detail.actions.newDeal') },
-    { key: 'newContact', icon: <TeamOutlined />, label: t('customer.detail.actions.newContact') },
-    { key: 'followUp', icon: <ClockCircleOutlined />, label: t('customer.detail.actions.followUp') },
+    { key: 'newDeal', icon: <BulbOutlined />, label: t('customer.detail.actions.newDeal'), onClick: handleNewDeal },
+    { key: 'newContact', icon: <TeamOutlined />, label: t('customer.detail.actions.newContact'), onClick: handleNewContact },
+    { key: 'followUp', icon: <ClockCircleOutlined />, label: t('customer.detail.actions.followUp'), onClick: handleNewFollowUp },
     { divider: true },
-    { key: 'returnToPool', icon: <CloudUploadOutlined />, label: t('customer.detail.actions.returnToPool') },
-    { key: 'export', icon: <ExportOutlined />, label: t('customer.detail.actions.export') },
+    { key: 'returnToPool', icon: <CloudUploadOutlined />, label: t('customer.detail.actions.returnToPool'), onClick: handleReturnToPool },
+    { key: 'export', icon: <ExportOutlined />, label: t('customer.detail.actions.export'), onClick: handleExport },
   ];
 
   /** Related deals mock data */

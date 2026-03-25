@@ -42,12 +42,17 @@ const levelColorMap: Record<CustomerLevel, string> = {
 };
 
 /** 客户状态标签颜色映射 */
-const statusColorMap: Record<CustomerStatus, string> = {
+const statusColorMap: Record<string, string> = {
   '潜在': 'default',
   '意向': 'processing',
   '成交': 'success',
   '流失': 'error',
   '冻结': 'warning',
+  'prospect': 'default',
+  'interested': 'processing',
+  'closed': 'success',
+  'churned': 'error',
+  'frozen': 'warning',
 };
 
 /**
@@ -135,7 +140,9 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
       key: 'level',
       width: 80,
       render: (level: CustomerLevel) => (
-        <Tag color={levelColorMap[level]}>{level}</Tag>
+        <Tag color={levelColorMap[level]}>
+          {t(`customer.list.levelOptions.${level}`, { defaultValue: level })}
+        </Tag>
       ),
     },
     {
@@ -144,7 +151,9 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
       key: 'status',
       width: 80,
       render: (status: CustomerStatus) => (
-        <Tag color={statusColorMap[status]}>{status}</Tag>
+        <Tag color={statusColorMap[status] || 'default'}>
+          {t(`customer.list.statusOptions.${status}`, { defaultValue: status })}
+        </Tag>
       ),
     },
     {

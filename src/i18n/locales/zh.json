@@ -1662,7 +1662,12 @@
       "owner": "负责人",
       "position": "职位",
       "viewDetail": "查看详情",
-      "wechat": "微信"
+      "wechat": "微信",
+      "decisionRole_decision_maker": "决策者",
+      "decisionRole_influencer": "影响者",
+      "decisionRole_user": "使用者",
+      "decisionRole_gatekeeper": "把关者",
+      "decisionRole_other": "其他"
     },
     "filter": {
       "customerName": "客户名称",
@@ -2036,7 +2041,26 @@
     "updateSuccess": "更新客户成功",
     "createSuccess": "创建客户成功",
     "updateFailed": "更新客户失败",
-    "createFailed": "创建客户失败"
+    "createFailed": "创建客户失败",
+    "industryOptions": {
+      "internet": "互联网/软件/IT 服务",
+      "manufacturing": "制造业",
+      "finance": "金融业",
+      "retail": "零售业",
+      "healthcare": "医疗健康",
+      "education": "教育培训",
+      "realEstate": "房地产",
+      "energy": "能源/化工",
+      "logistics": "物流/运输",
+      "other": "其他"
+    },
+    "companySizeOptions": {
+      "micro": "微型 (1-20 人)",
+      "small": "小型 (21-100 人)",
+      "medium": "中型 (101-500 人)",
+      "large": "大型 (501-2000 人)",
+      "xlarge": "超大型 (2000 人以上)"
+    }
   },
   "customerTable": {
     "name": "客户名称",

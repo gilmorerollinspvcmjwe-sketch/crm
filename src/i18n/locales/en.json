@@ -1659,7 +1659,12 @@
       "owner": "Owner",
       "position": "Position",
       "viewDetail": "View Detail",
-      "wechat": "WeChat"
+      "wechat": "WeChat",
+      "decisionRole_decision_maker": "Decision Maker",
+      "decisionRole_influencer": "Influencer",
+      "decisionRole_user": "User",
+      "decisionRole_gatekeeper": "Gatekeeper",
+      "decisionRole_other": "Other"
     },
     "filter": {
       "customerName": "Customer Name",
@@ -2033,7 +2038,26 @@
     "updateSuccess": "Customer updated successfully",
     "createSuccess": "Customer created successfully",
     "updateFailed": "Failed to update customer",
-    "createFailed": "Failed to create customer"
+    "createFailed": "Failed to create customer",
+    "industryOptions": {
+      "internet": "Internet/Software/IT Services",
+      "manufacturing": "Manufacturing",
+      "finance": "Finance",
+      "retail": "Retail",
+      "healthcare": "Healthcare",
+      "education": "Education",
+      "realEstate": "Real Estate",
+      "energy": "Energy/Chemical",
+      "logistics": "Logistics/Transportation",
+      "other": "Other"
+    },
+    "companySizeOptions": {
+      "micro": "Micro (1-20)",
+      "small": "Small (21-100)",
+      "medium": "Medium (101-500)",
+      "large": "Large (501-2000)",
+      "xlarge": "X-Large (2000+)"
+    }
   },
   "customerTable": {
     "name": "Customer Name",

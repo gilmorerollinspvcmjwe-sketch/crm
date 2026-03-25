@@ -30,19 +30,27 @@ interface ContactTableProps {
 }
 
 /** 性别标签颜色映射 */
-const genderColorMap: Record<Gender, string> = {
+const genderColorMap: Record<string, string> = {
   '男': 'blue',
   '女': 'pink',
   '未知': 'default',
+  'male': 'blue',
+  'female': 'pink',
+  'unknown': 'default',
 };
 
 /** 决策角色标签颜色映射 */
-const roleColorMap: Record<DecisionRole, string> = {
+const roleColorMap: Record<string, string> = {
   '决策者': 'red',
   '影响者': 'orange',
   '使用者': 'green',
   '把关者': 'purple',
   '其他': 'default',
+  'decision_maker': 'red',
+  'influencer': 'orange',
+  'user': 'green',
+  'gatekeeper': 'purple',
+  'other': 'default',
 };
 
 /**
@@ -68,7 +76,9 @@ export const ContactTable: React.FC<ContactTableProps> = ({
       render: (text, record) => (
         <Space>
           <UserOutlined />
-          <Tag color={genderColorMap[record.gender || '未知']}>{text}</Tag>
+          <Tag color={genderColorMap[record.gender || '未知']}>
+            {text}
+          </Tag>
         </Space>
       ),
     },
@@ -96,9 +106,20 @@ export const ContactTable: React.FC<ContactTableProps> = ({
       dataIndex: 'decisionRole',
       key: 'decisionRole',
       width: 100,
-      render: (role?: DecisionRole) => (
-        role ? <Tag color={roleColorMap[role]}>{role}</Tag> : '-'
-      ),
+      render: (role?: DecisionRole) => {
+        const roleKeyMap: Record<string, string> = {
+          '决策者': 'decision_maker',
+          '影响者': 'influencer',
+          '使用者': 'user',
+          '把关者': 'gatekeeper',
+          '其他': 'other',
+        };
+        return role ? (
+          <Tag color={roleColorMap[role]}>
+            {t(`contact.table.decisionRole_${roleKeyMap[role] || role}`, { defaultValue: role })}
+          </Tag>
+        ) : '-';
+      },
     },
     {
       title: t('contact.table.customerName'),

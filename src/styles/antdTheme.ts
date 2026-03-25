@@ -158,9 +158,9 @@ export const antdTheme: ThemeConfig = {
       iconMarginInlineEnd: 8,
       groupTitleFontSize: 11,
       groupTitleColor: colors.text.tertiary,
-      colorItemText: colors.text.primary,
-      colorItemTextHover: colors.text.primary,
-      colorItemTextSelected: colors.primary,
+      itemColor: colors.text.primary,
+      itemHoverColor: colors.text.primary,
+      itemSelectedColor: colors.primary,
     },
     
     // 标签页配置

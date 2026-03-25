@@ -16,43 +16,43 @@ const { TextArea } = Input;
 
 /** 行业选项 */
 const industryOptions = [
-  { label: '互联网/软件/IT 服务', value: '互联网/软件/IT 服务' },
-  { label: '制造业', value: '制造业' },
-  { label: '金融业', value: '金融业' },
-  { label: '零售业', value: '零售业' },
-  { label: '医疗健康', value: '医疗健康' },
-  { label: '教育培训', value: '教育培训' },
-  { label: '房地产', value: '房地产' },
-  { label: '能源/化工', value: '能源/化工' },
-  { label: '物流/运输', value: '物流/运输' },
-  { label: '其他', value: '其他' },
+  { label: 'customerForm.industryOptions.internet', value: '互联网/软件/IT 服务' },
+  { label: 'customerForm.industryOptions.manufacturing', value: '制造业' },
+  { label: 'customerForm.industryOptions.finance', value: '金融业' },
+  { label: 'customerForm.industryOptions.retail', value: '零售业' },
+  { label: 'customerForm.industryOptions.healthcare', value: '医疗健康' },
+  { label: 'customerForm.industryOptions.education', value: '教育培训' },
+  { label: 'customerForm.industryOptions.realEstate', value: '房地产' },
+  { label: 'customerForm.industryOptions.energy', value: '能源/化工' },
+  { label: 'customerForm.industryOptions.logistics', value: '物流/运输' },
+  { label: 'customerForm.industryOptions.other', value: '其他' },
 ];
 
 /** 企业规模选项 */
 const companySizeOptions = [
-  { label: '微型 (1-20 人)', value: '微型' },
-  { label: '小型 (21-100 人)', value: '小型' },
-  { label: '中型 (101-500 人)', value: '中型' },
-  { label: '大型 (501-2000 人)', value: '大型' },
-  { label: '超大型 (2000 人以上)', value: '超大型' },
+  { label: 'customerForm.companySizeOptions.micro', value: '微型' },
+  { label: 'customerForm.companySizeOptions.small', value: '小型' },
+  { label: 'customerForm.companySizeOptions.medium', value: '中型' },
+  { label: 'customerForm.companySizeOptions.large', value: '大型' },
+  { label: 'customerForm.companySizeOptions.xlarge', value: '超大型' },
 ];
 
 /** 客户等级选项 */
 const levelOptions = [
-  { label: 'A - 重点客户', value: 'A' },
-  { label: 'B - 普通客户', value: 'B' },
-  { label: 'C - 一般客户', value: 'C' },
-  { label: 'D - 潜在客户', value: 'D' },
+  { label: 'customer.list.levelOptions.A', value: 'A' },
+  { label: 'customer.list.levelOptions.B', value: 'B' },
+  { label: 'customer.list.levelOptions.C', value: 'C' },
+  { label: 'customer.list.levelOptions.D', value: 'D' },
 ];
 
 /** 客户来源选项 */
 const sourceOptions = [
-  { label: '市场活动', value: '市场活动' },
-  { label: '官网', value: '官网' },
-  { label: '转介绍', value: '转介绍' },
-  { label: '陌拜', value: '陌拜' },
-  { label: '广告', value: '广告' },
-  { label: '其他', value: '其他' },
+  { label: 'lead.source.campaign', value: '市场活动' },
+  { label: 'lead.source.website', value: '官网' },
+  { label: 'lead.source.referral', value: '转介绍' },
+  { label: 'lead.source.coldCall', value: '陌拜' },
+  { label: 'lead.source.advertisement', value: '广告' },
+  { label: 'lead.source.other', value: '其他' },
 ];
 
 interface CustomerFormProps {
@@ -143,19 +143,35 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
         label={t('customerForm.industry')}
         rules={[{ required: true, message: t('customerForm.industryRequired') }]}
       >
-        <Select placeholder={t('customerForm.industryPlaceholder')} options={industryOptions} />
+        <Select placeholder={t('customerForm.industryPlaceholder')}>
+          {industryOptions.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>{t(opt.label)}</Select.Option>
+          ))}
+        </Select>
       </Form.Item>
 
       <Form.Item name="companySize" label={t('customerForm.companySize')}>
-        <Select placeholder={t('customerForm.companySizePlaceholder')} options={companySizeOptions} />
+        <Select placeholder={t('customerForm.companySizePlaceholder')}>
+          {companySizeOptions.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>{t(opt.label)}</Select.Option>
+          ))}
+        </Select>
       </Form.Item>
 
       <Form.Item name="level" label={t('customerForm.level')}>
-        <Radio.Group options={levelOptions} />
+        <Radio.Group>
+          {levelOptions.map(opt => (
+            <Radio key={opt.value} value={opt.value}>{t(opt.label)}</Radio>
+          ))}
+        </Radio.Group>
       </Form.Item>
 
       <Form.Item name="source" label={t('customerForm.source')}>
-        <Select placeholder={t('customerForm.sourcePlaceholder')} options={sourceOptions} />
+        <Select placeholder={t('customerForm.sourcePlaceholder')}>
+          {sourceOptions.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>{t(opt.label)}</Select.Option>
+          ))}
+        </Select>
       </Form.Item>
 
       <Form.Item name="address" label={t('customerForm.address')}>

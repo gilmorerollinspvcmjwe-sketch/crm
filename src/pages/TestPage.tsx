@@ -21,7 +21,7 @@ const TestPage: React.FC = () => {
   ];
 
   return (
-    <Card title={t('components.testPage.title')} bordered={false}>
+    <Card title={t('components.testPage.title')} variant="borderless">
       <p>{t('components.testPage.renderOk')}</p>
       <Button type="primary" style={{ marginBottom: 16 }}>{t('components.testPage.testButton')}</Button>
       <Table columns={columns} dataSource={data} />

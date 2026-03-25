@@ -407,7 +407,8 @@ export const OpportunityList: React.FC = () => {
         okText={t('opportunity.form.confirm')}
         cancelText={t('opportunity.form.cancel')}
         width={600}
-        destroyOnClose
+        destroyOnHidden
+        forceRender
       >
         <Form
           form={form}
@@ -461,7 +462,8 @@ export const OpportunityList: React.FC = () => {
         okText={t('opportunity.form.confirm')}
         cancelText={t('opportunity.form.cancel')}
         width={600}
-        destroyOnClose
+        destroyOnHidden
+        forceRender
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
           <Form.Item name="name" label={t('opportunity.form.name')} rules={[{ required: true }]}>

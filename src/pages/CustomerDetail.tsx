@@ -708,7 +708,8 @@ export const CustomerDetail: React.FC = () => {
         okText={t('common.save')}
         cancelText={t('common.cancel')}
         width={600}
-        destroyOnClose
+        destroyOnHidden
+        forceRender
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
           <Form.Item name="name" label="Customer Name" rules={[{ required: true }]}>
@@ -741,10 +742,10 @@ export const CustomerDetail: React.FC = () => {
           </Form.Item>
           <Form.Item name="status" label="Customer Status">
             <Select placeholder="Select status">
-              <Select.Option value="意向">Interested</Select.Option>
-              <Select.Option value="谈判">Negotiating</Select.Option>
-              <Select.Option value="成交">Closed</Select.Option>
-              <Select.Option value="流失">Churned</Select.Option>
+              <Select.Option value="意向">{t('customer.list.statusOptions.interested')}</Select.Option>
+              <Select.Option value="谈判">{t('customer.list.statusOptions.negotiating')}</Select.Option>
+              <Select.Option value="成交">{t('customer.list.statusOptions.closed')}</Select.Option>
+              <Select.Option value="流失">{t('customer.list.statusOptions.churned')}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item name="phone" label="Phone">

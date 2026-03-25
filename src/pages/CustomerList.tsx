@@ -37,34 +37,34 @@ import type { ColumnsType } from 'antd/es/table';
 
 const { Text } = Typography;
 
-/** 行业选项 */
-const industryOptions = [
-  { label: '互联网/软件/IT 服务', value: '互联网/软件/IT 服务' },
-  { label: '制造业', value: '制造业' },
-  { label: '金融业', value: '金融业' },
-  { label: '零售业', value: '零售业' },
-  { label: '医疗健康', value: '医疗健康' },
-  { label: '教育培训', value: '教育培训' },
-  { label: '房地产', value: '房地产' },
-  { label: '能源/化工', value: '能源/化工' },
-  { label: '物流/运输', value: '物流/运输' },
-  { label: '其他', value: '其他' },
+/** Get industry options with translation */
+const getIndustryOptions = (t: Function) => [
+  { label: t('customerForm.industryOptions.internet'), value: '互联网/软件/IT 服务' },
+  { label: t('customerForm.industryOptions.manufacturing'), value: '制造业' },
+  { label: t('customerForm.industryOptions.finance'), value: '金融业' },
+  { label: t('customerForm.industryOptions.retail'), value: '零售业' },
+  { label: t('customerForm.industryOptions.healthcare'), value: '医疗健康' },
+  { label: t('customerForm.industryOptions.education'), value: '教育培训' },
+  { label: t('customerForm.industryOptions.realEstate'), value: '房地产' },
+  { label: t('customerForm.industryOptions.energy'), value: '能源/化工' },
+  { label: t('customerForm.industryOptions.logistics'), value: '物流/运输' },
+  { label: t('customerForm.industryOptions.other'), value: '其他' },
 ];
 
-/** 等级选项 */
-const levelOptions = [
-  { label: 'A - 重点客户', value: 'A' },
-  { label: 'B - 普通客户', value: 'B' },
-  { label: 'C - 一般客户', value: 'C' },
-  { label: 'D - 潜在客户', value: 'D' },
+/** Get level options with translation */
+const getLevelOptions = (t: Function) => [
+  { label: t('customer.list.levelOptions.A'), value: 'A' },
+  { label: t('customer.list.levelOptions.B'), value: 'B' },
+  { label: t('customer.list.levelOptions.C'), value: 'C' },
+  { label: t('customer.list.levelOptions.D'), value: 'D' },
 ];
 
-/** 状态选项 */
-const statusOptions = [
-  { label: '意向', value: '意向' },
-  { label: '谈判', value: '谈判' },
-  { label: '成交', value: '成交' },
-  { label: '流失', value: '流失' },
+/** Get status options with translation */
+const getStatusOptions = (t: Function) => [
+  { label: t('customer.list.statusOptions.interested'), value: '意向' },
+  { label: t('customer.list.statusOptions.negotiating'), value: '谈判' },
+  { label: t('customer.list.statusOptions.closed'), value: '成交' },
+  { label: t('customer.list.statusOptions.churned'), value: '流失' },
 ];
 
 /** 客户等级标签颜色映射 */
@@ -309,66 +309,49 @@ export const CustomerList: React.FC = () => {
   }, [filters]);
 
   /** Filter field configuration */
-  const filterFields: FilterItem[] = [
+  const filterFields: FilterItem[] = useMemo(() => [
     {
       name: 'name',
       label: t('customer.list.filters.name'),
       type: 'text',
-      placeholder: 'Enter customer name',
+      placeholder: t('searchFilter.inputPlaceholder', { label: t('customer.list.filters.name') }),
     },
     {
       name: 'industry',
       label: t('customer.list.filters.industry'),
       type: 'select',
-      placeholder: 'Select industry',
-      options: [
-        { label: 'Technology/Software/IT', value: '互联网/软件/IT 服务' },
-        { label: 'Manufacturing', value: '制造业' },
-        { label: 'Finance', value: '金融业' },
-        { label: 'Retail', value: '零售业' },
-        { label: 'Healthcare', value: '医疗健康' },
-        { label: 'Other', value: '其他' },
-      ],
+      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.industry') }),
+      options: getIndustryOptions(t),
     },
     {
       name: 'level',
       label: t('customer.list.filters.level'),
       type: 'select',
-      placeholder: 'Select level',
-      options: [
-        { label: 'A - Key Account', value: 'A' },
-        { label: 'B - Standard', value: 'B' },
-        { label: 'C - General', value: 'C' },
-        { label: 'D - Potential', value: 'D' },
-      ],
+      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.level') }),
+      options: getLevelOptions(t),
     },
     {
       name: 'status',
       label: t('customer.list.filters.status'),
       type: 'select',
-      placeholder: 'Select status',
-      options: [
-        { label: 'Interested', value: '意向' },
-        { label: 'Negotiating', value: '谈判' },
-        { label: 'Closed', value: '成交' },
-        { label: 'Churned', value: '流失' },
-      ],
+      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.status') }),
+      options: getStatusOptions(t),
     },
     {
       name: 'source',
       label: t('customer.list.filters.source'),
       type: 'select',
-      placeholder: 'Select source',
+      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.source') }),
       options: [
-        { label: 'Marketing Event', value: '市场活动' },
-        { label: 'Website', value: '官网' },
-        { label: 'Referral', value: '转介绍' },
-        { label: 'Cold Call', value: '陌拜' },
-        { label: 'Advertisement', value: '广告' },
-        { label: 'Other', value: '其他' },
+        { label: t('lead.source.campaign'), value: '市场活动' },
+        { label: t('lead.source.website'), value: '官网' },
+        { label: t('lead.source.referral'), value: '转介绍' },
+        { label: t('lead.source.coldCall'), value: '陌拜' },
+        { label: t('lead.source.advertisement'), value: '广告' },
+        { label: t('lead.source.other'), value: '其他' },
       ],
     },
-  ];
+  ], [t]);
 
   /** Table column configuration */
   const columns: ColumnsType<Customer> = [
@@ -422,7 +405,9 @@ export const CustomerList: React.FC = () => {
       width: 80,
       hidden: !visibleColumns.status,
       render: (status: CustomerStatus) => (
-        <Tag color={statusColorMap[status]} style={{ margin: 0 }}>{status}</Tag>
+        <Tag color={statusColorMap[status]} style={{ margin: 0 }}>
+          {t(`customer.list.statusOptions.${status}`, { defaultValue: status })}
+        </Tag>
       ),
     },
     {
@@ -512,7 +497,7 @@ export const CustomerList: React.FC = () => {
         </div>
         <Space>
           <Button icon={<SaveOutlined />} onClick={handleSaveFilter}>
-            Save Filter
+            {t('common.save')} {t('common.filter')}
           </Button>
           <Button icon={<SettingOutlined />} onClick={() => setColumnSettingsVisible(true)}>
             Columns
@@ -578,7 +563,8 @@ export const CustomerList: React.FC = () => {
         okText={t('common.save')}
         cancelText={t('common.cancel')}
         width={600}
-        destroyOnClose
+        destroyOnHidden
+        forceRender
       >
         <Form
           form={form}
@@ -646,7 +632,8 @@ export const CustomerList: React.FC = () => {
         okText={t('common.save')}
         cancelText={t('common.cancel')}
         width={600}
-        destroyOnClose
+        destroyOnHidden
+        forceRender
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
           <Form.Item name="name" label="Customer Name" rules={[{ required: true, message: 'Please enter customer name' }]}>

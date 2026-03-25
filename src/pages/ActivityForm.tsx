@@ -176,9 +176,9 @@ export const ActivityForm: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           >
             <Select placeholder={t('activity.form.relatedObjectSelectPlaceholder')} showSearch>
               {/* 这里应该根据 selectedType 动态加载选项 */}
-              <Option value="OPP20260312001">某某科技有限公司 CRM 系统采购项目</Option>
-              <Option value="CUST001">某某科技有限公司</Option>
-              <Option value="CONT001">张三</Option>
+              <Option value="OPP20260312001">{t('activity.form.relatedObjectMock1')}</Option>
+              <Option value="CUST001">{t('activity.form.relatedObjectMock2')}</Option>
+              <Option value="CONT001">{t('activity.form.relatedObjectMock3')}</Option>
             </Select>
           </Form.Item>
 

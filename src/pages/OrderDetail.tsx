@@ -353,7 +353,7 @@ export const OrderDetail: React.FC = () => {
             status={order.status === 'cancelled' ? 'error' : undefined}
             items={[
               { title: t('order.statusDraft'), description: order.createdAt },
-              { title: t('order.statusConfirmed'), description: order.status !== 'draft' ? '已完成' : '' },
+              { title: t('order.statusConfirmed'), description: order.status !== 'draft' ? t('common.completed') : '' },
               { title: t('order.statusProcessing'), description: '' },
               { title: t('order.statusShipped'), description: order.shippedAt },
               { title: t('order.statusDelivered'), description: order.deliveredAt },

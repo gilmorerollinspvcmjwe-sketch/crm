@@ -251,7 +251,7 @@ export const ContractDetail: React.FC = () => {
           <Descriptions.Item label={t('contract.detail.signingDate')}>{formatDate(contract.signingDate)}</Descriptions.Item>
           <Descriptions.Item label={t('contract.detail.effectiveDate')}>{formatDate(contract.effectiveDate)}</Descriptions.Item>
           <Descriptions.Item label={t('contract.detail.expirationDate')}>{contract.expirationDate ? formatDate(contract.expirationDate) : '-'}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.contractPeriod')}>{contract.contractPeriod ? `${contract.contractPeriod}个月` : '-'}</Descriptions.Item>
+          <Descriptions.Item label={t('contract.detail.contractPeriod')}>{contract.contractPeriod ? `${contract.contractPeriod}${t('common.unit.months')}` : '-'}</Descriptions.Item>
           <Descriptions.Item label={t('contract.detail.status')}>
             <Tag color={STATUS_COLORS[contract.status]}>{contract.status}</Tag>
           </Descriptions.Item>

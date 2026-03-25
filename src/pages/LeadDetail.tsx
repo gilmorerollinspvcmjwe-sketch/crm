@@ -107,7 +107,7 @@ export const LeadDetail: React.FC = () => {
     return (
       <Timeline
         items={followUpRecords.map((record) => ({
-          color: record.type === '电话' ? 'blue' : record.type === '拜访' ? 'green' : 'gray',
+          color: record.type === t('activity.type.phone') ? 'blue' : record.type === t('activity.type.visit') ? 'green' : 'gray',
           children: (
             <div>
               <Space>

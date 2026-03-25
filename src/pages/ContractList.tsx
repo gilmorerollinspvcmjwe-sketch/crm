@@ -337,8 +337,8 @@ export const ContractList: React.FC = () => {
         >
           <Form.Item name="approver" label={t('contract.list.approvalModal.approver')}>
             <Select placeholder={t('contract.list.approvalModal.approverPlaceholder')}>
-              <Select.Option value="1">张经理</Select.Option>
-              <Select.Option value="2">李总监</Select.Option>
+              <Select.Option value="1">{t('contract.list.approvalModal.approver1')}</Select.Option>
+              <Select.Option value="2">{t('contract.list.approvalModal.approver2')}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item name="remark" label={t('contract.list.approvalModal.remark')}>

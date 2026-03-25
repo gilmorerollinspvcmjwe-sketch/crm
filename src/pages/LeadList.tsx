@@ -211,7 +211,7 @@ export const LeadList: React.FC = () => {
 
   /** 导入线索 */
   const handleImport = () => {
-    message.info('导入线索功能待实现');
+    message.info(t('common.comingSoon'));
     // TODO: 实现导入功能
   };
 

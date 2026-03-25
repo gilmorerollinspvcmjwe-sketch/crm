@@ -34,7 +34,8 @@
       "minutes": "min",
       "seconds": "sec",
       "percent": "%",
-      "record": "record"
+      "record": "record",
+      "months": "months"
     },
     "messages": {
       "searchComplete": "Search completed",
@@ -77,7 +78,8 @@
     "description": "Description",
     "none": "None",
     "select": "Select",
-    "to": "To"
+    "to": "To",
+    "filter": "Filter"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -201,7 +203,13 @@
         "interested": "Interested",
         "negotiating": "Negotiating",
         "closed": "Closed",
-        "churned": "Churned"
+        "churned": "Churned",
+        "潜在": "Prospect",
+        "意向": "Interested",
+        "谈判": "Negotiating",
+        "成交": "Closed",
+        "流失": "Churned",
+        "冻结": "Frozen"
       }
     },
     "detail": {
@@ -1696,7 +1704,14 @@
       "remark": "Remark",
       "remarkPlaceholder": "Enter remark",
       "wechat": "WeChat",
-      "wechatPlaceholder": "Enter WeChat ID"
+      "wechatPlaceholder": "Enter WeChat ID",
+      "educationOptions": {
+        "highSchool": "High School or Below",
+        "college": "College",
+        "bachelor": "Bachelor",
+        "master": "Master",
+        "doctor": "Doctor"
+      }
     },
     "list": {
       "confirmDelete": "Confirm Delete",
@@ -1708,6 +1723,10 @@
       "editSuccess": "Updated successfully",
       "loadFailed": "Failed to load",
       "title": "Contact List"
+    },
+    "mock": {
+      "customer1": "Sample Customer 1",
+      "customer2": "Sample Customer 2"
     }
   },
   "lead": {
@@ -1949,6 +1968,9 @@
       "relatedObjectRequired": "Please select related object",
       "relatedObjectExtra": "Select the customer, contact, opportunity, or lead to associate",
       "relatedObjectSelectPlaceholder": "Please select object type first",
+      "relatedObjectMock1": "ABC Tech Co., Ltd. CRM System Procurement Project",
+      "relatedObjectMock2": "ABC Tech Co., Ltd.",
+      "relatedObjectMock3": "John Zhang",
       "activityTimeRequired": "Please select activity time",
       "resultPlaceholder": "Please select",
       "interestLevelPlaceholder": "Please select",
@@ -2182,7 +2204,9 @@
         "approver": "Approver",
         "approverPlaceholder": "Please select approver",
         "remark": "Approval Notes",
-        "remarkPlaceholder": "Please enter approval notes"
+        "remarkPlaceholder": "Please enter approval notes",
+        "approver1": "Manager Zhang",
+        "approver2": "Director Li"
       }
     },
     "detail": {
@@ -2367,6 +2391,8 @@
       "paymentProgress": "💰 Payment Progress",
       "records": "Payment Records",
       "noRecords": "No payment records",
+      "paymentAccount": "Payment Account",
+      "verifiedByName": "Verified By",
       "timeline": "📅 Payment Timeline",
       "planCreated": "Payment plan created",
       "paymentReceived": "Payment received",

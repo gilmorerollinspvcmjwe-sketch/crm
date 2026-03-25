@@ -236,8 +236,8 @@ export const ContactList: React.FC = () => {
           </Form.Item>
           <Form.Item name="customerId" label={t('contact.form.customer')}>
             <Select placeholder={t('contact.form.customerPlaceholder')}>
-              <Select.Option value="1">示例客户 1</Select.Option>
-              <Select.Option value="2">示例客户 2</Select.Option>
+              <Select.Option value="1">{t('contact.mock.customer1')}</Select.Option>
+              <Select.Option value="2">{t('contact.mock.customer2')}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item name="wechat" label={t('contact.form.wechat')}>
@@ -291,8 +291,8 @@ export const ContactList: React.FC = () => {
           </Form.Item>
           <Form.Item name="customerId" label={t('contact.form.customer')}>
             <Select placeholder={t('contact.form.customerPlaceholder')}>
-              <Select.Option value="1">示例客户 1</Select.Option>
-              <Select.Option value="2">示例客户 2</Select.Option>
+              <Select.Option value="1">{t('contact.mock.customer1')}</Select.Option>
+              <Select.Option value="2">{t('contact.mock.customer2')}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item name="wechat" label={t('contact.form.wechat')}>

@@ -169,7 +169,7 @@ export const PaymentDetail: React.FC = () => {
       )
     },
     {
-      title: '付款账户',
+      title: t('payment.detail.paymentAccount'),
       dataIndex: 'paymentAccount',
       key: 'paymentAccount',
       ellipsis: true
@@ -190,7 +190,7 @@ export const PaymentDetail: React.FC = () => {
       }
     },
     {
-      title: '核销人',
+      title: t('payment.detail.verifiedByName'),
       dataIndex: 'verifiedByName',
       key: 'verifiedByName',
       width: 100,

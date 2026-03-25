@@ -17,17 +17,17 @@ const { TextArea } = Input;
 
 /** 性别选项 */
 const genderOptions = [
-  { label: '先生', value: '先生' },
-  { label: '女士', value: '女士' },
+  { label: 'contact.form.male', value: '先生' },
+  { label: 'contact.form.female', value: '女士' },
 ];
 
 /** 学历选项 */
 const educationOptions = [
-  { label: '高中及以下', value: '高中及以下' },
-  { label: '大专', value: '大专' },
-  { label: '本科', value: '本科' },
-  { label: '硕士', value: '硕士' },
-  { label: '博士', value: '博士' },
+  { label: 'contact.form.educationOptions.highSchool', value: '高中及以下' },
+  { label: 'contact.form.educationOptions.college', value: '大专' },
+  { label: 'contact.form.educationOptions.bachelor', value: '本科' },
+  { label: 'contact.form.educationOptions.master', value: '硕士' },
+  { label: 'contact.form.educationOptions.doctor', value: '博士' },
 ];
 
 interface ContactFormProps {

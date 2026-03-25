@@ -34,7 +34,8 @@
       "minutes": "分钟",
       "seconds": "秒",
       "percent": "%",
-      "record": "条"
+      "record": "条",
+      "months": "个月"
     },
     "messages": {
       "searchComplete": "搜索完成",
@@ -77,7 +78,8 @@
     "description": "描述",
     "none": "无",
     "select": "选择",
-    "to": "至"
+    "to": "至",
+    "filter": "筛选"
   },
   "nav": {
     "dashboard": "仪表盘",
@@ -201,7 +203,13 @@
         "interested": "意向",
         "negotiating": "谈判",
         "closed": "成交",
-        "churned": "流失"
+        "churned": "流失",
+        "潜在": "潜在",
+        "意向": "意向",
+        "谈判": "谈判",
+        "成交": "成交",
+        "流失": "流失",
+        "冻结": "冻结"
       }
     },
     "detail": {
@@ -1699,7 +1707,14 @@
       "remark": "备注",
       "remarkPlaceholder": "请输入备注信息",
       "wechat": "微信",
-      "wechatPlaceholder": "请输入微信号"
+      "wechatPlaceholder": "请输入微信号",
+      "educationOptions": {
+        "highSchool": "高中及以下",
+        "college": "大专",
+        "bachelor": "本科",
+        "master": "硕士",
+        "doctor": "博士"
+      }
     },
     "list": {
       "confirmDelete": "确认删除",
@@ -1711,6 +1726,10 @@
       "editSuccess": "编辑成功",
       "loadFailed": "加载失败",
       "title": "联系人列表"
+    },
+    "mock": {
+      "customer1": "示例客户 1",
+      "customer2": "示例客户 2"
     }
   },
   "lead": {
@@ -1952,6 +1971,9 @@
       "relatedObjectRequired": "请选择跟进对象",
       "relatedObjectExtra": "选择要关联的客户、联系人、商机或线索",
       "relatedObjectSelectPlaceholder": "请先选择对象类型",
+      "relatedObjectMock1": "某某科技有限公司 CRM 系统采购项目",
+      "relatedObjectMock2": "某某科技有限公司",
+      "relatedObjectMock3": "张三",
       "activityTimeRequired": "请选择跟进时间",
       "resultPlaceholder": "请选择",
       "interestLevelPlaceholder": "请选择",
@@ -2185,7 +2207,9 @@
         "approver": "审批人",
         "approverPlaceholder": "请选择审批人",
         "remark": "审批说明",
-        "remarkPlaceholder": "请输入审批说明"
+        "remarkPlaceholder": "请输入审批说明",
+        "approver1": "张经理",
+        "approver2": "李总监"
       }
     },
     "detail": {
@@ -2370,6 +2394,8 @@
       "paymentProgress": "💰 回款进度",
       "records": "回款记录",
       "noRecords": "暂无回款记录",
+      "paymentAccount": "付款账户",
+      "verifiedByName": "核销人",
       "timeline": "📅 回款时间线",
       "planCreated": "回款计划创建",
       "paymentReceived": "回款到账",

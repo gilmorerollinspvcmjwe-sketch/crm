@@ -85,6 +85,10 @@ const PricebookForm = React.lazy(() => import('../components/Pricebook/Pricebook
 const CustomObjects = React.lazy(() => import('../pages/settings/CustomObjects'));
 const CreateCustomObject = React.lazy(() => import('../pages/settings/CreateCustomObject'));
 const ObjectConfig = React.lazy(() => import('../pages/settings/ObjectConfig'));
+// Workflow
+const WorkflowEditor = React.lazy(() => import('../pages/settings/WorkflowEditor'));
+const WorkflowList = React.lazy(() => import('../pages/settings/WorkflowList'));
+const WorkflowLogs = React.lazy(() => import('../pages/settings/WorkflowLogs'));
 // 对接 Demo
 const TicketList = React.lazy(() => import('../pages/tickets/TicketList'));
 const KnowledgeSearch = React.lazy(() => import('../pages/knowledge/KnowledgeSearch'));
@@ -400,6 +404,19 @@ const router = createBrowserRouter([
             path: 'custom-objects/:objectId/views',
             element: <Navigate to="/settings/custom-objects/:objectId?tab=views" replace />,
           },
+          // 工作流路由
+          {
+            path: 'workflow/new',
+            element: <Suspense fallback={<LoadingFallback />}><WorkflowEditor /></Suspense>,
+          },
+          {
+            path: 'workflow/:workflowId/edit',
+            element: <Suspense fallback={<LoadingFallback />}><WorkflowEditor /></Suspense>,
+          },
+          {
+            path: 'workflow/:workflowId/logs',
+            element: <Suspense fallback={<LoadingFallback />}><WorkflowLogs /></Suspense>,
+          },
           {
             path: 'page-builder/:objectId',
             element: <Navigate to="/settings/custom-objects/:objectId?tab=pageLayout" replace />,
@@ -490,6 +507,23 @@ const router = createBrowserRouter([
       {
         path: 'integration/callcenter',
         element: <Suspense fallback={<LoadingFallback />}><OutboundTasks /></Suspense>,
+      },
+      // 自动化模块（独立菜单）
+      {
+        path: 'automation/workflows',
+        element: <Suspense fallback={<LoadingFallback />}><WorkflowList /></Suspense>,
+      },
+      {
+        path: 'automation/workflows/new',
+        element: <Suspense fallback={<LoadingFallback />}><WorkflowEditor /></Suspense>,
+      },
+      {
+        path: 'automation/workflows/:workflowId/edit',
+        element: <Suspense fallback={<LoadingFallback />}><WorkflowEditor /></Suspense>,
+      },
+      {
+        path: 'automation/logs',
+        element: <Suspense fallback={<LoadingFallback />}><WorkflowLogs /></Suspense>,
       },
     ],
   },

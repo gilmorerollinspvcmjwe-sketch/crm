@@ -25,6 +25,7 @@ import {
   LayoutOutlined,
   EyeOutlined,
   DatabaseOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 import * as Icons from '@ant-design/icons';
 import { useCustomObjectsStore } from '../../store/customObjects';

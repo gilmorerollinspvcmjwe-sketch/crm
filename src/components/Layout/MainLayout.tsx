@@ -36,6 +36,8 @@ import {
   FormOutlined,
   AppstoreOutlined,
   LoginOutlined,
+  ThunderboltOutlined,
+  HistoryOutlined,
 } from '@ant-design/icons';
 import type { MenuProps, BreadcrumbProps } from 'antd';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -106,6 +108,10 @@ const getMenuItems = (t: (key: string) => string): MenuItem[] => [
     getItem(t('nav.predictiveAI'), '/ai/predictive'),
     getItem(t('nav.aiAgents'), '/ai/agents'),
   ]),
+  getItem(t('nav.automation'), 'automation', <ThunderboltOutlined />, [
+    getItem(t('nav.workflows'), '/automation/workflows'),
+    getItem(t('nav.executionLogs'), '/automation/logs'),
+  ]),
   getItem(t('nav.marketingAutomation'), 'marketing', <MailOutlined />, [
     getItem(t('nav.marketingCampaigns'), '/marketing/campaigns'),
     getItem(t('nav.emailTemplates'), '/marketing/email-templates'),
@@ -172,6 +178,9 @@ const getBreadcrumbNameMap = (t: (key: string) => string): Record<string, string
   '/ai/meeting-assistant': t('breadcrumb.aiMeetingAssistant'),
   '/ai/predictive': t('breadcrumb.aiPredictive'),
   '/ai/agents': t('breadcrumb.aiAgents'),
+  '/automation': t('breadcrumb.automation'),
+  '/automation/workflows': t('breadcrumb.automationWorkflows'),
+  '/automation/logs': t('breadcrumb.automationLogs'),
   '/marketing': t('breadcrumb.marketing'),
   '/marketing/campaigns': t('breadcrumb.marketingCampaigns'),
   '/marketing/email-templates': t('breadcrumb.marketingEmailTemplates'),
@@ -300,6 +309,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     if (path.startsWith('/ai/')) newOpenKeys = ['ai'];
     if (path.startsWith('/marketing/')) newOpenKeys = ['marketing'];
     if (path.startsWith('/integration/')) newOpenKeys = ['integration'];
+    if (path.startsWith('/automation/')) newOpenKeys = ['automation'];
     if (path.startsWith('/settings/')) newOpenKeys = ['settings'];
     setOpenKeys(newOpenKeys);
   }, [location.pathname]);

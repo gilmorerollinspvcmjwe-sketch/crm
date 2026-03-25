@@ -130,6 +130,9 @@
     "ticketSystem": "Ticket System",
     "knowledgeBase": "Knowledge Base",
     "callCenter": "Call Center",
+    "automation": "Automation",
+    "workflows": "Workflows",
+    "executionLogs": "Execution Logs",
     "systemSettings": "System Settings",
     "profile": "Profile",
     "changePassword": "Change Password",
@@ -4116,6 +4119,212 @@
     "managerRole": "Manager Role",
     "salesRole": "Sales Role",
     "supportRole": "Support Role"
+  },
+  "workflow": {
+    "title": "Automation Rules",
+    "create": "Create Workflow",
+    "untitled": "Untitled Workflow",
+    "noDescription": "No description",
+    "empty": "No workflows yet",
+    "searchPlaceholder": "Search workflows...",
+    "namePlaceholder": "Workflow name",
+    "nameRequired": "Workflow name is required",
+    "saveFirst": "Please save the workflow first",
+    "cannotDeleteTrigger": "Cannot delete trigger node",
+    
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "draft": "Draft"
+    },
+    
+    "stats": {
+      "total": "Total Workflows",
+      "active": "Active",
+      "inactive": "Inactive",
+      "draft": "Draft"
+    },
+    
+    "filters": {
+      "allStatus": "All Status",
+      "allTriggers": "All Triggers"
+    },
+    
+    "runCount": "Runs",
+    "successRate": "Success",
+    "lastRun": "Last Run",
+    
+    "createWorkflow": "Create Workflow",
+    "editWorkflow": "Edit Workflow",
+    "deleteWorkflow": "Delete Workflow",
+    "publish": "Publish",
+    "save": "Save",
+    
+    "nodeTypes": {
+      "trigger": "Trigger",
+      "condition": "Condition",
+      "action": "Action",
+      "delay": "Delay"
+    },
+    
+    "triggerNode": "Trigger",
+    "newAction": "New Action",
+    "newCondition": "New Condition",
+    "newDelay": "Wait",
+    
+    "addNode": "Add Node",
+    "nodeConfig": "Node Configuration",
+    "nodeName": "Node Name",
+    "nodeDescription": "Description",
+    "deleteNode": "Delete Node",
+    
+    "triggerType": "Trigger Type",
+    "inactivityDays": "Inactivity Days",
+    "cronExpression": "Schedule",
+    "dateField": "Date Field",
+    "offsetDays": "Days Before/After",
+    
+    "schedule": {
+      "daily9": "Daily at 9:00 AM",
+      "weekly": "Weekly on Monday",
+      "monthly": "Monthly on 1st"
+    },
+    
+    "dateFields": {
+      "endDate": "End Date",
+      "birthday": "Birthday",
+      "createdAt": "Created Date"
+    },
+    
+    "fields": {
+      "status": "Status",
+      "level": "Level",
+      "amount": "Amount",
+      "stage": "Stage",
+      "tags": "Tags"
+    },
+    
+    "condition": {
+      "field": "Field",
+      "operator": "Operator",
+      "value": "Value"
+    },
+    
+    "actionType": "Action Type",
+    
+    "updateField": {
+      "field": "Target Field",
+      "value": "Set Value"
+    },
+    
+    "notification": {
+      "title": "Notification Title",
+      "content": "Content",
+      "priority": "Priority"
+    },
+    
+    "email": {
+      "subject": "Email Subject",
+      "body": "Email Body"
+    },
+    
+    "task": {
+      "title": "Task Title",
+      "priority": "Task Priority"
+    },
+    
+    "priority": {
+      "low": "Low",
+      "normal": "Normal",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    
+    "delay": {
+      "type": "Delay Type",
+      "minutes": "Minutes",
+      "hours": "Hours",
+      "days": "Days",
+      "value": "Duration"
+    },
+    
+    "actions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    
+    "messages": {
+      "activated": "Workflow activated",
+      "deactivated": "Workflow deactivated",
+      "published": "Workflow published successfully"
+    },
+    
+    "deleteConfirm": {
+      "title": "Delete Workflow",
+      "content": "Are you sure you want to delete this workflow? This action cannot be undone."
+    },
+    
+    "publishConfirm": {
+      "title": "Publish Workflow",
+      "content": "Are you sure you want to publish this workflow? It will start running automatically when triggered."
+    },
+    
+    "logs": {
+      "title": "Execution Logs",
+      "triggeredAt": "Triggered At",
+      "record": "Triggered Record",
+      "triggerType": "Trigger Type",
+      "status": "Status",
+      "duration": "Duration",
+      "nodes": "Nodes",
+      "totalRuns": "Total Runs",
+      "successRate": "Success Rate",
+      "failedCount": "Failed",
+      "avgDuration": "Avg Duration",
+      "allStatus": "All Status",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "totalRecords": "{{total}} records",
+      "executionDetail": "Execution Detail",
+      "nodeTimeline": "Node Execution Timeline",
+      "node": {
+        "status": "Status",
+        "duration": "Duration"
+      },
+      "status": {
+        "success": "Success",
+        "failed": "Failed",
+        "running": "Running",
+        "pending": "Pending"
+      }
+    },
+    
+    "triggers": {
+      "record_created": "Record Created",
+      "record_updated": "Record Updated",
+      "field_changed": "Field Changed",
+      "stage_changed": "Stage Changed",
+      "scheduled": "Scheduled",
+      "no_activity": "No Activity",
+      "date_reached": "Date Reached",
+      "manual": "Manual"
+    },
+    
+    "actions": {
+      "update_field": "Update Field",
+      "send_notification": "Send Notification",
+      "send_email": "Send Email",
+      "create_record": "Create Record",
+      "assign_owner": "Assign Owner",
+      "advance_stage": "Advance Stage",
+      "create_task": "Create Task",
+      "call_webhook": "Call Webhook",
+      "delay": "Delay",
+      "ai_generate": "AI Generate",
+      "go_to_workflow": "Go to Workflow",
+      "end_workflow": "End Workflow"
+    }
   },
   "tab": "Tab"
 }

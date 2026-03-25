@@ -130,6 +130,9 @@
     "ticketSystem": "工单系统",
     "knowledgeBase": "知识库",
     "callCenter": "呼叫中心",
+    "automation": "自动化",
+    "workflows": "工作流",
+    "executionLogs": "执行日志",
     "systemSettings": "系统设置",
     "profile": "个人信息",
     "changePassword": "修改密码",
@@ -1613,7 +1616,10 @@
     "settingsCustomObjects": "自定义对象",
     "settingsAuditLog": "操作日志",
     "settingsLoginLog": "登录日志",
-    "settingsSystemConfig": "系统配置"
+    "settingsSystemConfig": "系统配置",
+    "automation": "自动化",
+    "automationWorkflows": "工作流",
+    "automationLogs": "执行日志"
   },
   "contact": {
     "detail": {
@@ -4116,6 +4122,219 @@
     "managerRole": "经理角色",
     "salesRole": "销售角色",
     "supportRole": "支持角色"
+  },
+  "workflow": {
+    "title": "自动化规则",
+    "create": "创建工作流",
+    "untitled": "未命名工作流",
+    "noDescription": "暂无描述",
+    "empty": "暂无工作流",
+    "searchPlaceholder": "搜索工作流...",
+    "namePlaceholder": "工作流名称",
+    "nameRequired": "工作流名称不能为空",
+    "saveFirst": "请先保存工作流",
+    "cannotDeleteTrigger": "不能删除触发器节点",
+    
+    "status": {
+      "active": "已启用",
+      "inactive": "已停用",
+      "draft": "草稿"
+    },
+    
+    "stats": {
+      "total": "工作流总数",
+      "active": "已启用",
+      "inactive": "已停用",
+      "draft": "草稿"
+    },
+    
+    "filters": {
+      "allStatus": "全部状态",
+      "allTriggers": "全部触发器"
+    },
+    
+    "runCount": "执行次数",
+    "successRate": "成功率",
+    "lastRun": "最近执行",
+    
+    "createWorkflow": "创建工作流",
+    "editWorkflow": "编辑工作流",
+    "deleteWorkflow": "删除工作流",
+    "publish": "发布",
+    "save": "保存",
+    
+    "nodeTypes": {
+      "trigger": "触发器",
+      "condition": "条件",
+      "action": "动作",
+      "delay": "延迟"
+    },
+    
+    "triggerNode": "触发器",
+    "newAction": "新动作",
+    "newCondition": "新条件",
+    "newDelay": "等待",
+    
+    "addNode": "添加节点",
+    "nodeConfig": "节点配置",
+    "nodeName": "节点名称",
+    "nodeDescription": "节点描述",
+    "deleteNode": "删除节点",
+    
+    "triggerType": "触发器类型",
+    "inactivityDays": "无活动天数",
+    "cronExpression": "执行计划",
+    "dateField": "日期字段",
+    "offsetDays": "提前/延后天数",
+    
+    "schedule": {
+      "daily9": "每天上午 9 点",
+      "weekly": "每周一",
+      "monthly": "每月 1 号"
+    },
+    
+    "dateFields": {
+      "endDate": "结束日期",
+      "birthday": "生日",
+      "createdAt": "创建日期"
+    },
+    
+    "fields": {
+      "status": "状态",
+      "level": "等级",
+      "amount": "金额",
+      "stage": "阶段",
+      "tags": "标签"
+    },
+    
+    "condition": {
+      "field": "字段",
+      "operator": "运算符",
+      "value": "值"
+    },
+    
+    "actionType": "动作类型",
+    
+    "updateField": {
+      "field": "目标字段",
+      "value": "设置值"
+    },
+    
+    "notification": {
+      "title": "通知标题",
+      "content": "通知内容",
+      "priority": "优先级"
+    },
+    
+    "email": {
+      "subject": "邮件主题",
+      "body": "邮件内容"
+    },
+    
+    "task": {
+      "title": "任务标题",
+      "priority": "任务优先级"
+    },
+    
+    "priority": {
+      "low": "低",
+      "normal": "普通",
+      "medium": "中",
+      "high": "高",
+      "urgent": "紧急"
+    },
+    
+    "delay": {
+      "type": "延迟类型",
+      "minutes": "分钟",
+      "hours": "小时",
+      "days": "天",
+      "value": "延迟时间"
+    },
+    
+    "actions": {
+      "activate": "启用",
+      "deactivate": "停用"
+    },
+    
+    "messages": {
+      "activated": "工作流已启用",
+      "deactivated": "工作流已停用",
+      "published": "工作流已发布"
+    },
+    
+    "deleteConfirm": {
+      "title": "删除工作流",
+      "content": "确定要删除此工作流吗？此操作无法撤销。"
+    },
+    
+    "publishConfirm": {
+      "title": "发布工作流",
+      "content": "确定要发布此工作流吗？发布后将根据触发条件自动执行。"
+    },
+    
+    "logs": {
+      "title": "执行日志",
+      "triggeredAt": "触发时间",
+      "record": "触发记录",
+      "triggerType": "触发类型",
+      "status": "状态",
+      "duration": "耗时",
+      "nodes": "节点执行",
+      "totalRuns": "总执行次数",
+      "successRate": "成功率",
+      "failedCount": "失败次数",
+      "avgDuration": "平均耗时",
+      "allStatus": "全部状态",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "totalRecords": "共 {{total}} 条",
+      "executionDetail": "执行详情",
+      "nodeTimeline": "节点执行时间线",
+      "node": {
+        "status": "状态",
+        "duration": "耗时"
+      },
+      "status": {
+        "success": "成功",
+        "failed": "失败",
+        "running": "执行中",
+        "pending": "待执行"
+      }
+    },
+    
+    "triggers": {
+      "record_created": "记录创建时",
+      "record_updated": "记录更新时",
+      "field_changed": "特定字段变更时",
+      "stage_changed": "阶段变更时",
+      "scheduled": "定时执行",
+      "no_activity": "超过X天无活动",
+      "date_reached": "到达指定日期",
+      "manual": "手动触发"
+    },
+    
+    "actions": {
+      "update_field": "更新字段值",
+      "send_notification": "发送站内通知",
+      "send_email": "发送邮件",
+      "create_record": "创建关联记录",
+      "assign_owner": "分配负责人",
+      "advance_stage": "推进阶段",
+      "create_task": "创建任务",
+      "call_webhook": "调用 Webhook",
+      "delay": "延迟等待",
+      "ai_generate": "AI 生成内容",
+      "go_to_workflow": "跳转到其他工作流",
+      "end_workflow": "终止工作流"
+    },
+    "triggerObject": "触发对象",
+    "targetObject": "目标对象",
+    "filters": {
+      "allObjects": "全部对象",
+      "allStatus": "全部状态",
+      "allTriggers": "全部触发器"
+    }
   },
   "tab": "标签页"
 }

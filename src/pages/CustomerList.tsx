@@ -37,34 +37,34 @@ import type { ColumnsType } from 'antd/es/table';
 
 const { Text } = Typography;
 
-/** Get industry options with translation */
-const getIndustryOptions = (t: Function) => [
-  { label: t('customerForm.industryOptions.internet'), value: '互联�?软件/IT 服务' },
-  { label: t('customerForm.industryOptions.manufacturing'), value: '制造业' },
-  { label: t('customerForm.industryOptions.finance'), value: '金融�? },
-  { label: t('customerForm.industryOptions.retail'), value: '零售�? },
-  { label: t('customerForm.industryOptions.healthcare'), value: '医疗健康' },
-  { label: t('customerForm.industryOptions.education'), value: '教育培训' },
-  { label: t('customerForm.industryOptions.realEstate'), value: '房地�? },
-  { label: t('customerForm.industryOptions.energy'), value: '能源/化工' },
-  { label: t('customerForm.industryOptions.logistics'), value: '物流/运输' },
-  { label: t('customerForm.industryOptions.other'), value: '其他' },
+/** 行业选项 */
+const industryOptions = [
+  { label: '互联网/软件/IT 服务', value: '互联网/软件/IT 服务' },
+  { label: '制造业', value: '制造业' },
+  { label: '金融业', value: '金融业' },
+  { label: '零售业', value: '零售业' },
+  { label: '医疗健康', value: '医疗健康' },
+  { label: '教育培训', value: '教育培训' },
+  { label: '房地产', value: '房地产' },
+  { label: '能源/化工', value: '能源/化工' },
+  { label: '物流/运输', value: '物流/运输' },
+  { label: '其他', value: '其他' },
 ];
 
-/** Get level options with translation */
-const getLevelOptions = (t: Function) => [
-  { label: t('customer.list.levelOptions.A'), value: 'A' },
-  { label: t('customer.list.levelOptions.B'), value: 'B' },
-  { label: t('customer.list.levelOptions.C'), value: 'C' },
-  { label: t('customer.list.levelOptions.D'), value: 'D' },
+/** 等级选项 */
+const levelOptions = [
+  { label: 'A - 重点客户', value: 'A' },
+  { label: 'B - 普通客户', value: 'B' },
+  { label: 'C - 一般客户', value: 'C' },
+  { label: 'D - 潜在客户', value: 'D' },
 ];
 
-/** Get status options with translation */
-const getStatusOptions = (t: Function) => [
-  { label: t('customer.list.statusOptions.interested'), value: '意向' },
-  { label: t('customer.list.statusOptions.negotiating'), value: '谈判' },
-  { label: t('customer.list.statusOptions.closed'), value: '成交' },
-  { label: t('customer.list.statusOptions.churned'), value: '流失' },
+/** 状态选项 */
+const statusOptions = [
+  { label: '意向', value: '意向' },
+  { label: '谈判', value: '谈判' },
+  { label: '成交', value: '成交' },
+  { label: '流失', value: '流失' },
 ];
 
 /** 客户等级标签颜色映射 */
@@ -75,7 +75,7 @@ const levelColorMap: Record<CustomerLevel, string> = {
   'D': colors.text.tertiary,
 };
 
-/** 客户状态标签颜色映�?*/
+/** 客户状态标签颜色映射 */
 const statusColorMap: Record<CustomerStatus, string> = {
   '潜在': 'default',
   '意向': 'processing',
@@ -103,16 +103,6 @@ export const CustomerList: React.FC = () => {
   const [form] = Form.useForm();
   const [savedFilters, setSavedFilters] = useState<{ name: string; filters: Record<string, any> }[]>([]);
   const [columnSettingsVisible, setColumnSettingsVisible] = useState(false);
-  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>({
-    name: true,
-    industry: true,
-    companySize: true,
-    source: true,
-    level: true,
-    status: true,
-    ownerName: true,
-    createdAt: true,
-  });
 
   /** 加载客户列表 */
   const loadCustomerList = () => {
@@ -138,7 +128,7 @@ export const CustomerList: React.FC = () => {
     loadCustomerList();
   }, [page, pageSize, filters]);
 
-  /** 处理筛选变�?*/
+  /** 处理筛选变化 */
   const handleFilterChange = (values: Record<string, any>) => {
     setFilters(values);
     setPage(1);
@@ -250,39 +240,9 @@ export const CustomerList: React.FC = () => {
       message.warning('No filters to save');
       return;
     }
-    Modal.prompt({
-      title: 'Save Filter',
-      content: 'Enter a name for this filter:',
-      placeholder: 'e.g., High Priority Customers',
-      onOk: (name) => {
-        const filterName = name || `Filter ${savedFilters.length + 1}`;
-        setSavedFilters([...savedFilters, { name: filterName, filters }]);
-        message.success(`Filter "${filterName}" saved`);
-      },
-    });
-  };
-
-  /** Toggle column visibility */
-  const handleToggleColumn = (columnKey: string) => {
-    setVisibleColumns(prev => ({
-      ...prev,
-      [columnKey]: !prev[columnKey],
-    }));
-  };
-
-  /** Reset columns to default */
-  const handleResetColumns = () => {
-    setVisibleColumns({
-      name: true,
-      industry: true,
-      companySize: true,
-      source: true,
-      level: true,
-      status: true,
-      ownerName: true,
-      createdAt: true,
-    });
-    message.success('Columns reset to default');
+    const name = `Filter ${savedFilters.length + 1}`;
+    setSavedFilters([...savedFilters, { name, filters }]);
+    message.success('Filter saved successfully');
   };
 
   /** Remove a filter tag */
@@ -309,49 +269,66 @@ export const CustomerList: React.FC = () => {
   }, [filters]);
 
   /** Filter field configuration */
-  const filterFields: FilterItem[] = useMemo(() => [
+  const filterFields: FilterItem[] = [
     {
       name: 'name',
       label: t('customer.list.filters.name'),
       type: 'text',
-      placeholder: t('searchFilter.inputPlaceholder', { label: t('customer.list.filters.name') }),
+      placeholder: 'Enter customer name',
     },
     {
       name: 'industry',
       label: t('customer.list.filters.industry'),
       type: 'select',
-      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.industry') }),
-      options: getIndustryOptions(t),
+      placeholder: 'Select industry',
+      options: [
+        { label: 'Technology/Software/IT', value: '互联网/软件/IT 服务' },
+        { label: 'Manufacturing', value: '制造业' },
+        { label: 'Finance', value: '金融业' },
+        { label: 'Retail', value: '零售业' },
+        { label: 'Healthcare', value: '医疗健康' },
+        { label: 'Other', value: '其他' },
+      ],
     },
     {
       name: 'level',
       label: t('customer.list.filters.level'),
       type: 'select',
-      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.level') }),
-      options: getLevelOptions(t),
+      placeholder: 'Select level',
+      options: [
+        { label: 'A - Key Account', value: 'A' },
+        { label: 'B - Standard', value: 'B' },
+        { label: 'C - General', value: 'C' },
+        { label: 'D - Potential', value: 'D' },
+      ],
     },
     {
       name: 'status',
       label: t('customer.list.filters.status'),
       type: 'select',
-      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.status') }),
-      options: getStatusOptions(t),
+      placeholder: 'Select status',
+      options: [
+        { label: 'Interested', value: '意向' },
+        { label: 'Negotiating', value: '谈判' },
+        { label: 'Closed', value: '成交' },
+        { label: 'Churned', value: '流失' },
+      ],
     },
     {
       name: 'source',
       label: t('customer.list.filters.source'),
       type: 'select',
-      placeholder: t('searchFilter.selectPlaceholder', { label: t('customer.list.filters.source') }),
+      placeholder: 'Select source',
       options: [
-        { label: t('lead.source.campaign'), value: '市场活动' },
-        { label: t('lead.source.website'), value: '官网' },
-        { label: t('lead.source.referral'), value: '转介�? },
-        { label: t('lead.source.coldCall'), value: '陌拜' },
-        { label: t('lead.source.advertisement'), value: '广告' },
-        { label: t('lead.source.other'), value: '其他' },
+        { label: 'Marketing Event', value: '市场活动' },
+        { label: 'Website', value: '官网' },
+        { label: 'Referral', value: '转介绍' },
+        { label: 'Cold Call', value: '陌拜' },
+        { label: 'Advertisement', value: '广告' },
+        { label: 'Other', value: '其他' },
       ],
     },
-  ], [t]);
+  ];
 
   /** Table column configuration */
   const columns: ColumnsType<Customer> = [
@@ -361,7 +338,6 @@ export const CustomerList: React.FC = () => {
       key: 'name',
       width: 180,
       fixed: 'left',
-      hidden: !visibleColumns.name,
       render: (text, record) => (
         <a onClick={() => handleViewDetail(record.id)}>{text}</a>
       ),
@@ -372,28 +348,24 @@ export const CustomerList: React.FC = () => {
       key: 'industry',
       width: 130,
       ellipsis: true,
-      hidden: !visibleColumns.industry,
     },
     {
       title: t('customer.list.columns.companySize'),
       dataIndex: 'companySize',
       key: 'companySize',
       width: 100,
-      hidden: !visibleColumns.companySize,
     },
     {
       title: t('customer.list.columns.source'),
       dataIndex: 'source',
       key: 'source',
       width: 90,
-      hidden: !visibleColumns.source,
     },
     {
       title: t('customer.list.columns.level'),
       dataIndex: 'level',
       key: 'level',
       width: 70,
-      hidden: !visibleColumns.level,
       render: (level: CustomerLevel) => (
         <Tag color={levelColorMap[level]} style={{ margin: 0 }}>{level}</Tag>
       ),
@@ -403,11 +375,8 @@ export const CustomerList: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 80,
-      hidden: !visibleColumns.status,
       render: (status: CustomerStatus) => (
-        <Tag color={statusColorMap[status]} style={{ margin: 0 }}>
-          {t(`customer.list.statusOptions.${status}`, { defaultValue: status })}
-        </Tag>
+        <Tag color={statusColorMap[status]} style={{ margin: 0 }}>{status}</Tag>
       ),
     },
     {
@@ -415,14 +384,12 @@ export const CustomerList: React.FC = () => {
       dataIndex: 'ownerName',
       key: 'ownerName',
       width: 90,
-      hidden: !visibleColumns.ownerName,
     },
     {
       title: t('customer.list.columns.createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 140,
-      hidden: !visibleColumns.createdAt,
       sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
     {
@@ -497,7 +464,7 @@ export const CustomerList: React.FC = () => {
         </div>
         <Space>
           <Button icon={<SaveOutlined />} onClick={handleSaveFilter}>
-            {t('common.save')} {t('common.filter')}
+            Save Filter
           </Button>
           <Button icon={<SettingOutlined />} onClick={() => setColumnSettingsVisible(true)}>
             Columns
@@ -563,8 +530,7 @@ export const CustomerList: React.FC = () => {
         okText={t('common.save')}
         cancelText={t('common.cancel')}
         width={600}
-        destroyOnHidden
-        forceRender
+        destroyOnClose
       >
         <Form
           form={form}
@@ -576,7 +542,7 @@ export const CustomerList: React.FC = () => {
             <Input placeholder="Enter customer name" />
           </Form.Item>
           <Form.Item name="industry" label="Industry" rules={[{ required: true, message: 'Please select industry' }]}>
-            <Select placeholder="Select industry" options={getIndustryOptions(t)} />
+            <Select placeholder="Select industry" options={industryOptions} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
             <Select placeholder="Select company size">
@@ -599,7 +565,7 @@ export const CustomerList: React.FC = () => {
             <Select placeholder="Select source">
               <Select.Option value="市场活动">Marketing Event</Select.Option>
               <Select.Option value="官网">Website</Select.Option>
-              <Select.Option value="转介�?>Referral</Select.Option>
+              <Select.Option value="转介绍">Referral</Select.Option>
               <Select.Option value="陌拜">Cold Call</Select.Option>
               <Select.Option value="广告">Advertisement</Select.Option>
               <Select.Option value="其他">Other</Select.Option>
@@ -632,15 +598,14 @@ export const CustomerList: React.FC = () => {
         okText={t('common.save')}
         cancelText={t('common.cancel')}
         width={600}
-        destroyOnHidden
-        forceRender
+        destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
           <Form.Item name="name" label="Customer Name" rules={[{ required: true, message: 'Please enter customer name' }]}>
             <Input placeholder="Enter customer name" />
           </Form.Item>
           <Form.Item name="industry" label="Industry" rules={[{ required: true, message: 'Please select industry' }]}>
-            <Select placeholder="Select industry" options={getIndustryOptions(t)} />
+            <Select placeholder="Select industry" options={industryOptions} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
             <Select placeholder="Select company size">
@@ -674,45 +639,6 @@ export const CustomerList: React.FC = () => {
             <Input.TextArea rows={2} placeholder="Enter address" />
           </Form.Item>
         </Form>
-      </Modal>
-
-      {/* Column settings modal */}
-      <Modal
-        title="Column Settings"
-        open={columnSettingsVisible}
-        onCancel={() => setColumnSettingsVisible(false)}
-        footer={
-          <Space>
-            <Button onClick={handleResetColumns}>Reset to Default</Button>
-            <Button onClick={() => setColumnSettingsVisible(false)}>Close</Button>
-          </Space>
-        }
-      >
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          {Object.entries(visibleColumns).map(([key, visible]) => (
-            <div
-              key={key}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '8px 12px',
-                background: visible ? colors.primary + '10' : 'transparent',
-                borderRadius: 6,
-                cursor: 'pointer',
-              }}
-              onClick={() => handleToggleColumn(key)}
-            >
-              <input
-                type="checkbox"
-                checked={visible}
-                onChange={() => handleToggleColumn(key)}
-                style={{ cursor: 'pointer' }}
-              />
-              <span>{key}</span>
-            </div>
-          ))}
-        </div>
       </Modal>
     </div>
   );

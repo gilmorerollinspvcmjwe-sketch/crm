@@ -44,7 +44,6 @@ const PaymentReport = React.lazy(() => import('../pages/PaymentReport'));
 const Roles = React.lazy(() => import('../pages/Roles'));
 const Users = React.lazy(() => import('../pages/Users'));
 const PermissionSettings = React.lazy(() => import('../pages/PermissionSettings'));
-const SystemConfig = React.lazy(() => import('../pages/settings/SystemConfig'));
 const CustomFields = React.lazy(() => import('../pages/settings/CustomFields'));
 const Profile = React.lazy(() => import('../pages/settings/Profile'));
 const ChangePassword = React.lazy(() => import('../pages/settings/ChangePassword'));
@@ -428,10 +427,6 @@ const router = createBrowserRouter([
           {
             path: 'login-log',
             element: <Suspense fallback={<LoadingFallback />}><LoginLog /></Suspense>,
-          },
-          {
-            path: 'system-config',
-            element: <Suspense fallback={<LoadingFallback />}><SystemConfig /></Suspense>,
           },
         ],
       },

@@ -134,7 +134,6 @@ const getMenuItems = (t: (key: string) => string): MenuItem[] => [
     getItem(t('nav.customObjects'), '/settings/custom-objects'),
     getItem(t('nav.operationLog'), '/settings/audit-log'),
     getItem(t('nav.loginLog'), '/settings/login-log'),
-    getItem(t('nav.systemConfiguration'), '/settings/system-config'),
   ]),
 ];
 

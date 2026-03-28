@@ -7,9 +7,11 @@
  * - Filter tags display
  * - Save filter functionality
  * - Column settings
+ * 
+ * Refactored with new UI design system
  */
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, Button, Space, message, Modal, Form, Input, Select, Radio, Tag, Dropdown, Typography, Tooltip, Popover } from 'antd';
+import { Card, message, Modal, Form, Radio, Tag, Dropdown, Typography, Tooltip } from 'antd';
 import {
   PlusOutlined,
   ExportOutlined,
@@ -18,70 +20,78 @@ import {
   UserSwitchOutlined,
   EyeOutlined,
   MoreOutlined,
-  PhoneOutlined,
-  MailOutlined,
   SaveOutlined,
   SettingOutlined,
   CloseOutlined,
-  DownOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { Badge } from '../components/ui/Badge';
+import { Input as AntInput } from 'antd';
 import { DataTable, TableDensity } from '../components/DataTable';
 import { FilterBar, FilterItem } from '../components/FilterBar';
 import { getCustomerList } from '../mock/customerData';
 import { Customer, CustomerLevel, Industry, CustomerStatus } from '../types/customer';
-import { colors } from '../styles/tokens';
 import type { MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import './CustomerList.css';
 
 const { Text } = Typography;
 
 /** 行业选项 */
 const industryOptions = [
-  { label: '互联网/软件/IT 服务', value: '互联网/软件/IT 服务' },
-  { label: '制造业', value: '制造业' },
-  { label: '金融业', value: '金融业' },
-  { label: '零售业', value: '零售业' },
-  { label: '医疗健康', value: '医疗健康' },
-  { label: '教育培训', value: '教育培训' },
-  { label: '房地产', value: '房地产' },
-  { label: '能源/化工', value: '能源/化工' },
-  { label: '物流/运输', value: '物流/运输' },
-  { label: '其他', value: '其他' },
+  { value: '互联网/软件/IT 服务', label: '互联网/软件/IT 服务' },
+  { value: '制造业', label: '制造业' },
+  { value: '金融业', label: '金融业' },
+  { value: '零售业', label: '零售业' },
+  { value: '医疗健康', label: '医疗健康' },
+  { value: '教育培训', label: '教育培训' },
+  { value: '房地产', label: '房地产' },
+  { value: '能源/化工', label: '能源/化工' },
+  { value: '物流/运输', label: '物流/运输' },
+  { value: '其他', label: '其他' },
 ];
 
 /** 等级选项 */
 const levelOptions = [
-  { label: 'A - 重点客户', value: 'A' },
-  { label: 'B - 普通客户', value: 'B' },
-  { label: 'C - 一般客户', value: 'C' },
-  { label: 'D - 潜在客户', value: 'D' },
+  { value: 'A', label: 'A - 重点客户' },
+  { value: 'B', label: 'B - 普通客户' },
+  { value: 'C', label: 'C - 一般客户' },
+  { value: 'D', label: 'D - 潜在客户' },
 ];
 
 /** 状态选项 */
 const statusOptions = [
-  { label: '意向', value: '意向' },
-  { label: '谈判', value: '谈判' },
-  { label: '成交', value: '成交' },
-  { label: '流失', value: '流失' },
+  { value: '意向', label: '意向' },
+  { value: '谈判', label: '谈判' },
+  { value: '成交', label: '成交' },
+  { value: '流失', label: '流失' },
 ];
 
-/** 客户等级标签颜色映射 */
-const levelColorMap: Record<CustomerLevel, string> = {
-  'A': colors.danger,
-  'B': colors.warning,
-  'C': colors.info,
-  'D': colors.text.tertiary,
+/** 客户等级徽章颜色 */
+const getLevelBadgeColor = (level: CustomerLevel): 'danger' | 'warning' | 'info' | 'neutral' => {
+  const colorMap: Record<CustomerLevel, 'danger' | 'warning' | 'info' | 'neutral'> = {
+    'A': 'danger',
+    'B': 'warning',
+    'C': 'info',
+    'D': 'neutral',
+  };
+  return colorMap[level];
 };
 
-/** 客户状态标签颜色映射 */
-const statusColorMap: Record<CustomerStatus, string> = {
-  '潜在': 'default',
-  '意向': 'processing',
-  '成交': 'success',
-  '流失': 'error',
-  '冻结': 'warning',
+/** 客户状态徽章颜色 */
+const getStatusBadgeColor = (status: CustomerStatus): 'brand' | 'success' | 'warning' | 'danger' | 'neutral' => {
+  const colorMap: Record<CustomerStatus, 'brand' | 'success' | 'warning' | 'danger' | 'neutral'> = {
+    '潜在': 'neutral',
+    '意向': 'brand',
+    '成交': 'success',
+    '流失': 'danger',
+    '冻结': 'warning',
+  };
+  return colorMap[status];
 };
 
 /**
@@ -103,6 +113,7 @@ export const CustomerList: React.FC = () => {
   const [form] = Form.useForm();
   const [savedFilters, setSavedFilters] = useState<{ name: string; filters: Record<string, any> }[]>([]);
   const [columnSettingsVisible, setColumnSettingsVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   /** 加载客户列表 */
   const loadCustomerList = () => {
@@ -137,6 +148,7 @@ export const CustomerList: React.FC = () => {
   /** 处理重置 */
   const handleReset = () => {
     setFilters({});
+    setSearchValue('');
     setPage(1);
   };
 
@@ -252,6 +264,18 @@ export const CustomerList: React.FC = () => {
     setFilters(newFilters);
   };
 
+  /** Handle search */
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    if (value) {
+      setFilters({ ...filters, name: value });
+    } else {
+      const newFilters = { ...filters };
+      delete newFilters.name;
+      setFilters(newFilters);
+    }
+  };
+
   /** Active filter tags */
   const activeFilterTags = useMemo(() => {
     return Object.entries(filters)
@@ -261,7 +285,7 @@ export const CustomerList: React.FC = () => {
           key={key}
           closable
           onClose={() => handleRemoveFilterTag(key)}
-          style={{ marginBottom: 4 }}
+          className="filter-tag"
         >
           {key}: {String(value)}
         </Tag>
@@ -339,7 +363,7 @@ export const CustomerList: React.FC = () => {
       width: 180,
       fixed: 'left',
       render: (text, record) => (
-        <a onClick={() => handleViewDetail(record.id)}>{text}</a>
+        <a onClick={() => handleViewDetail(record.id)} className="customer-name-link">{text}</a>
       ),
     },
     {
@@ -367,7 +391,7 @@ export const CustomerList: React.FC = () => {
       key: 'level',
       width: 70,
       render: (level: CustomerLevel) => (
-        <Tag color={levelColorMap[level]} style={{ margin: 0 }}>{level}</Tag>
+        <Badge color={getLevelBadgeColor(level)} variant="soft" size="sm">{level}</Badge>
       ),
     },
     {
@@ -376,7 +400,7 @@ export const CustomerList: React.FC = () => {
       key: 'status',
       width: 80,
       render: (status: CustomerStatus) => (
-        <Tag color={statusColorMap[status]} style={{ margin: 0 }}>{status}</Tag>
+        <Badge color={getStatusBadgeColor(status)} variant="soft" size="sm">{status}</Badge>
       ),
     },
     {
@@ -428,7 +452,7 @@ export const CustomerList: React.FC = () => {
 
         return (
           <Dropdown menu={{ items: menuItems }} trigger={['click']}>
-            <Button type="text" icon={<MoreOutlined />} size="small" />
+            <Button type="icon" icon={<MoreOutlined />} size="sm" />
           </Dropdown>
         );
       },
@@ -437,60 +461,68 @@ export const CustomerList: React.FC = () => {
 
   /** Batch action buttons */
   const batchActions = (
-    <>
-      <Button size="small" icon={<UserSwitchOutlined />} onClick={handleBatchAssign}>
+    <div className="batch-actions">
+      <Button type="secondary" size="sm" icon={<UserSwitchOutlined />} onClick={handleBatchAssign}>
         {t('customer.list.batchAssign')}
       </Button>
-      <Button size="small" danger icon={<DeleteOutlined />} onClick={handleBatchDelete}>
+      <Button type="danger" size="sm" icon={<DeleteOutlined />} onClick={handleBatchDelete}>
         {t('customer.list.batchDelete')}
       </Button>
-    </>
+    </div>
   );
 
   return (
-    <div style={{ padding: 0 }}>
-      {/* Page title */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-      }}>
-        <div>
-          <Text strong style={{ fontSize: 16 }}>{t('customer.list.title')}</Text>
-          <Text type="secondary" style={{ marginLeft: 8 }}>
-            {t('customer.list.totalRecords', { count: total })}
-          </Text>
+    <div className="crm-page customer-list-page">
+      {/* 1. 标题区 */}
+      <div className="page-header">
+        <div className="page-header-left">
+          <h1 className="page-title">{t('customer.list.title')}</h1>
+          <span className="page-total">{t('customer.list.totalRecords', { count: total })}</span>
         </div>
-        <Space>
-          <Button icon={<SaveOutlined />} onClick={handleSaveFilter}>
+        <div className="page-header-right">
+          <Button type="secondary" icon={<SaveOutlined />} onClick={handleSaveFilter}>
             Save Filter
           </Button>
-          <Button icon={<SettingOutlined />} onClick={() => setColumnSettingsVisible(true)}>
+          <Button type="secondary" icon={<SettingOutlined />} onClick={() => setColumnSettingsVisible(true)}>
             Columns
           </Button>
-          <Button icon={<ExportOutlined />} onClick={handleExport}>
+          <Button type="secondary" icon={<ExportOutlined />} onClick={handleExport}>
             {t('common.export')}
           </Button>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
             {t('customer.list.createCustomer')}
           </Button>
-        </Space>
+        </div>
       </div>
 
-      {/* Filter tags */}
+      {/* 2. 操作栏 */}
+      <div className="action-bar">
+        <div className="action-bar-left">
+          <Input
+            type="search"
+            placeholder="搜索客户..."
+            value={searchValue}
+            onChange={handleSearch}
+            onSearch={handleSearch}
+            allowClear
+            suffix={<kbd className="search-kbd">⌘K</kbd>}
+          />
+        </div>
+      </div>
+
+      {/* 3. 筛选标签 */}
       {activeFilterTags.length > 0 && (
-        <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Text type="secondary">Active Filters:</Text>
+        <div className="filter-tags-container">
+          <span className="filter-label">Active Filters:</span>
           {activeFilterTags}
-          <Button type="link" size="small" onClick={handleReset}>
+          <Button type="text" size="sm" onClick={handleReset}>
             Clear All
           </Button>
         </div>
       )}
 
-      {/* Filter bar */}
-      <Card style={{ marginBottom: 16 }} styles={{ body: { padding: '12px 16px' } }}>
+      {/* 4. 筛选器 */}
+      <Card className="filter-card" styles={{ body: { padding: '12px 16px' } }}>
         <FilterBar
           filters={filterFields}
           onFilterChange={handleFilterChange}
@@ -500,8 +532,8 @@ export const CustomerList: React.FC = () => {
         />
       </Card>
 
-      {/* Data table */}
-      <Card styles={{ body: { padding: 16 } }}>
+      {/* 5. 表格 */}
+      <Card className="table-card" styles={{ body: { padding: 16 } }}>
         <DataTable<Customer>
           tableKey="customer-list"
           columns={columns}
@@ -531,6 +563,7 @@ export const CustomerList: React.FC = () => {
         cancelText={t('common.cancel')}
         width={600}
         destroyOnClose
+        className="customer-modal"
       >
         <Form
           form={form}
@@ -545,13 +578,16 @@ export const CustomerList: React.FC = () => {
             <Select placeholder="Select industry" options={industryOptions} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
-            <Select placeholder="Select company size">
-              <Select.Option value="Micro">Micro (1-20)</Select.Option>
-              <Select.Option value="Small">Small (21-100)</Select.Option>
-              <Select.Option value="Medium">Medium (101-500)</Select.Option>
-              <Select.Option value="Large">Large (501-2000)</Select.Option>
-              <Select.Option value="Enterprise">Enterprise (2000+)</Select.Option>
-            </Select>
+            <Select 
+              placeholder="Select company size" 
+              options={[
+                { value: 'Micro', label: 'Micro (1-20)' },
+                { value: 'Small', label: 'Small (21-100)' },
+                { value: 'Medium', label: 'Medium (101-500)' },
+                { value: 'Large', label: 'Large (501-2000)' },
+                { value: 'Enterprise', label: 'Enterprise (2000+)' },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="level" label="Customer Level">
             <Radio.Group>
@@ -562,14 +598,17 @@ export const CustomerList: React.FC = () => {
             </Radio.Group>
           </Form.Item>
           <Form.Item name="source" label="Customer Source">
-            <Select placeholder="Select source">
-              <Select.Option value="市场活动">Marketing Event</Select.Option>
-              <Select.Option value="官网">Website</Select.Option>
-              <Select.Option value="转介绍">Referral</Select.Option>
-              <Select.Option value="陌拜">Cold Call</Select.Option>
-              <Select.Option value="广告">Advertisement</Select.Option>
-              <Select.Option value="其他">Other</Select.Option>
-            </Select>
+            <Select 
+              placeholder="Select source" 
+              options={[
+                { value: '市场活动', label: 'Marketing Event' },
+                { value: '官网', label: 'Website' },
+                { value: '转介绍', label: 'Referral' },
+                { value: '陌拜', label: 'Cold Call' },
+                { value: '广告', label: 'Advertisement' },
+                { value: '其他', label: 'Other' },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="phone" label="Phone">
             <Input placeholder="Enter phone number" />
@@ -578,10 +617,10 @@ export const CustomerList: React.FC = () => {
             <Input placeholder="Enter email address" />
           </Form.Item>
           <Form.Item name="address" label="Address">
-            <Input.TextArea rows={2} placeholder="Enter address" />
+            <AntInput.TextArea rows={2} placeholder="Enter address" />
           </Form.Item>
           <Form.Item name="remark" label="Remarks">
-            <Input.TextArea rows={3} placeholder="Enter remarks" />
+            <AntInput.TextArea rows={3} placeholder="Enter remarks" />
           </Form.Item>
         </Form>
       </Modal>
@@ -599,6 +638,7 @@ export const CustomerList: React.FC = () => {
         cancelText={t('common.cancel')}
         width={600}
         destroyOnClose
+        className="customer-modal"
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
           <Form.Item name="name" label="Customer Name" rules={[{ required: true, message: 'Please enter customer name' }]}>
@@ -608,13 +648,16 @@ export const CustomerList: React.FC = () => {
             <Select placeholder="Select industry" options={industryOptions} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
-            <Select placeholder="Select company size">
-              <Select.Option value="Micro">Micro (1-20)</Select.Option>
-              <Select.Option value="Small">Small (21-100)</Select.Option>
-              <Select.Option value="Medium">Medium (101-500)</Select.Option>
-              <Select.Option value="Large">Large (501-2000)</Select.Option>
-              <Select.Option value="Enterprise">Enterprise (2000+)</Select.Option>
-            </Select>
+            <Select 
+              placeholder="Select company size" 
+              options={[
+                { value: 'Micro', label: 'Micro (1-20)' },
+                { value: 'Small', label: 'Small (21-100)' },
+                { value: 'Medium', label: 'Medium (101-500)' },
+                { value: 'Large', label: 'Large (501-2000)' },
+                { value: 'Enterprise', label: 'Enterprise (2000+)' },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="level" label="Customer Level">
             <Radio.Group>
@@ -625,18 +668,21 @@ export const CustomerList: React.FC = () => {
             </Radio.Group>
           </Form.Item>
           <Form.Item name="status" label="Customer Status">
-            <Select placeholder="Select status">
-              <Select.Option value="意向">Interested</Select.Option>
-              <Select.Option value="谈判">Negotiating</Select.Option>
-              <Select.Option value="成交">Closed</Select.Option>
-              <Select.Option value="流失">Churned</Select.Option>
-            </Select>
+            <Select 
+              placeholder="Select status" 
+              options={[
+                { value: '意向', label: 'Interested' },
+                { value: '谈判', label: 'Negotiating' },
+                { value: '成交', label: 'Closed' },
+                { value: '流失', label: 'Churned' },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="phone" label="Phone">
             <Input placeholder="Enter phone number" />
           </Form.Item>
           <Form.Item name="address" label="Address">
-            <Input.TextArea rows={2} placeholder="Enter address" />
+            <AntInput.TextArea rows={2} placeholder="Enter address" />
           </Form.Item>
         </Form>
       </Modal>

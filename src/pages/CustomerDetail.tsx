@@ -5,21 +5,18 @@
  * - Left Sidebar (240px): Customer info + Action buttons
  * - Middle Content (flex: 1): Tabs with Overview/Activity/AI Insights
  * - Right Sidebar (320px): Related information cards
+ * 
+ * Refactored with new UI design system
  */
 import React, { useState, useEffect } from 'react';
 import {
   Card,
-  Button,
-  Space,
   Tabs,
   Tag,
   Table,
-  Timeline,
   message,
   Modal,
   Form,
-  Input,
-  Select,
   Radio,
   Typography,
   Avatar,
@@ -27,8 +24,6 @@ import {
   Tooltip,
   Collapse,
   Badge,
-  Drawer,
-  List,
 } from 'antd';
 import {
   ArrowLeftOutlined,
@@ -55,6 +50,11 @@ import {
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Input as AntInput } from 'antd';
+import { Select } from '../components/ui/Select';
+import { Badge as UIBadge } from '../components/ui/Badge';
 import { getCustomerById } from '../mock/customerData';
 import { getContactsByCustomerId } from '../mock/contactData';
 import { Customer } from '../types/customer';
@@ -69,6 +69,7 @@ import {
   RiskAlertAI,
   ContentGeneratorAI,
 } from '../components/AI';
+import './CustomerDetail.css';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -80,13 +81,16 @@ const levelColorMap: Record<string, { bg: string; color: string }> = {
   D: { bg: colors.grade.D.bg, color: colors.grade.D.fg },
 };
 
-/** Customer status color mapping */
-const statusColorMap: Record<string, string> = {
-  '意向': 'processing',
-  '谈判': 'warning',
-  '成交': 'success',
-  '流失': 'error',
-  '潜在': 'default',
+/** Customer status badge color */
+const getStatusBadgeColor = (status: string): 'brand' | 'success' | 'warning' | 'danger' | 'neutral' => {
+  const colorMap: Record<string, 'brand' | 'success' | 'warning' | 'danger' | 'neutral'> = {
+    '意向': 'brand',
+    '谈判': 'warning',
+    '成交': 'success',
+    '流失': 'danger',
+    '潜在': 'neutral',
+  };
+  return colorMap[status] || 'neutral';
 };
 
 /**
@@ -216,7 +220,7 @@ export const CustomerDetail: React.FC = () => {
 
   if (!customer) {
     return (
-      <div style={{ padding: 24, textAlign: 'center' }}>
+      <div className="customer-detail-empty">
         <Text type="secondary">Customer not found</Text>
       </div>
     );
@@ -264,7 +268,7 @@ export const CustomerDetail: React.FC = () => {
       key: 'overview',
       label: t('customer.detail.tabs.overview'),
       children: (
-        <div style={{ padding: '16px 0' }}>
+        <div className="tab-content">
           {/* Basic Information */}
           <Collapse
             defaultActiveKey={['basic', 'contact']}
@@ -275,62 +279,70 @@ export const CustomerDetail: React.FC = () => {
                 key: 'basic',
                 label: <Text strong>{t('customer.detail.sections.basicInfo')}</Text>,
                 children: (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 24px' }}>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Customer ID</Text>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Customer ID</Text>
                       <div><Text>{customer.id}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Customer Name</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Customer Name</Text>
                       <div><Text strong>{customer.name}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Industry</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Industry</Text>
                       <div><Tag>{customer.industry}</Tag></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Company Size</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Company Size</Text>
                       <div><Text>{customer.companySize || '-'}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Level</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Level</Text>
                       <div>
-                        <Tag style={{ background: levelColorMap[customer.level]?.bg, color: levelColorMap[customer.level]?.color, border: 'none' }}>
+                        <UIBadge 
+                          color={customer.level === 'A' ? 'danger' : customer.level === 'B' ? 'warning' : customer.level === 'C' ? 'info' : 'neutral'} 
+                          variant="soft" 
+                          size="sm"
+                        >
                           {customer.level}
-                        </Tag>
+                        </UIBadge>
                       </div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Status</Text>
-                      <div><Tag color={statusColorMap[customer.status]}>{customer.status}</Tag></div>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Status</Text>
+                      <div>
+                        <UIBadge color={getStatusBadgeColor(customer.status)} variant="soft" size="sm">
+                          {customer.status}
+                        </UIBadge>
+                      </div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Source</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Source</Text>
                       <div><Tag color="blue">{customer.source}</Tag></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Owner</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Owner</Text>
                       <div><Text>{customer.ownerName || '-'}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Region</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Region</Text>
                       <div><Text>{customer.region || '-'}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Annual Revenue</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Annual Revenue</Text>
                       <div><Text>{customer.annualRevenue || '-'}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Created At</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Created At</Text>
                       <div><Text>{customer.createdAt}</Text></div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Created By</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Created By</Text>
                       <div><Text>{customer.createdBy}</Text></div>
                     </div>
                     {customer.remark && (
-                      <div style={{ gridColumn: 'span 2' }}>
-                        <Text type="secondary" style={{ fontSize: 12 }}>Remarks</Text>
+                      <div className="info-item-full">
+                        <Text type="secondary" className="info-label">Remarks</Text>
                         <div><Text>{customer.remark}</Text></div>
                       </div>
                     )}
@@ -341,35 +353,35 @@ export const CustomerDetail: React.FC = () => {
                 key: 'contact',
                 label: <Text strong>{t('customer.detail.sections.contactInfo')}</Text>,
                 children: (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 24px' }}>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Phone</Text>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Phone</Text>
                       <div>
                         {customer.phone ? (
-                          <a href={`tel:${customer.phone}`}>
-                            <PhoneOutlined style={{ marginRight: 4 }} />
+                          <a href={`tel:${customer.phone}`} className="contact-link">
+                            <PhoneOutlined className="contact-icon" />
                             {customer.phone}
                           </a>
                         ) : <Text>-</Text>}
                       </div>
                     </div>
-                    <div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Website</Text>
+                    <div className="info-item">
+                      <Text type="secondary" className="info-label">Website</Text>
                       <div>
                         {customer.website ? (
-                          <a href={customer.website} target="_blank" rel="noopener noreferrer">
-                            <GlobalOutlined style={{ marginRight: 4 }} />
+                          <a href={customer.website} target="_blank" rel="noopener noreferrer" className="contact-link">
+                            <GlobalOutlined className="contact-icon" />
                             {customer.website}
                           </a>
                         ) : <Text>-</Text>}
                       </div>
                     </div>
-                    <div style={{ gridColumn: 'span 2' }}>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Address</Text>
+                    <div className="info-item-full">
+                      <Text type="secondary" className="info-label">Address</Text>
                       <div>
                         {customer.address ? (
                           <span>
-                            <EnvironmentOutlined style={{ marginRight: 4 }} />
+                            <EnvironmentOutlined className="contact-icon" />
                             {customer.address}
                           </span>
                         ) : <Text>-</Text>}
@@ -383,9 +395,9 @@ export const CustomerDetail: React.FC = () => {
 
           {/* Contacts Table */}
           <Divider />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div className="section-header">
             <Text strong>{t('customer.detail.related.contacts')} ({contacts.length})</Text>
-            <Button type="link" icon={<PlusOutlined />} size="small">
+            <Button type="text" size="sm" icon={<PlusOutlined />}>
               Add Contact
             </Button>
           </div>
@@ -409,35 +421,27 @@ export const CustomerDetail: React.FC = () => {
       key: 'activity',
       label: t('customer.detail.tabs.activity'),
       children: (
-        <div style={{ padding: '16px 0' }}>
+        <div className="tab-content">
           {activityTimeline.map((item, index) => {
             const typeIcons: Record<string, React.ReactNode> = {
-              email: <MailOutlined style={{ color: colors.primary }} />,
-              call: <PhoneOutlined style={{ color: colors.success }} />,
-              meeting: <CalendarOutlined style={{ color: colors.warning }} />,
-              note: <FileTextOutlined style={{ color: colors.info }} />,
+              email: <MailOutlined className="timeline-icon-email" />,
+              call: <PhoneOutlined className="timeline-icon-call" />,
+              meeting: <CalendarOutlined className="timeline-icon-meeting" />,
+              note: <FileTextOutlined className="timeline-icon-note" />,
             };
             return (
-              <div
-                key={index}
-                style={{
-                  display: 'flex',
-                  gap: 12,
-                  padding: '12px 0',
-                  borderBottom: index < activityTimeline.length - 1 ? `1px solid ${colors.border.light}` : 'none',
-                }}
-              >
-                <div style={{ width: 32, height: 32, borderRadius: '50%', background: colors.background.default, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div key={index} className="timeline-item">
+                <div className="timeline-icon">
                   {typeIcons[item.type]}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <div className="timeline-content">
+                  <div className="timeline-header">
                     <Text strong>{item.title}</Text>
-                    <Text type="secondary" style={{ fontSize: 12 }}>{item.date}</Text>
+                    <Text type="secondary" className="timeline-date">{item.date}</Text>
                   </div>
-                  <Text type="secondary" style={{ fontSize: 13 }}>{item.description}</Text>
-                  <div style={{ marginTop: 4 }}>
-                    <Text type="secondary" style={{ fontSize: 12 }}>by {item.user}</Text>
+                  <Text type="secondary" className="timeline-desc">{item.description}</Text>
+                  <div className="timeline-meta">
+                    <Text type="secondary">by {item.user}</Text>
                   </div>
                 </div>
               </div>
@@ -451,140 +455,121 @@ export const CustomerDetail: React.FC = () => {
       label: (
         <span>
           {t('customer.detail.tabs.aiInsights')}
-          <Badge dot style={{ marginLeft: 4 }} />
+          <Badge dot className="ai-badge-dot" />
         </span>
       ),
       children: (
-        <div style={{ padding: '16px 0' }}>
-          <Space direction="vertical" style={{ width: '100%' }} size={16}>
+        <div className="tab-content">
+          <div className="ai-section">
             <CustomerSummaryAI customerId={id} customerName={customer.name} />
             <RelationshipChangeAI customerId={id} />
             <SmartSuggestionsAI customerId={id} />
             <RiskAlertAI customerId={id} />
-          </Space>
+          </div>
         </div>
       ),
     },
   ];
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="customer-detail-page">
       {/* Header */}
-      <div style={{ padding: '12px 16px', borderBottom: `1px solid ${colors.border.default}`, background: '#fff' }}>
+      <div className="detail-header">
         <Button type="text" icon={<ArrowLeftOutlined />} onClick={handleBack}>
           {t('customer.detail.backToList')}
         </Button>
       </div>
 
       {/* Main Content - Three Column Layout */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div className="detail-main">
         {/* Left Sidebar - Actions (240px) */}
-        <div
-          style={{
-            width: 240,
-            borderRight: `1px solid ${colors.border.default}`,
-            background: '#fff',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+        <div className="detail-sidebar-left">
           {/* Customer Avatar & Name */}
-          <div style={{ padding: 16, borderBottom: `1px solid ${colors.border.light}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+          <div className="sidebar-header">
+            <div className="customer-avatar-container">
               <Avatar
                 size={48}
+                className="customer-avatar"
                 style={{ background: levelColorMap[customer.level]?.color }}
               >
                 {customer.name.charAt(0)}
               </Avatar>
-              <div>
-                <Text strong style={{ display: 'block', fontSize: 15 }}>{customer.name}</Text>
-                <Space size={4}>
-                  <Tag style={{ background: levelColorMap[customer.level]?.bg, color: levelColorMap[customer.level]?.color, border: 'none', margin: 0 }}>
+              <div className="customer-info">
+                <Text strong className="customer-name">{customer.name}</Text>
+                <div className="customer-tags">
+                  <UIBadge 
+                    color={customer.level === 'A' ? 'danger' : customer.level === 'B' ? 'warning' : customer.level === 'C' ? 'info' : 'neutral'} 
+                    variant="soft" 
+                    size="sm"
+                  >
                     {customer.level}
-                  </Tag>
-                  <Tag color={statusColorMap[customer.status]} style={{ margin: 0 }}>
+                  </UIBadge>
+                  <UIBadge color={getStatusBadgeColor(customer.status)} variant="soft" size="sm">
                     {customer.status}
-                  </Tag>
-                </Space>
+                  </UIBadge>
+                </div>
               </div>
             </div>
-            <Text type="secondary" style={{ fontSize: 12 }}>
+            <Text type="secondary" className="customer-subtitle">
               {customer.industry} · {customer.companySize || 'Unknown Size'}
             </Text>
           </div>
 
           {/* Action Buttons */}
-          <div style={{ padding: 12, flex: 1, overflow: 'auto' }}>
-            <Space direction="vertical" style={{ width: '100%' }} size={4}>
-              {actionButtons.map((btn, index) => {
-                if ('divider' in btn && btn.divider) {
-                  return <Divider key={`divider-${index}`} style={{ margin: '8px 0' }} />;
-                }
-                return (
-                  <Button
-                    key={btn.key}
-                    type="text"
-                    icon={btn.icon}
-                    style={{
-                      width: '100%',
-                      justifyContent: 'flex-start',
-                      color: btn.danger ? colors.danger : undefined,
-                    }}
-                    onClick={btn.onClick}
-                  >
-                    {btn.label}
-                  </Button>
-                );
-              })}
-            </Space>
+          <div className="sidebar-actions">
+            {actionButtons.map((btn, index) => {
+              if ('divider' in btn && btn.divider) {
+                return <Divider key={`divider-${index}`} className="action-divider" />;
+              }
+              return (
+                <Button
+                  key={btn.key}
+                  type="text"
+                  icon={btn.icon}
+                  className={`action-btn ${btn.danger ? 'action-btn-danger' : ''}`}
+                  onClick={btn.onClick}
+                >
+                  {btn.label}
+                </Button>
+              );
+            })}
           </div>
         </div>
 
         {/* Middle Content - Tabs (flex: 1) */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', overflow: 'hidden' }}>
+        <div className="detail-content">
           <Tabs
             activeKey={activeTab}
             onChange={setActiveTab}
             items={tabItems}
-            style={{ flex: 1, overflow: 'hidden' }}
-            tabBarStyle={{ padding: '0 16px', marginBottom: 0 }}
             className="customer-detail-tabs"
           />
         </div>
 
         {/* Right Sidebar - Related Info (320px) */}
-        <div
-          style={{
-            width: 320,
-            borderLeft: `1px solid ${colors.border.default}`,
-            background: '#fff',
-            overflow: 'auto',
-            padding: 16,
-          }}
-        >
+        <div className="detail-sidebar-right">
           {/* Company Info Card */}
           <Card
             size="small"
             title={
-              <Space>
-                <TeamOutlined style={{ color: colors.primary }} />
+              <span className="sidebar-card-title">
+                <TeamOutlined className="sidebar-card-icon-primary" />
                 <span>{t('customer.detail.related.company')}</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 12 } }}
-            style={{ marginBottom: 12 }}
+            className="sidebar-card"
           >
-            <div style={{ marginBottom: 8 }}>
-              <Text type="secondary" style={{ fontSize: 12 }}>Company</Text>
+            <div className="card-info-item">
+              <Text type="secondary" className="card-info-label">Company</Text>
               <div><Text strong>{customer.name}</Text></div>
             </div>
-            <div style={{ marginBottom: 8 }}>
-              <Text type="secondary" style={{ fontSize: 12 }}>Industry</Text>
+            <div className="card-info-item">
+              <Text type="secondary" className="card-info-label">Industry</Text>
               <div><Tag>{customer.industry}</Tag></div>
             </div>
-            <div>
-              <Text type="secondary" style={{ fontSize: 12 }}>Size</Text>
+            <div className="card-info-item">
+              <Text type="secondary" className="card-info-label">Size</Text>
               <div><Text>{customer.companySize || '-'}</Text></div>
             </div>
           </Card>
@@ -593,33 +578,26 @@ export const CustomerDetail: React.FC = () => {
           <Card
             size="small"
             title={
-              <Space>
-                <BulbOutlined style={{ color: colors.warning }} />
+              <span className="sidebar-card-title">
+                <BulbOutlined className="sidebar-card-icon-warning" />
                 <span>{t('customer.detail.related.deals')} ({relatedDeals.length})</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 0 } }}
-            style={{ marginBottom: 12 }}
+            className="sidebar-card"
           >
             {relatedDeals.map((deal, index) => (
-              <div
-                key={deal.id}
-                style={{
-                  padding: '10px 12px',
-                  borderBottom: index < relatedDeals.length - 1 ? `1px solid ${colors.border.light}` : 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text strong style={{ fontSize: 13 }}>{deal.name}</Text>
-                  <Text strong style={{ color: colors.primary, fontSize: 13 }}>
+              <div key={deal.id} className="deal-item">
+                <div className="deal-header">
+                  <Text strong className="deal-name">{deal.name}</Text>
+                  <Text strong className="deal-amount">
                     {formatCurrency(deal.amount, 'USD', 'en')}
                   </Text>
                 </div>
-                <Space size={8}>
-                  <Tag style={{ margin: 0, fontSize: 11 }}>{deal.stage}</Tag>
-                  <Text type="secondary" style={{ fontSize: 12 }}>{deal.probability}%</Text>
-                </Space>
+                <div className="deal-meta">
+                  <Tag className="deal-stage">{deal.stage}</Tag>
+                  <Text type="secondary">{deal.probability}%</Text>
+                </div>
               </div>
             ))}
           </Card>
@@ -628,33 +606,27 @@ export const CustomerDetail: React.FC = () => {
           <Card
             size="small"
             title={
-              <Space>
-                <CheckCircleOutlined style={{ color: colors.info }} />
+              <span className="sidebar-card-title">
+                <CheckCircleOutlined className="sidebar-card-icon-info" />
                 <span>{t('customer.detail.related.tickets')} ({relatedTickets.length})</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 0 } }}
-            style={{ marginBottom: 12 }}
+            className="sidebar-card"
           >
-            {relatedTickets.map((ticket, index) => (
-              <div
-                key={ticket.id}
-                style={{
-                  padding: '10px 12px',
-                  borderBottom: index < relatedTickets.length - 1 ? `1px solid ${colors.border.light}` : 'none',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: 13 }}>{ticket.title}</Text>
+            {relatedTickets.map((ticket) => (
+              <div key={ticket.id} className="ticket-item">
+                <div className="ticket-header">
+                  <Text>{ticket.title}</Text>
                 </div>
-                <Space size={8}>
-                  <Tag color={ticket.status === 'Open' ? 'processing' : 'default'} style={{ margin: 0, fontSize: 11 }}>
+                <div className="ticket-meta">
+                  <Tag color={ticket.status === 'Open' ? 'processing' : 'default'} className="ticket-status">
                     {ticket.status}
                   </Tag>
-                  <Tag color={ticket.priority === 'High' ? 'red' : 'orange'} style={{ margin: 0, fontSize: 11 }}>
+                  <Tag color={ticket.priority === 'High' ? 'red' : 'orange'} className="ticket-priority">
                     {ticket.priority}
                   </Tag>
-                </Space>
+                </div>
               </div>
             ))}
           </Card>
@@ -663,34 +635,29 @@ export const CustomerDetail: React.FC = () => {
           <Card
             size="small"
             title={
-              <Space>
-                <UserOutlined style={{ color: colors.success }} />
+              <span className="sidebar-card-title">
+                <UserOutlined className="sidebar-card-icon-success" />
                 <span>{t('customer.detail.related.contacts')} ({contacts.length})</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 0 } }}
+            className="sidebar-card"
           >
-            {contacts.slice(0, 3).map((contact, index) => (
-              <div
-                key={contact.id}
-                style={{
-                  padding: '10px 12px',
-                  borderBottom: index < Math.min(contacts.length, 3) - 1 ? `1px solid ${colors.border.light}` : 'none',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            {contacts.slice(0, 3).map((contact) => (
+              <div key={contact.id} className="contact-item">
+                <div className="contact-header">
                   <Avatar size="small" icon={<UserOutlined />} />
-                  <Text strong style={{ fontSize: 13 }}>{contact.name}</Text>
+                  <Text strong className="contact-name">{contact.name}</Text>
                   {contact.decisionRole === '决策者' && (
-                    <Tag color="red" style={{ margin: 0, fontSize: 11 }}>Decision Maker</Tag>
+                    <Tag color="red" className="contact-role">Decision Maker</Tag>
                   )}
                 </div>
-                <Text type="secondary" style={{ fontSize: 12 }}>{contact.position}</Text>
+                <Text type="secondary" className="contact-position">{contact.position}</Text>
               </div>
             ))}
             {contacts.length > 3 && (
-              <div style={{ padding: '8px 12px', textAlign: 'center' }}>
-                <Button type="link" size="small">
+              <div className="contact-more">
+                <Button type="text" size="sm">
                   View All {contacts.length} Contacts
                 </Button>
               </div>
@@ -710,6 +677,7 @@ export const CustomerDetail: React.FC = () => {
         width={600}
         destroyOnHidden
         forceRender
+        className="customer-modal"
       >
         <Form form={form} layout="vertical" onFinish={handleEditSubmit}>
           <Form.Item name="name" label="Customer Name" rules={[{ required: true }]}>
@@ -717,20 +685,20 @@ export const CustomerDetail: React.FC = () => {
           </Form.Item>
           <Form.Item name="industry" label="Industry" rules={[{ required: true }]}>
             <Select placeholder="Select industry" options={[
-              { label: 'Technology/Software/IT Services', value: 'Technology/Software/IT Services' },
-              { label: 'Manufacturing', value: 'Manufacturing' },
-              { label: 'Finance', value: 'Finance' },
-              { label: 'Other', value: 'Other' },
+              { value: 'Technology/Software/IT Services', label: 'Technology/Software/IT Services' },
+              { value: 'Manufacturing', label: 'Manufacturing' },
+              { value: 'Finance', label: 'Finance' },
+              { value: 'Other', label: 'Other' },
             ]} />
           </Form.Item>
           <Form.Item name="companySize" label="Company Size">
-            <Select placeholder="Select company size">
-              <Select.Option value="Micro">Micro (1-20)</Select.Option>
-              <Select.Option value="Small">Small (21-100)</Select.Option>
-              <Select.Option value="Medium">Medium (101-500)</Select.Option>
-              <Select.Option value="Large">Large (501-2000)</Select.Option>
-              <Select.Option value="Enterprise">Enterprise (2000+)</Select.Option>
-            </Select>
+            <Select placeholder="Select company size" options={[
+              { value: 'Micro', label: 'Micro (1-20)' },
+              { value: 'Small', label: 'Small (21-100)' },
+              { value: 'Medium', label: 'Medium (101-500)' },
+              { value: 'Large', label: 'Large (501-2000)' },
+              { value: 'Enterprise', label: 'Enterprise (2000+)' },
+            ]} />
           </Form.Item>
           <Form.Item name="level" label="Customer Level">
             <Radio.Group>
@@ -741,23 +709,23 @@ export const CustomerDetail: React.FC = () => {
             </Radio.Group>
           </Form.Item>
           <Form.Item name="status" label="Customer Status">
-            <Select placeholder="Select status">
-              <Select.Option value="意向">{t('customer.list.statusOptions.interested')}</Select.Option>
-              <Select.Option value="谈判">{t('customer.list.statusOptions.negotiating')}</Select.Option>
-              <Select.Option value="成交">{t('customer.list.statusOptions.closed')}</Select.Option>
-              <Select.Option value="流失">{t('customer.list.statusOptions.churned')}</Select.Option>
-            </Select>
+            <Select placeholder="Select status" options={[
+              { value: '意向', label: t('customer.list.statusOptions.interested') },
+              { value: '谈判', label: t('customer.list.statusOptions.negotiating') },
+              { value: '成交', label: t('customer.list.statusOptions.closed') },
+              { value: '流失', label: t('customer.list.statusOptions.churned') },
+            ]} />
           </Form.Item>
           <Form.Item name="phone" label="Phone">
             <Input placeholder="Enter phone number" />
           </Form.Item>
           <Form.Item name="address" label="Address">
-            <Input.TextArea rows={2} placeholder="Enter address" />
+            <AntInput.TextArea rows={2} placeholder="Enter address" />
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Add CSS for tabs */}
+      {/* CSS for tabs */}
       <style>{`
         .customer-detail-tabs .ant-tabs-content {
           height: 100%;

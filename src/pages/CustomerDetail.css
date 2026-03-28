@@ -1,0 +1,504 @@
+/**
+ * CustomerDetail 样式 - 出海 CRM 设计系统
+ * 客户详情页面样式
+ * 三栏布局：左侧操作栏(240px) + 中间内容区(flex) + 右侧相关信息(320px)
+ */
+
+/* ==================== 页面布局 ==================== */
+.customer-detail-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-default);
+}
+
+.customer-detail-empty {
+  padding: var(--spacing-6);
+  text-align: center;
+}
+
+/* ==================== 顶部栏 ==================== */
+.detail-header {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-paper);
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.back-button:hover {
+  color: var(--brand-600);
+}
+
+/* ==================== 三栏布局 ==================== */
+.detail-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-paper);
+  overflow: hidden;
+}
+
+/* ==================== 左侧边栏 ==================== */
+.detail-sidebar-left {
+  width: 240px;
+  border-right: 1px solid var(--border-default);
+  background: var(--bg-paper);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.customer-avatar-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+}
+
+.customer-avatar {
+  flex-shrink: 0;
+}
+
+.customer-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.customer-name {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  display: block;
+}
+
+.customer-tags {
+  display: flex;
+  gap: var(--spacing-1);
+}
+
+.customer-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* ==================== 操作按钮区 ==================== */
+.sidebar-actions {
+  padding: var(--spacing-3);
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.action-divider {
+  margin: var(--spacing-2) 0;
+}
+
+.action-btn {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.action-btn-danger {
+  color: var(--danger-600);
+}
+
+/* ==================== Tab 内容 ==================== */
+.tab-content {
+  padding: var(--spacing-4) 0;
+}
+
+.customer-detail-tabs .ant-tabs-nav {
+  padding: 0 var(--spacing-4);
+  margin-bottom: 0;
+}
+
+.customer-detail-tabs .ant-tabs-content-holder {
+  overflow: auto;
+}
+
+/* ==================== 信息网格 ==================== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3) var(--spacing-4);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.info-item-full {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.info-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* ==================== 联系信息 ==================== */
+.contact-link {
+  color: var(--brand-600);
+}
+
+.contact-icon {
+  margin-right: var(--spacing-1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-3);
+}
+
+/* ==================== 右侧边栏 ==================== */
+.detail-sidebar-right {
+  width: 320px;
+  border-left: 1px solid var(--border-default);
+  background: var(--bg-paper);
+  overflow-y: auto;
+  padding: var(--spacing-4);
+}
+
+/* ==================== 侧边栏卡片 ==================== */
+.sidebar-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  margin-bottom: var(--spacing-3);
+}
+
+.sidebar-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.sidebar-card-icon-primary {
+  color: var(--brand-500);
+}
+
+.sidebar-card-icon-warning {
+  color: var(--warning-500);
+}
+
+.sidebar-card-icon-info {
+  color: var(--info-500);
+}
+
+.sidebar-card-icon-success {
+  color: var(--success-500);
+}
+
+.card-info-item {
+  margin-bottom: var(--spacing-2);
+}
+
+.card-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.card-info-label {
+  font-size: var(--text-xs);
+}
+
+/* ==================== 商机项 ==================== */
+.deal-item {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+}
+
+.deal-item:last-child {
+  border-bottom: none;
+}
+
+.deal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-1);
+}
+
+.deal-name {
+  font-size: var(--text-sm);
+}
+
+.deal-amount {
+  color: var(--brand-600);
+  font-size: var(--text-sm);
+}
+
+.deal-meta {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
+}
+
+.deal-stage {
+  margin: 0;
+  font-size: var(--text-xs);
+}
+
+/* ==================== 工单项 ==================== */
+.ticket-item {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.ticket-item:last-child {
+  border-bottom: none;
+}
+
+.ticket-header {
+  margin-bottom: var(--spacing-1);
+}
+
+.ticket-meta {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.ticket-status,
+.ticket-priority {
+  margin: 0;
+  font-size: var(--text-xs);
+}
+
+/* ==================== 联系人项 ==================== */
+.contact-item {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-1);
+}
+
+.contact-name {
+  font-size: var(--text-sm);
+}
+
+.contact-role {
+  margin: 0;
+  font-size: var(--text-xs);
+}
+
+.contact-position {
+  font-size: var(--text-xs);
+}
+
+.contact-more {
+  padding: var(--spacing-2) var(--spacing-3);
+  text-align: center;
+}
+
+/* ==================== 信息折叠面板 ==================== */
+.info-collapse {
+  border: none;
+  background: transparent;
+}
+
+.info-collapse .ant-collapse-item {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.info-collapse .ant-collapse-header {
+  padding: var(--spacing-3) 0;
+  font-weight: var(--font-semibold);
+}
+
+.info-collapse .ant-collapse-content {
+  padding: 0 0 var(--spacing-3);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3) var(--spacing-4);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.info-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.info-value {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.info-value.link {
+  color: var(--brand-600);
+  cursor: pointer;
+}
+
+.info-value.link:hover {
+  text-decoration: underline;
+}
+
+/* ==================== 时间线 ==================== */
+.timeline-item {
+  display: flex;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--neutral-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timeline-icon-email {
+  color: var(--brand-500);
+}
+
+.timeline-icon-call {
+  color: var(--success-500);
+}
+
+.timeline-icon-meeting {
+  color: var(--warning-500);
+}
+
+.timeline-icon-note {
+  color: var(--info-500);
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-1);
+}
+
+.timeline-date {
+  font-size: var(--text-xs);
+}
+
+.timeline-desc {
+  font-size: var(--text-sm);
+}
+
+.timeline-meta {
+  margin-top: var(--spacing-1);
+}
+
+/* ==================== AI 区域 ==================== */
+.ai-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.ai-badge-dot {
+  margin-left: var(--spacing-1);
+}
+
+/* ==================== 弹窗样式 ==================== */
+.customer-modal .ant-modal-header {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-4) var(--spacing-6);
+}
+
+.customer-modal .ant-modal-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.customer-modal .ant-modal-body {
+  padding: var(--spacing-6);
+}
+
+.customer-modal .ant-modal-footer {
+  border-top: 1px solid var(--border-light);
+  padding: var(--spacing-4) var(--spacing-6);
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 1024px) {
+  .detail-sidebar-right {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-sidebar-left {
+    display: none;
+  }
+  
+  .detail-content {
+    flex-direction: column;
+  }
+  
+  .detail-main {
+    width: 100%;
+  }
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .action-button,
+  .related-item {
+    transition: none;
+  }
+}

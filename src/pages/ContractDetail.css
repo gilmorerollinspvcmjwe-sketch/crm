@@ -1,0 +1,328 @@
+/**
+ * ContractDetail 样式 - 出海 CRM 设计系统
+ * 合同详情页面样式
+ * 三栏布局：左侧操作栏(240px) + 中间内容区(flex) + 右侧相关信息(320px)
+ */
+
+/* ==================== 页面布局 ==================== */
+.contract-detail-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-default);
+}
+
+.contract-detail-empty {
+  padding: var(--spacing-6);
+  text-align: center;
+}
+
+/* ==================== 顶部栏 ==================== */
+.detail-header {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-paper);
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.back-button:hover {
+  color: var(--brand-600);
+}
+
+/* ==================== 三栏布局 ==================== */
+.detail-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-paper);
+  overflow: hidden;
+}
+
+/* ==================== 左侧边栏 ==================== */
+.detail-sidebar-left {
+  width: 240px;
+  border-right: 1px solid var(--border-default);
+  background: var(--bg-paper);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.contract-avatar-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+}
+
+.contract-avatar {
+  flex-shrink: 0;
+  background: var(--brand-100);
+  color: var(--brand-600);
+}
+
+.contract-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.contract-name {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  display: block;
+}
+
+.contract-tags {
+  display: flex;
+  gap: var(--spacing-1);
+}
+
+.contract-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* ==================== 操作按钮区 ==================== */
+.sidebar-actions {
+  padding: var(--spacing-3);
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.action-divider {
+  margin: var(--spacing-2) 0;
+}
+
+.action-btn {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* ==================== Tab 内容 ==================== */
+.tab-content {
+  padding: var(--spacing-4);
+  overflow-y: auto;
+}
+
+.contract-detail-tabs .ant-tabs-nav {
+  padding: 0 var(--spacing-4);
+  margin-bottom: 0;
+}
+
+.contract-detail-tabs .ant-tabs-content-holder {
+  overflow: auto;
+}
+
+/* ==================== 信息卡片 ==================== */
+.info-card {
+  margin-bottom: var(--spacing-4);
+}
+
+.info-card .ant-card-head-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+}
+
+/* ==================== 信息网格 ==================== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3) var(--spacing-4);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.info-item-full {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.info-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.info-value {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.info-value.link {
+  color: var(--brand-600);
+  cursor: pointer;
+}
+
+.info-value.link:hover {
+  text-decoration: underline;
+}
+
+/* ==================== 付款进度 ==================== */
+.payment-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2);
+}
+
+/* ==================== 右侧边栏 ==================== */
+.detail-sidebar-right {
+  width: 320px;
+  border-left: 1px solid var(--border-default);
+  background: var(--bg-paper);
+  overflow-y: auto;
+  padding: var(--spacing-4);
+}
+
+/* ==================== 侧边栏卡片 ==================== */
+.sidebar-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  margin-bottom: var(--spacing-3);
+  padding: var(--spacing-3);
+}
+
+.sidebar-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.sidebar-card-icon-primary {
+  color: var(--brand-500);
+}
+
+.sidebar-card-icon-warning {
+  color: var(--warning-500);
+}
+
+.sidebar-card-icon-info {
+  color: var(--info-500);
+}
+
+.sidebar-card-icon-success {
+  color: var(--success-500);
+}
+
+.card-info-item {
+  margin-bottom: var(--spacing-2);
+}
+
+.card-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.card-info-label {
+  font-size: var(--text-xs);
+}
+
+/* ==================== 关联项 ==================== */
+.related-item {
+  padding: var(--spacing-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.related-item:hover {
+  background: var(--bg-hover);
+}
+
+.related-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.related-arrow {
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.related-subtitle {
+  font-size: var(--text-xs);
+}
+
+/* ==================== 弹窗样式 ==================== */
+.contract-modal .ant-modal-header {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-4) var(--spacing-6);
+}
+
+.contract-modal .ant-modal-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.contract-modal .ant-modal-body {
+  padding: var(--spacing-6);
+}
+
+.contract-modal .ant-modal-footer {
+  border-top: 1px solid var(--border-light);
+  padding: var(--spacing-4) var(--spacing-6);
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 1024px) {
+  .detail-sidebar-right {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-sidebar-left {
+    display: none;
+  }
+
+  .detail-content {
+    flex-direction: column;
+  }
+
+  .detail-main {
+    width: 100%;
+  }
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .action-btn,
+  .related-item {
+    transition: none;
+  }
+}

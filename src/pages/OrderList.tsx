@@ -348,7 +348,7 @@ export const OrderList: React.FC = () => {
               placeholder={t('order.searchPlaceholder')}
               prefix={<SearchOutlined />}
               value={filters.search}
-              onChange={e => setFilters({ ...filters, search: e.target.value })}
+              onChange={value => setFilters({ ...filters, search: value })}
               style={{ width: 220 }}
               allowClear
             />
@@ -357,7 +357,7 @@ export const OrderList: React.FC = () => {
             <Select
               placeholder={t('order.statusPlaceholder')}
               value={filters.status || undefined}
-              onChange={status => setFilters({ ...filters, status: status || '' })}
+              onChange={status => setFilters({ ...filters, status: (Array.isArray(status) ? status[0] : status) || '' })}
               style={{ width: 140 }}
               allowClear
               options={[
@@ -405,7 +405,7 @@ export const OrderList: React.FC = () => {
               </Button>
               {selectedRowKeys.length > 0 && (
                 <>
-                  <Button icon={<DeleteOutlined />} danger onClick={handleBatchDelete}>
+                  <Button type="danger" icon={<DeleteOutlined />} onClick={handleBatchDelete}>
                     {t('common.delete')} ({selectedRowKeys.length})
                   </Button>
                 </>

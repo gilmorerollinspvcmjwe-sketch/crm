@@ -1,366 +1,577 @@
-import React, { useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Descriptions, Tag, Space, Button, Typography, Divider, Table, message, Modal, Progress, Timeline } from 'antd';
-import { ArrowLeftOutlined, EditOutlined, CheckCircleOutlined, CiOutlined as ArchiveOutlined, DeleteOutlined } from '@ant-design/icons';
+/**
+ * Contract Detail Page - HubSpot Style Three-Column Layout
+ * 
+ * Layout:
+ * - Left Sidebar (240px): Contract info + Action buttons
+ * - Middle Content (flex: 1): Tabs with Overview/Payment Plans/Attachments
+ * - Right Sidebar (320px): Related information cards
+ * 
+ * Refactored with new UI design system
+ */
+import React, { useState, useEffect } from 'react';
+import {
+  Card,
+  Tabs,
+  Tag,
+  Table,
+  message,
+  Modal,
+  Form,
+  Typography,
+  Avatar,
+  Divider,
+  Tooltip,
+  Collapse,
+  Progress,
+  Empty,
+  List,
+} from 'antd';
+import {
+  ArrowLeftOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  FileTextOutlined,
+  ClockCircleOutlined,
+  UserOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DollarOutlined,
+  CalendarOutlined,
+  RightOutlined,
+  FilePdfOutlined,
+  FileOutlined,
+  UploadOutlined,
+  BankOutlined,
+  SafetyOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { Badge } from '../components/ui/Badge';
+import { getContractById, contractStatusColors, contractStatusLabels } from '../mock/contractData';
 import { Contract, ContractStatus, PaymentPlan } from '../types/contract';
-import { contractData } from '../mock/contractData';
+import { colors } from '../styles/tokens';
+import { formatDate, formatCurrency } from '../utils/format';
+import './ContractDetail.css';
 
-const { Title, Text, Paragraph } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
-// 状态颜色配置
-const STATUS_COLORS: Record<ContractStatus, string> = {
-  [ContractStatus.DRAFT]: 'default',
-  [ContractStatus.PENDING_APPROVAL]: 'processing',
-  [ContractStatus.ACTIVE]: 'success',
-  [ContractStatus.ARCHIVED]: 'blue',
-  [ContractStatus.TERMINATED]: 'red'
+/** Contract status badge color */
+const getStatusBadgeColor = (status: ContractStatus): 'brand' | 'success' | 'warning' | 'danger' | 'neutral' => {
+  const colorMap: Record<ContractStatus, 'brand' | 'success' | 'warning' | 'danger' | 'neutral'> = {
+    [ContractStatus.DRAFT]: 'neutral',
+    [ContractStatus.PENDING_APPROVAL]: 'warning',
+    [ContractStatus.ACTIVE]: 'success',
+    [ContractStatus.ARCHIVED]: 'neutral',
+    [ContractStatus.TERMINATED]: 'danger',
+  };
+  return colorMap[status] || 'neutral';
 };
 
-// 回款计划状态颜色
-const PAYMENT_STATUS_COLORS: Record<string, string> = {
-  PENDING: 'default',
-  PARTIAL: 'orange',
-  COMPLETED: 'green',
-  OVERDUE: 'red'
+/** Payment plan status badge color */
+const getPaymentStatusBadgeColor = (status: string): 'brand' | 'success' | 'warning' | 'danger' | 'neutral' => {
+  const colorMap: Record<string, 'brand' | 'success' | 'warning' | 'danger' | 'neutral'> = {
+    'PENDING': 'neutral',
+    'PARTIAL': 'warning',
+    'COMPLETED': 'success',
+    'OVERDUE': 'danger',
+  };
+  return colorMap[status] || 'neutral';
 };
 
 /**
- * 合同详情页
- * 功能：
- * - 基本信息展示
- * - 合同条款展示
- * - 关联信息：关联商机、回款计划
- * - 操作按钮：编辑、提交审批、归档、删除
+ * Contract Detail Page Component
  */
 export const ContractDetail: React.FC = () => {
   const { t } = useTranslation();
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
+  const [contract, setContract] = useState<Contract | null>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
-  // 查找合同数据
-  const contract = useMemo(() => {
-    return contractData.find(c => c.id === id);
+  /** Load contract detail */
+  const loadContractDetail = () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const data = getContractById(id);
+      if (data) {
+        setContract(data);
+      } else {
+        message.error('Contract not found');
+      }
+    } catch (error) {
+      message.error('Failed to load contract details');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /** Initial load */
+  useEffect(() => {
+    loadContractDetail();
   }, [id]);
 
-  // 格式化金额
-  const formatAmount = (amount: number) => {
-    return `¥${(amount / 10000).toFixed(1)}万`;
-  };
-
-  // 格式化日期
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('zh-CN');
-  };
-
-  // 处理返回
+  /** Back to list */
   const handleBack = () => {
     navigate('/contract/list');
   };
 
-  // 处理编辑
+  /** Edit contract */
   const handleEdit = () => {
-    message.info(`${t('common.actions.edit')}：${id}`);
-    // TODO: 打开编辑表单
+    setEditModalVisible(true);
   };
 
-  // 处理提交审批
-  const handleSubmitApproval = () => {
-    Modal.confirm({
-      title: t('contract.detail.submitApprovalConfirm'),
-      content: t('contract.detail.submitApprovalContent'),
-      okText: t('common.actions.confirm'),
-      cancelText: t('common.actions.cancel'),
-      onOk: () => {
-        message.success(t('common.messages.operationSuccess'));
-        // TODO: 调用审批 API
-      }
-    });
+  /** Calculate payment progress */
+  const getPaymentProgress = () => {
+    if (!contract || !contract.paymentPlans) return 0;
+    const totalPlanned = contract.paymentPlans.reduce((sum, p) => sum + p.plannedAmount, 0);
+    const totalPaid = contract.paymentPlans.reduce((sum, p) => sum + (p.actualAmount || 0), 0);
+    return totalPlanned > 0 ? Math.round((totalPaid / totalPlanned) * 100) : 0;
   };
 
-  // 处理归档
-  const handleArchive = () => {
-    Modal.confirm({
-      title: t('contract.detail.archiveConfirm'),
-      content: t('contract.detail.archiveContent'),
-      okText: t('common.actions.confirm'),
-      cancelText: t('common.actions.cancel'),
-      onOk: () => {
-        message.success(t('contract.list.archiveSuccess'));
-        // TODO: 调用归档 API
-      }
-    });
-  };
-
-  // 处理删除
-  const handleDelete = () => {
-    Modal.confirm({
-      title: t('contract.detail.deleteConfirm'),
-      content: t('contract.detail.deleteContent'),
-      okText: t('common.actions.confirm'),
-      cancelText: t('common.actions.cancel'),
-      onOk: () => {
-        message.success(t('common.messages.deleteSuccess'));
-        // TODO: 调用删除 API
-      }
-    });
-  };
-
-  // 如果没有找到合同
-  if (!contract) {
-    return (
-      <div style={{ padding: 24 }}>
-        <Card>
-          <Title level={3}>{t('contract.detail.notFound')}</Title>
-          <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-            {t('contract.detail.back')}
-          </Button>
-        </Card>
-      </div>
-    );
-  }
-
-  // 回款计划状态文本
-  const getPaymentStatusText = (status: string) => {
-    const statusMap: Record<string, string> = {
-      PENDING: t('contract.paymentPlan.pending'),
-      PARTIAL: t('contract.paymentPlan.partial'),
-      COMPLETED: t('contract.paymentPlan.completed'),
-      OVERDUE: t('contract.paymentPlan.overdue')
-    };
-    return statusMap[status] || status;
-  };
-
-  // 回款计划表格列
-  const paymentPlanColumns = [
+  /** Payment plan columns */
+  const paymentColumns = [
     {
-      title: t('contract.paymentPlan.installment'),
+      title: t('contract.installmentNumber'),
       dataIndex: 'installmentNumber',
       key: 'installmentNumber',
       width: 80,
-      render: (num: number) => t('contract.paymentPlan.installmentFormat', { num })
+      render: (num: number) => `第 ${num} 期`,
     },
     {
-      title: t('contract.paymentPlan.plannedAmount'),
+      title: t('contract.plannedAmount'),
       dataIndex: 'plannedAmount',
       key: 'plannedAmount',
       width: 120,
-      render: (amount: number) => formatAmount(amount)
+      render: (amount: number) => formatCurrency(amount),
     },
     {
-      title: t('contract.paymentPlan.plannedDate'),
+      title: t('contract.plannedDate'),
       dataIndex: 'plannedDate',
       key: 'plannedDate',
       width: 120,
-      render: (date: string) => formatDate(date)
+      render: (date: string) => formatDate(date),
     },
     {
-      title: t('contract.paymentPlan.actualAmount'),
+      title: t('contract.paymentCondition'),
+      dataIndex: 'paymentCondition',
+      key: 'paymentCondition',
+      ellipsis: true,
+    },
+    {
+      title: t('contract.actualAmount'),
       dataIndex: 'actualAmount',
       key: 'actualAmount',
       width: 120,
-      render: (amount?: number) => amount ? formatAmount(amount) : '-'
+      render: (amount?: number) => amount ? formatCurrency(amount) : '-',
     },
     {
-      title: t('contract.paymentPlan.actualDate'),
+      title: t('contract.actualDate'),
       dataIndex: 'actualDate',
       key: 'actualDate',
       width: 120,
-      render: (date?: string) => date ? formatDate(date) : '-'
+      render: (date?: string) => date ? formatDate(date) : '-',
     },
     {
-      title: t('contract.paymentPlan.paymentCondition'),
-      dataIndex: 'paymentCondition',
-      key: 'paymentCondition',
-      ellipsis: true
-    },
-    {
-      title: t('contract.paymentPlan.status'),
+      title: t('contract.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
       render: (status: string) => (
-        <Tag color={PAYMENT_STATUS_COLORS[status]}>
-          {getPaymentStatusText(status)}
-        </Tag>
-      )
-    }
+        <Badge color={getPaymentStatusBadgeColor(status)}>
+          {status === 'PENDING' ? '待付款' : 
+           status === 'PARTIAL' ? '部分付款' :
+           status === 'COMPLETED' ? '已完成' : '已逾期'}
+        </Badge>
+      ),
+    },
   ];
 
-  // 计算回款进度
-  const completedPayments = contract.paymentPlans.filter(p => p.status === 'COMPLETED').length;
-  const totalPayments = contract.paymentPlans.length;
-  const paymentProgress = totalPayments > 0 ? Math.round((completedPayments / totalPayments) * 100) : 0;
-  const paidAmount = contract.paymentPlans
-    .filter(p => p.status === 'COMPLETED')
-    .reduce((sum, p) => sum + (p.actualAmount || p.plannedAmount), 0);
+  if (!contract) {
+    return (
+      <div className="contract-detail-page">
+        <div className="contract-detail-empty">
+          <Empty description={t('contract.notFound')} />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: 24 }}>
-      {/* 头部操作区 */}
-      <Card style={{ marginBottom: 16 }}>
-        <Space style={{ justifyContent: 'space-between', width: '100%', display: 'flex' }}>
-          <Space>
-            <Button onClick={handleBack} icon={<ArrowLeftOutlined />}>
-              {t('contract.detail.back')}
-            </Button>
-            <Title level={3} style={{ margin: 0 }}>{contract.name}</Title>
-          </Space>
-          <Space>
-            {contract.status === ContractStatus.DRAFT && (
-              <>
-                <Button icon={<EditOutlined />} onClick={handleEdit}>
-                  {t('contract.detail.edit')}
-                </Button>
-                <Button type="primary" icon={<CheckCircleOutlined />} onClick={handleSubmitApproval}>
-                  {t('contract.detail.submitApproval')}
-                </Button>
-              </>
-            )}
-            {contract.status === ContractStatus.ACTIVE && (
-              <Button icon={<ArchiveOutlined />} onClick={handleArchive}>
-                {t('contract.detail.archive')}
-              </Button>
-            )}
-            <Button danger icon={<DeleteOutlined />} onClick={handleDelete}>
-              {t('contract.detail.delete')}
-            </Button>
-          </Space>
-        </Space>
-      </Card>
+    <div className="contract-detail-page">
+      {/* Header */}
+      <div className="detail-header">
+        <div className="back-button" onClick={handleBack}>
+          <ArrowLeftOutlined />
+          <span>{t('contract.backToList')}</span>
+        </div>
+      </div>
 
-      {/* 基本信息 */}
-      <Card title={t('contract.detail.basicInfo')} style={{ marginBottom: 16 }}>
-        <Descriptions column={3} bordered>
-          <Descriptions.Item label={t('contract.detail.contractName')}>{contract.name}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.contractNumber')}>
-            <Text code>{contract.contractNumber}</Text>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.contractType')}>
-            <Tag>{contract.type}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.customerName')}>{contract.customerName}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.opportunityName')}>
-            {contract.opportunityName || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.amount')}>
-            <Text strong style={{ color: '#faad14' }}>{formatAmount(contract.amount)}</Text>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.currency')}>{contract.currency}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.signingDate')}>{formatDate(contract.signingDate)}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.effectiveDate')}>{formatDate(contract.effectiveDate)}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.expirationDate')}>{contract.expirationDate ? formatDate(contract.expirationDate) : '-'}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.contractPeriod')}>{contract.contractPeriod ? `${contract.contractPeriod}${t('common.unit.months')}` : '-'}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.status')}>
-            <Tag color={STATUS_COLORS[contract.status]}>{contract.status}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.ownerName')}>{contract.ownerName}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.signerOurSide')}>{contract.signerOurSide}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.signerCustomerSide')}>{contract.signerCustomerSide || '-'}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.createdAt')}>{formatDate(contract.createdAt)}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.updatedAt')}>{formatDate(contract.updatedAt)}</Descriptions.Item>
-          {contract.archivedAt && (
-            <Descriptions.Item label={t('contract.detail.archivedAt')}>{formatDate(contract.archivedAt)}</Descriptions.Item>
-          )}
-          {contract.archivedBy && (
-            <Descriptions.Item label={t('contract.detail.archivedBy')}>{contract.archivedBy}</Descriptions.Item>
-          )}
-          <Descriptions.Item label={t('contract.detail.remarks')} span={3}>
-            {contract.remarks || '-'}
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
-
-      {/* 回款进度 */}
-      <Card title={t('contract.detail.paymentProgress')} style={{ marginBottom: 16 }}>
-        <Space style={{ marginBottom: 16 }}>
-          <Progress
-            type="circle"
-            percent={paymentProgress}
-            strokeColor={paymentProgress === 100 ? '#52c41a' : '#1890ff'}
-            format={() => `${paymentProgress}%`}
-          />
-          <div>
-            <div style={{ fontSize: 16, marginBottom: 8 }}>
-              {t('contract.detail.paidAmount')}：<Text strong style={{ color: '#52c41a' }}>{formatAmount(paidAmount)}</Text>
-              {' / '}
-              {t('contract.detail.totalAmount')}：<Text strong>{formatAmount(contract.amount)}</Text>
+      {/* Main Content - Three Column Layout */}
+      <div className="detail-main">
+        {/* Left Sidebar - Contract Info */}
+        <div className="detail-sidebar-left">
+          <div className="sidebar-header">
+            <div className="contract-avatar-container">
+              <Avatar size={48} icon={<FileTextOutlined />} className="contract-avatar" />
+              <div className="contract-info">
+                <span className="contract-name">{contract.name}</span>
+                <div className="contract-tags">
+                  <Badge color={getStatusBadgeColor(contract.status)}>
+                    {contract.status}
+                  </Badge>
+                </div>
+              </div>
             </div>
-            <div style={{ color: '#666' }}>
-              {t('contract.detail.paymentPeriods')}：{completedPayments} / {totalPayments} 期
+            <Text className="contract-subtitle" type="secondary">
+              {contract.contractNumber}
+            </Text>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="sidebar-actions">
+            <Divider className="action-divider" />
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={handleEdit}
+              className="action-btn"
+            >
+              {t('common.edit')}
+            </Button>
+            <Button
+              type="secondary"
+              icon={<DownloadOutlined />}
+              className="action-btn"
+            >
+              {t('contract.download')}
+            </Button>
+            <Divider className="action-divider" />
+            <Button
+              type="danger"
+              icon={<DeleteOutlined />}
+              className="action-btn"
+            >
+              {t('common.delete')}
+            </Button>
+          </div>
+        </div>
+
+        {/* Middle Content */}
+        <div className="detail-content">
+          <Tabs
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            className="contract-detail-tabs"
+            items={[
+              {
+                key: 'overview',
+                label: t('contract.overview'),
+                children: (
+                  <div className="tab-content">
+                    {/* Basic Info */}
+                    <Card title={t('contract.basicInfo')} className="info-card">
+                      <div className="info-grid">
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.customer')}</Text>
+                          <Text className="info-value link" onClick={() => navigate(`/customer/detail/${contract.customerId}`)}>
+                            {contract.customerName}
+                          </Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.opportunity')}</Text>
+                          <Text className="info-value">
+                            {contract.opportunityName || '-'}
+                          </Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.type')}</Text>
+                          <Text className="info-value">{contract.type}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.amount')}</Text>
+                          <Text className="info-value" strong>{formatCurrency(contract.amount)}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.signingDate')}</Text>
+                          <Text className="info-value">{formatDate(contract.signingDate)}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.effectiveDate')}</Text>
+                          <Text className="info-value">{formatDate(contract.effectiveDate)}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.expirationDate')}</Text>
+                          <Text className="info-value">
+                            {contract.expirationDate ? formatDate(contract.expirationDate) : '-'}
+                          </Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.contractPeriod')}</Text>
+                          <Text className="info-value">
+                            {contract.contractPeriod ? `${contract.contractPeriod} 个月` : '-'}
+                          </Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.owner')}</Text>
+                          <Text className="info-value">{contract.ownerName}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.signerOurSide')}</Text>
+                          <Text className="info-value">{contract.signerOurSide}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.signerCustomerSide')}</Text>
+                          <Text className="info-value">{contract.signerCustomerSide || '-'}</Text>
+                        </div>
+                      </div>
+                    </Card>
+
+                    {/* Contract Terms */}
+                    <Card title={t('contract.terms')} className="info-card">
+                      <div className="info-grid">
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.paymentMethod')}</Text>
+                          <Text className="info-value">{contract.terms.paymentMethod}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.paymentTerms')}</Text>
+                          <Text className="info-value">{contract.terms.paymentTerms}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.deliveryTerms')}</Text>
+                          <Text className="info-value">{contract.terms.deliveryTerms}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.warrantyPeriod')}</Text>
+                          <Text className="info-value">{contract.terms.warrantyPeriod} 个月</Text>
+                        </div>
+                        <div className="info-item-full">
+                          <Text className="info-label">{t('contract.liabilityForBreach')}</Text>
+                          <Text className="info-value">{contract.terms.liabilityForBreach}</Text>
+                        </div>
+                      </div>
+                    </Card>
+
+                    {/* Delivery Info */}
+                    <Card title={t('contract.deliveryInfo')} className="info-card">
+                      <div className="info-grid">
+                        <div className="info-item-full">
+                          <Text className="info-label">{t('contract.deliveryContent')}</Text>
+                          <Text className="info-value">{contract.deliveryContent}</Text>
+                        </div>
+                        <div className="info-item">
+                          <Text className="info-label">{t('contract.deliveryDate')}</Text>
+                          <Text className="info-value">
+                            {contract.deliveryDate ? formatDate(contract.deliveryDate) : '-'}
+                          </Text>
+                        </div>
+                      </div>
+                    </Card>
+
+                    {/* Remarks */}
+                    {contract.remarks && (
+                      <Card title={t('contract.remarks')} className="info-card">
+                        <Paragraph>{contract.remarks}</Paragraph>
+                      </Card>
+                    )}
+                  </div>
+                ),
+              },
+              {
+                key: 'payment',
+                label: t('contract.paymentPlans'),
+                children: (
+                  <div className="tab-content">
+                    {/* Payment Progress */}
+                    <Card className="info-card">
+                      <div className="payment-progress-header">
+                        <Text strong>{t('contract.paymentProgress')}</Text>
+                        <Text type="secondary">{getPaymentProgress()}%</Text>
+                      </div>
+                      <Progress percent={getPaymentProgress()} status={getPaymentProgress() === 100 ? 'success' : 'active'} />
+                    </Card>
+
+                    {/* Payment Plans Table */}
+                    <Card title={t('contract.paymentPlanList')} className="info-card">
+                      <Table
+                        rowKey="id"
+                        columns={paymentColumns}
+                        dataSource={contract.paymentPlans}
+                        pagination={false}
+                        size="small"
+                      />
+                    </Card>
+                  </div>
+                ),
+              },
+              {
+                key: 'attachments',
+                label: t('contract.attachments'),
+                children: (
+                  <div className="tab-content">
+                    <Card className="info-card">
+                      <List
+                        dataSource={contract.attachments}
+                        renderItem={(item: string) => (
+                          <List.Item
+                            actions={[
+                              <Button type="text" size="sm" icon={<DownloadOutlined />}>
+                                {t('common.download')}
+                              </Button>,
+                            ]}
+                          >
+                            <List.Item.Meta
+                              avatar={<FilePdfOutlined style={{ fontSize: 24, color: colors.primary }} />}
+                              title={item.split('/').pop()}
+                              description={t('contract.contractFile')}
+                            />
+                          </List.Item>
+                        )}
+                        locale={{ emptyText: t('contract.noAttachments') }}
+                      />
+                    </Card>
+                    <Button type="secondary" icon={<UploadOutlined />} block>
+                      {t('contract.uploadAttachment')}
+                    </Button>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
+
+        {/* Right Sidebar - Related Info */}
+        <div className="detail-sidebar-right">
+          {/* Payment Summary Card */}
+          <div className="sidebar-card">
+            <div className="sidebar-card-title">
+              <DollarOutlined className="sidebar-card-icon-primary" />
+              <span>{t('contract.paymentSummary')}</span>
+            </div>
+            <Divider />
+            <div className="card-info-item">
+              <Text className="card-info-label" type="secondary">{t('contract.totalAmount')}</Text>
+              <Text strong>{formatCurrency(contract.amount)}</Text>
+            </div>
+            <div className="card-info-item">
+              <Text className="card-info-label" type="secondary">{t('contract.paidAmount')}</Text>
+              <Text strong style={{ color: colors.success }}>
+                {formatCurrency(contract.paymentPlans.reduce((sum, p) => sum + (p.actualAmount || 0), 0))}
+              </Text>
+            </div>
+            <div className="card-info-item">
+              <Text className="card-info-label" type="secondary">{t('contract.pendingAmount')}</Text>
+              <Text strong style={{ color: colors.warning }}>
+                {formatCurrency(contract.amount - contract.paymentPlans.reduce((sum, p) => sum + (p.actualAmount || 0), 0))}
+              </Text>
             </div>
           </div>
-        </Space>
-      </Card>
 
-      {/* 合同条款 */}
-      <Card title={t('contract.detail.terms')} style={{ marginBottom: 16 }}>
-        <Descriptions column={2} bordered>
-          <Descriptions.Item label={t('contract.detail.paymentMethod')}>{contract.terms.paymentMethod}</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.warrantyPeriod')}>{contract.terms.warrantyPeriod}个月</Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.paymentTerms')} span={2}>
-            <Paragraph style={{ marginBottom: 0 }}>{contract.terms.paymentTerms}</Paragraph>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.deliveryTerms')} span={2}>
-            <Paragraph style={{ marginBottom: 0 }}>{contract.terms.deliveryTerms}</Paragraph>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.deliveryContent')} span={2}>
-            <Paragraph style={{ marginBottom: 0 }}>{contract.deliveryContent}</Paragraph>
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.deliveryDate')} span={2}>
-            {contract.deliveryDate ? formatDate(contract.deliveryDate) : '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={t('contract.detail.liabilityForBreach')} span={3}>
-            <Paragraph style={{ marginBottom: 0 }}>{contract.terms.liabilityForBreach}</Paragraph>
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
+          {/* Contract Period Card */}
+          <div className="sidebar-card">
+            <div className="sidebar-card-title">
+              <CalendarOutlined className="sidebar-card-icon-info" />
+              <span>{t('contract.contractPeriodInfo')}</span>
+            </div>
+            <Divider />
+            <div className="card-info-item">
+              <Text className="card-info-label" type="secondary">{t('contract.effectiveDate')}</Text>
+              <Text>{formatDate(contract.effectiveDate)}</Text>
+            </div>
+            <div className="card-info-item">
+              <Text className="card-info-label" type="secondary">{t('contract.expirationDate')}</Text>
+              <Text>{contract.expirationDate ? formatDate(contract.expirationDate) : '-'}</Text>
+            </div>
+            <div className="card-info-item">
+              <Text className="card-info-label" type="secondary">{t('contract.daysRemaining')}</Text>
+              {contract.expirationDate ? (
+                <Text style={{ color: colors.success }}>
+                  {Math.ceil((new Date(contract.expirationDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} 天
+                </Text>
+              ) : (
+                <Text>-</Text>
+              )}
+            </div>
+          </div>
 
-      {/* 回款计划 */}
-      <Card title={t('contract.detail.paymentPlan')} style={{ marginBottom: 16 }}>
-        <Table
-          columns={paymentPlanColumns}
-          dataSource={contract.paymentPlans}
-          rowKey="id"
-          pagination={false}
-          size="middle"
-          summary={(pageData) => {
-            const totalPlanned = pageData.reduce((sum, p) => sum + p.plannedAmount, 0);
-            const totalActual = pageData.reduce((sum, p) => sum + (p.actualAmount || 0), 0);
-            return (
-              <Table.Summary fixed>
-                <Table.Summary.Row>
-                  <Table.Summary.Cell index={0}>{t('contract.paymentPlan.total')}</Table.Summary.Cell>
-                  <Table.Summary.Cell index={1}>
-                    <Text strong>{formatAmount(totalPlanned)}</Text>
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell index={2}>-</Table.Summary.Cell>
-                  <Table.Summary.Cell index={3}>
-                    <Text strong>{formatAmount(totalActual)}</Text>
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell index={4}>-</Table.Summary.Cell>
-                  <Table.Summary.Cell index={5}>-</Table.Summary.Cell>
-                  <Table.Summary.Cell index={6}>-</Table.Summary.Cell>
-                </Table.Summary.Row>
-              </Table.Summary>
-            );
-          }}
-        />
-      </Card>
+          {/* Customer Link Card */}
+          <div className="sidebar-card">
+            <div className="sidebar-card-title">
+              <UserOutlined className="sidebar-card-icon-success" />
+              <span>{t('contract.relatedCustomer')}</span>
+            </div>
+            <Divider />
+            <div className="related-item" onClick={() => navigate(`/customer/detail/${contract.customerId}`)}>
+              <div className="related-header">
+                <Text strong>{contract.customerName}</Text>
+                <RightOutlined className="related-arrow" />
+              </div>
+              <Text type="secondary" className="related-subtitle">{t('contract.viewCustomerDetail')}</Text>
+            </div>
+          </div>
 
-      {/* 附件 */}
-      {contract.attachments.length > 0 && (
-        <Card title={t('contract.detail.attachments')}>
-          <Space>
-            {contract.attachments.map((url, index) => (
-              <Tag key={index} color="blue" style={{ cursor: 'pointer' }}>
-                📄 {t('contract.detail.attachmentFile')} {index + 1}
-              </Tag>
-            ))}
-          </Space>
-        </Card>
-      )}
+          {/* Opportunity Link Card */}
+          {contract.opportunityId && (
+            <div className="sidebar-card">
+              <div className="sidebar-card-title">
+                <SafetyOutlined className="sidebar-card-icon-warning" />
+                <span>{t('contract.relatedOpportunity')}</span>
+              </div>
+              <Divider />
+              <div className="related-item" onClick={() => navigate(`/opportunity/detail/${contract.opportunityId}`)}>
+                <div className="related-header">
+                  <Text strong>{contract.opportunityName}</Text>
+                  <RightOutlined className="related-arrow" />
+                </div>
+                <Text type="secondary" className="related-subtitle">{t('contract.viewOpportunityDetail')}</Text>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Edit Modal */}
+      <Modal
+        title={t('contract.editContract')}
+        open={editModalVisible}
+        onCancel={() => setEditModalVisible(false)}
+        className="contract-modal"
+        footer={[
+          <Button type="secondary" onClick={() => setEditModalVisible(false)}>
+            {t('common.cancel')}
+          </Button>,
+          <Button type="primary" onClick={() => setEditModalVisible(false)}>
+            {t('common.save')}
+          </Button>,
+        ]}
+      >
+        <Form layout="vertical">
+          <Form.Item label={t('contract.name')}>
+            <Input value={contract.name} />
+          </Form.Item>
+          <Form.Item label={t('contract.status')}>
+            <Select
+              value={contract.status}
+              options={[
+                { value: ContractStatus.DRAFT, label: contractStatusLabels.draft },
+                { value: ContractStatus.PENDING_APPROVAL, label: contractStatusLabels.pendingApproval },
+                { value: ContractStatus.ACTIVE, label: contractStatusLabels.active },
+                { value: ContractStatus.ARCHIVED, label: contractStatusLabels.archived },
+                { value: ContractStatus.TERMINATED, label: contractStatusLabels.terminated },
+              ]}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

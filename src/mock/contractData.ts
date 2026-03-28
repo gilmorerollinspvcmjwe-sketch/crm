@@ -629,6 +629,29 @@ export const generateContractStats = (): ContractStats => {
   };
 };
 
+// 根据 ID 获取合同详情
+export const getContractById = (id: string): Contract | undefined => {
+  return contractData.find(c => c.id === id);
+};
+
+// 合同状态标签映射
+export const contractStatusLabels = {
+  draft: '草稿',
+  pendingApproval: '审批中',
+  active: '已生效',
+  archived: '已归档',
+  terminated: '已终止'
+};
+
+// 合同状态颜色映射
+export const contractStatusColors: Record<ContractStatus, { bg: string; color: string }> = {
+  [ContractStatus.DRAFT]: { bg: '#F3F4F6', color: '#6B7280' },
+  [ContractStatus.PENDING_APPROVAL]: { bg: '#FEF3C7', color: '#D97706' },
+  [ContractStatus.ACTIVE]: { bg: '#D1FAE5', color: '#059669' },
+  [ContractStatus.ARCHIVED]: { bg: '#F3F4F6', color: '#6B7280' },
+  [ContractStatus.TERMINATED]: { bg: '#FEE2E2', color: '#DC2626' }
+};
+
 // 根据筛选条件过滤合同
 export const filterContracts = (
   contracts: Contract[],

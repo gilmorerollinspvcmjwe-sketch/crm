@@ -1,0 +1,333 @@
+/**
+ * PerformanceReport 样式 - 出海 CRM 设计系统
+ * 业绩统计报表页面样式
+ */
+
+/* ==================== 页面布局 ==================== */
+.performance-report-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-height: 100%;
+}
+
+/* ==================== 页面标题区 ==================== */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.page-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.page-title {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-heading);
+}
+
+.page-subtitle {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-tertiary);
+}
+
+.page-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.time-range-select {
+  min-width: 120px;
+}
+
+/* ==================== 统计卡片 ==================== */
+.stats-row {
+  margin-bottom: var(--spacing-2);
+}
+
+.stats-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.stats-card:hover {
+  box-shadow: var(--shadow-l2);
+}
+
+.stats-card .ant-statistic-title {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+}
+
+.stats-card .ant-statistic-content {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+}
+
+/* ==================== 图表卡片 ==================== */
+.chart-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+}
+
+.chart-card .ant-card-head {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-4) var(--spacing-6);
+}
+
+.chart-card .ant-card-body {
+  padding: var(--spacing-6);
+}
+
+/* ==================== 趋势图 ==================== */
+.trend-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 200px;
+  padding: var(--spacing-4);
+}
+
+.trend-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex: 1;
+}
+
+.trend-month {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-medium);
+}
+
+.trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 150px;
+}
+
+.trend-bar {
+  width: 16px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+}
+
+.trend-bar.target {
+  background: var(--brand-200);
+}
+
+.trend-bar.actual {
+  background: var(--success-500);
+}
+
+.trend-bar:hover {
+  opacity: 0.8;
+}
+
+.trend-rate {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+}
+
+/* ==================== 数据表格 ==================== */
+.tables-row {
+  margin-top: var(--spacing-2);
+}
+
+.table-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+}
+
+.table-card .ant-card-head {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.table-card .ant-card-body {
+  padding: var(--spacing-4);
+}
+
+.performance-table .ant-table-thead > tr > th {
+  height: 40px;
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--neutral-50);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.performance-table .ant-table-tbody > tr > td {
+  height: 48px;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.performance-table .ant-table-tbody > tr:hover > td {
+  background: var(--neutral-50);
+}
+
+/* ==================== 排名徽章 ==================== */
+.rank-badge {
+  font-weight: var(--font-bold);
+}
+
+.rank-badge.rank-1 {
+  color: var(--warning-600);
+}
+
+.rank-badge.rank-2 {
+  color: var(--neutral-500);
+}
+
+.rank-badge.rank-3 {
+  color: #d48806;
+}
+
+/* ==================== 用户单元格 ==================== */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--brand-100);
+  color: var(--brand-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  flex-shrink: 0;
+}
+
+/* ==================== 实际值 ==================== */
+.actual-value {
+  color: var(--success-600);
+  font-weight: var(--font-semibold);
+}
+
+/* ==================== 完成率进度条 ==================== */
+.completion-progress .ant-progress-bg {
+  height: 6px !important;
+}
+
+.completion-progress .ant-progress-text {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+/* ==================== 骨架屏 ==================== */
+.skeleton-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.skeleton-chart {
+  height: 200px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-tables {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.skeleton-table {
+  flex: 1;
+  height: 400px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--neutral-100) 25%, var(--neutral-50) 50%, var(--neutral-100) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.5s ease-in-out infinite;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+  }
+  
+  .page-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .stats-row {
+    flex-direction: column;
+  }
+
+  .stats-row .ant-col {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tables-row {
+    flex-direction: column;
+  }
+
+  .tables-row .ant-col {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .trend-chart {
+    overflow-x: auto;
+    padding: var(--spacing-2);
+  }
+
+  .trend-bars {
+    height: 100px;
+  }
+
+  .trend-bar {
+    width: 12px;
+  }
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .stats-card,
+  .trend-bar {
+    transition: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+}

@@ -77,5 +77,6 @@ export interface OpportunityFilter {
   customerName?: string;
   stage?: OpportunityStage;
   owner?: string;
+  ownerName?: string;
   status?: OpportunityStatus;
 }

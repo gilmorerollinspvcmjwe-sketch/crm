@@ -6,28 +6,25 @@
  * - Table with order information
  * - Batch operations
  * - Create new order
+ * 
+ * Refactored with new UI design system
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
-  Table,
-  Button,
   Space,
   Tag,
-  Input,
-  Select,
-  DatePicker,
   Form,
   Row,
   Col,
   Dropdown,
-  Menu,
   Modal,
   message,
   Typography,
   Tooltip,
-  Badge,
   Statistic,
+  DatePicker,
+  Table,
 } from 'antd';
 import {
   PlusOutlined,
@@ -47,10 +44,18 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { Badge } from '../components/ui/Badge';
+import { DataTable } from '../components/DataTable';
 import { getOrders, filterOrders, orderStatusColors, orderStatusLabels, Order } from '../mock/orderData';
 import { colors } from '../styles/tokens';
 import { formatCurrency } from '../utils/format';
 import dayjs from 'dayjs';
+import type { MenuProps } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import './OrderList.css';
 
 const { RangePicker } = DatePicker;
 const { Text, Title } = Typography;

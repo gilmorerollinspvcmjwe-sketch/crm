@@ -1,0 +1,365 @@
+/**
+ * Badge 样式 - 出海 CRM 设计系统
+ * 状态徽章、标签、计数徽章
+ */
+
+/* ==================== 基础样式 ==================== */
+.crm-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  
+  font-family: var(--font-sans);
+  font-weight: var(--font-medium);
+  line-height: var(--line-height-tight);
+  
+  border-radius: var(--radius-sm);
+  
+  white-space: nowrap;
+  user-select: none;
+  
+  transition: 
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+/* ==================== 尺寸系统 ==================== */
+
+/* 小尺寸 */
+.crm-badge-sm {
+  height: 20px;
+  padding: 0 var(--spacing-2);
+  font-size: var(--text-xs);
+}
+
+.crm-badge-sm .crm-badge-icon {
+  font-size: 12px;
+}
+
+.crm-badge-sm .crm-badge-close svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* 默认尺寸 */
+.crm-badge-md {
+  height: 24px;
+  padding: 0 var(--spacing-2);
+  font-size: var(--text-xs);
+}
+
+.crm-badge-md .crm-badge-icon {
+  font-size: 14px;
+}
+
+.crm-badge-md .crm-badge-close svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* 大尺寸 */
+.crm-badge-lg {
+  height: 28px;
+  padding: 0 var(--spacing-3);
+  font-size: var(--text-sm);
+}
+
+.crm-badge-lg .crm-badge-icon {
+  font-size: 16px;
+}
+
+.crm-badge-lg .crm-badge-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ==================== 变体系统 ==================== */
+
+/* Solid - 填充 */
+.crm-badge-solid {
+  border: none;
+}
+
+/* Soft - 柔和填充 */
+.crm-badge-soft {
+  border: none;
+}
+
+/* Outline - 边框 */
+.crm-badge-outline {
+  background: transparent;
+}
+
+/* Subtle - 轻描淡写 */
+.crm-badge-subtle {
+  border: none;
+  background: transparent;
+}
+
+/* ==================== 颜色系统 ==================== */
+
+/* 品牌色 */
+.crm-badge-solid.crm-badge-brand {
+  background: var(--brand-500);
+  color: var(--text-inverse);
+}
+
+.crm-badge-soft.crm-badge-brand {
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+.crm-badge-outline.crm-badge-brand {
+  border: 1px solid var(--brand-500);
+  color: var(--brand-600);
+}
+
+.crm-badge-subtle.crm-badge-brand {
+  color: var(--brand-600);
+}
+
+/* 成功色 */
+.crm-badge-solid.crm-badge-success {
+  background: var(--success-500);
+  color: var(--text-inverse);
+}
+
+.crm-badge-soft.crm-badge-success {
+  background: var(--success-50);
+  color: var(--success-700);
+}
+
+.crm-badge-outline.crm-badge-success {
+  border: 1px solid var(--success-500);
+  color: var(--success-600);
+}
+
+.crm-badge-subtle.crm-badge-success {
+  color: var(--success-600);
+}
+
+/* 警告色 */
+.crm-badge-solid.crm-badge-warning {
+  background: var(--warning-500);
+  color: var(--text-inverse);
+}
+
+.crm-badge-soft.crm-badge-warning {
+  background: var(--warning-50);
+  color: var(--warning-700);
+}
+
+.crm-badge-outline.crm-badge-warning {
+  border: 1px solid var(--warning-500);
+  color: var(--warning-600);
+}
+
+.crm-badge-subtle.crm-badge-warning {
+  color: var(--warning-600);
+}
+
+/* 危险色 */
+.crm-badge-solid.crm-badge-danger {
+  background: var(--danger-500);
+  color: var(--text-inverse);
+}
+
+.crm-badge-soft.crm-badge-danger {
+  background: var(--danger-50);
+  color: var(--danger-700);
+}
+
+.crm-badge-outline.crm-badge-danger {
+  border: 1px solid var(--danger-500);
+  color: var(--danger-600);
+}
+
+.crm-badge-subtle.crm-badge-danger {
+  color: var(--danger-600);
+}
+
+/* 信息色 */
+.crm-badge-solid.crm-badge-info {
+  background: var(--info-500);
+  color: var(--text-inverse);
+}
+
+.crm-badge-soft.crm-badge-info {
+  background: var(--info-50);
+  color: var(--info-600);
+}
+
+.crm-badge-outline.crm-badge-info {
+  border: 1px solid var(--info-500);
+  color: var(--info-600);
+}
+
+.crm-badge-subtle.crm-badge-info {
+  color: var(--info-600);
+}
+
+/* 中性色 */
+.crm-badge-solid.crm-badge-neutral {
+  background: var(--neutral-500);
+  color: var(--text-inverse);
+}
+
+.crm-badge-soft.crm-badge-neutral {
+  background: var(--neutral-100);
+  color: var(--neutral-700);
+}
+
+.crm-badge-outline.crm-badge-neutral {
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-600);
+}
+
+.crm-badge-subtle.crm-badge-neutral {
+  color: var(--neutral-600);
+}
+
+/* ==================== 计数徽章 ==================== */
+.crm-badge-count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  
+  border-radius: var(--radius-full);
+  
+  background: var(--danger-500);
+  color: var(--text-inverse);
+  
+  box-shadow: 0 0 0 2px var(--bg-paper);
+}
+
+.crm-badge-count.crm-badge-brand {
+  background: var(--brand-500);
+}
+
+.crm-badge-count.crm-badge-success {
+  background: var(--success-500);
+}
+
+.crm-badge-count.crm-badge-warning {
+  background: var(--warning-500);
+}
+
+.crm-badge-count.crm-badge-info {
+  background: var(--info-500);
+}
+
+.crm-badge-count.crm-badge-neutral {
+  background: var(--neutral-500);
+}
+
+/* ==================== 圆点徽章 ==================== */
+.crm-badge-count.crm-badge-dot {
+  min-width: 6px;
+  height: 6px;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+
+/* ==================== 内部元素 ==================== */
+.crm-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.crm-badge-text {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== 关闭按钮 ==================== */
+.crm-badge-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  
+  padding: 0;
+  margin-left: var(--spacing-1);
+  
+  color: inherit;
+  opacity: 0.7;
+  
+  transition: 
+    opacity var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.crm-badge-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.crm-badge-close svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ==================== 可点击 ==================== */
+.crm-badge-clickable {
+  cursor: pointer;
+}
+
+.crm-badge-clickable:hover {
+  opacity: 0.9;
+}
+
+.crm-badge-clickable:active {
+  transform: scale(0.98);
+}
+
+/* ==================== 独立徽章 ==================== */
+.crm-badge-standalone {
+  position: relative;
+}
+
+/* ==================== RTL 支持 ==================== */
+[dir="rtl"] .crm-badge-close {
+  margin-left: 0;
+  margin-right: var(--spacing-1);
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .crm-badge,
+  .crm-badge-close,
+  .crm-badge-clickable {
+    transition: none;
+  }
+  
+  .crm-badge-clickable:active {
+    transform: none;
+  }
+}
+
+/* ==================== 高对比度支持 ==================== */
+@media (prefers-contrast: high) {
+  .crm-badge-outline {
+    border-width: 2px;
+  }
+  
+  .crm-badge-subtle {
+    border: 1px solid currentColor;
+  }
+}

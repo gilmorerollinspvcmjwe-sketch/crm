@@ -1,8 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { Card, Space, Button, message, Row, Col, Statistic, Tabs, Modal, Form, Input, InputNumber, Select } from 'antd';
+import { Card, Space, message, Row, Col, Statistic, Tabs, Modal, Form, Input as AntInput, InputNumber, Typography, Tag, Table } from 'antd';
 import { PlusOutlined, DollarOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { Badge } from '../components/ui/Badge';
+import { DataTable } from '../components/DataTable';
+import { FilterBar, FilterItem } from '../components/FilterBar';
 import { PaymentPlan, PaymentStatus, PaymentFilter } from '../types/payment';
 import {
   paymentPlanData,
@@ -14,6 +20,10 @@ import {
 import { PaymentTable } from '../components/Payment/PaymentTable';
 import { PaymentStatsCard } from '../components/Payment/PaymentStats';
 import { SearchFilter } from '../components/Opportunity/SearchFilter';
+import type { ColumnsType } from 'antd/es/table';
+import './PaymentList.css';
+
+const { Text } = Typography;
 
 /**
  * 回款列表页
@@ -275,7 +285,7 @@ export const PaymentList: React.FC = () => {
             <InputNumber placeholder={t('payment.list.createModal.installmentNumberPlaceholder')} min={1} />
           </Form.Item>
           <Form.Item name="remark" label={t('payment.list.createModal.remark')}>
-            <Input.TextArea rows={3} placeholder={t('payment.list.createModal.remarkPlaceholder')} />
+            <AntInput.TextArea rows={3} placeholder={t('payment.list.createModal.remarkPlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>
@@ -303,16 +313,16 @@ export const PaymentList: React.FC = () => {
             <InputNumber style={{ width: '100%' }} placeholder={t('payment.list.verifyModal.actualAmountPlaceholder')} min={0} />
           </Form.Item>
           <Form.Item name="paymentMethod" label={t('payment.list.verifyModal.paymentMethod')}>
-            <Select placeholder={t('payment.list.verifyModal.paymentMethodPlaceholder')}>
-              <Select.Option value="银行转账">{t('payment.list.verifyModal.methodBankTransfer')}</Select.Option>
-              <Select.Option value="支付宝">{t('payment.list.verifyModal.methodAlipay')}</Select.Option>
-              <Select.Option value="微信">{t('payment.list.verifyModal.methodWechat')}</Select.Option>
-              <Select.Option value="现金">{t('payment.list.verifyModal.methodCash')}</Select.Option>
-              <Select.Option value="支票">{t('payment.list.verifyModal.methodCheck')}</Select.Option>
-            </Select>
+            <Select placeholder={t('payment.list.verifyModal.paymentMethodPlaceholder')} options={[
+              { value: '银行转账', label: t('payment.list.verifyModal.methodBankTransfer') },
+              { value: '支付宝', label: t('payment.list.verifyModal.methodAlipay') },
+              { value: '微信', label: t('payment.list.verifyModal.methodWechat') },
+              { value: '现金', label: t('payment.list.verifyModal.methodCash') },
+              { value: '支票', label: t('payment.list.verifyModal.methodCheck') },
+            ]} />
           </Form.Item>
           <Form.Item name="remark" label={t('payment.list.verifyModal.verifyNote')}>
-            <Input.TextArea rows={3} placeholder={t('payment.list.verifyModal.verifyNotePlaceholder')} />
+            <AntInput.TextArea rows={3} placeholder={t('payment.list.verifyModal.verifyNotePlaceholder')} />
           </Form.Item>
         </Form>
       </Modal>

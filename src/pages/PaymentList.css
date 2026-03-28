@@ -1,0 +1,47 @@
+/**
+ * PaymentList 样式 - 出海 CRM 设计系统
+ * 回款列表页面样式
+ */
+
+/* ==================== 页面布局 ==================== */
+.crm-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-height: 100%;
+  padding: var(--spacing-4);
+}
+
+.payment-list-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-height: 100%;
+}
+
+/* ==================== 统计卡片 ==================== */
+.stats-row {
+  margin-bottom: var(--spacing-4);
+}
+
+.stats-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+}
+
+/* ==================== 回款链接 ==================== */
+.payment-link {
+  color: var(--brand-600);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+}
+
+.payment-link:hover {
+  text-decoration: underline;
+}
+
+/* ==================== 金额文本 ==================== */
+.amount-text {
+  color: var(--brand-600);
+}

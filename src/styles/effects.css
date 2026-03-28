@@ -1,0 +1,958 @@
+/**
+ * CRM 前端特效样式库
+ * 
+ * 包含：
+ * 1. 分层深度阴影（Material Design）
+ * 2. 骨架屏占位动画
+ * 3. 平滑状态切换动画
+ * 4. 磨砂渐变描边（Notion/Figma 风格）
+ * 5. 悬停底色填充动画
+ * 
+ * @version 1.0.0
+ * @created 2025-03-27
+ */
+
+/* ============================================
+   CSS 变量定义
+   ============================================ */
+
+:root {
+  /* ========== 颜色系统 ========== */
+  --color-primary: #1890ff;
+  --color-primary-hover: #40a9ff;
+  --color-primary-active: #096dd9;
+  
+  /* 文本颜色 */
+  --color-text: rgba(0, 0, 0, 0.85);
+  --color-text-secondary: rgba(0, 0, 0, 0.65);
+  --color-text-tertiary: rgba(0, 0, 0, 0.45);
+  --color-text-disabled: rgba(0, 0, 0, 0.25);
+  
+  /* 背景颜色 */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #fafafa;
+  --color-bg-tertiary: #f5f5f5;
+  
+  /* 边框颜色 */
+  --color-border: #d9d9d9;
+  --color-border-secondary: #e8e8e8;
+  
+  /* ========== 阴影系统 ========== */
+  --shadow-color: 0, 0, 0;
+  --shadow-umbra-opacity: 0.2;
+  --shadow-penumbra-opacity: 0.14;
+  --shadow-ambient-opacity: 0.12;
+  
+  /* ========== 动画时长 ========== */
+  --transition-fast: 150ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  
+  /* ========== 缓动函数 ========== */
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  
+  /* ========== 骨架屏 ========== */
+  --skeleton-base: #f0f0f0;
+  --skeleton-highlight: #e0e0e0;
+  --skeleton-animation-duration: 1.5s;
+  
+  /* ========== 磨砂玻璃 ========== */
+  --glass-border-light: rgba(255, 255, 255, 0.2);
+  --glass-border-dark: rgba(0, 0, 0, 0.1);
+  --glass-bg-light: rgba(255, 255, 255, 0.8);
+  --glass-bg-dark: rgba(0, 0, 0, 0.05);
+  --glass-blur: 8px;
+  --glass-radius: 12px;
+  
+  /* ========== 悬停填充 ========== */
+  --hover-fill-duration: 250ms;
+  --hover-fill-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --hover-fill-color: rgba(24, 144, 255, 0.08);
+  --hover-fill-active: rgba(24, 144, 255, 0.15);
+  
+  /* ========== 圆角 ========== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 50%;
+}
+
+/* ========== 暗色主题变量 ========== */
+[data-theme="dark"] {
+  --color-text: rgba(255, 255, 255, 0.85);
+  --color-text-secondary: rgba(255, 255, 255, 0.65);
+  --color-text-tertiary: rgba(255, 255, 255, 0.45);
+  --color-text-disabled: rgba(255, 255, 255, 0.25);
+  
+  --color-bg: #141414;
+  --color-bg-secondary: #1f1f1f;
+  --color-bg-tertiary: #2a2a2a;
+  
+  --color-border: #434343;
+  --color-border-secondary: #303030;
+  
+  --skeleton-base: #303030;
+  --skeleton-highlight: #3a3a3a;
+  
+  --glass-bg-light: rgba(30, 30, 30, 0.8);
+  --glass-bg-dark: rgba(0, 0, 0, 0.3);
+}
+
+
+/* ============================================
+   1. 分层深度阴影（Material Design）
+   ============================================ */
+
+/* DP0 - 无阴影（基础层） */
+.shadow-dp0 {
+  box-shadow: none;
+}
+
+/* DP2 - 卡片、按钮（轻微浮起） */
+.shadow-dp2 {
+  box-shadow: 
+    0 3px 1px -2px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 2px 2px 0 rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 1px 5px 0 rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+}
+
+/* DP4 - 菜单、下拉（悬浮效果） */
+.shadow-dp4 {
+  box-shadow: 
+    0 2px 4px -1px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 4px 5px 0 rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 1px 10px 0 rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+}
+
+/* DP6 - 弹窗、模态框（明显浮起） */
+.shadow-dp6 {
+  box-shadow: 
+    0 5px 5px -3px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 8px 10px 1px rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 3px 14px 2px rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+}
+
+/* DP8 - 通知、抽屉（最高层级） */
+.shadow-dp8 {
+  box-shadow: 
+    0 8px 10px -5px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 16px 24px 2px rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 6px 30px 5px rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+}
+
+/* ========== 交互动画 ========== */
+
+/* 悬停时阴影增强 + 轻微上浮 */
+.shadow-lift {
+  transition: transform var(--transition-normal) var(--ease-out),
+              box-shadow var(--transition-normal) var(--ease-out);
+  will-change: transform, box-shadow;
+}
+
+.shadow-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* DP2 悬停效果 */
+.shadow-dp2.shadow-lift:hover,
+.shadow-dp2:hover {
+  box-shadow: 
+    0 5px 5px -3px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 8px 10px 1px rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 3px 14px 2px rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+}
+
+
+/* ============================================
+   2. 骨架屏占位动画
+   ============================================ */
+
+/* ========== 基础骨架样式 ========== */
+
+.skeleton {
+  position: relative;
+  background: var(--skeleton-base);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  min-height: 1em;
+  min-width: 3em;
+}
+
+/* 微光扫动效果 */
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer var(--skeleton-animation-duration) infinite ease-in-out;
+  will-change: transform;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+/* ========== 骨架形状变体 ========== */
+
+/* 文本行 */
+.skeleton-text {
+  height: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-text--xs { width: 20%; }
+.skeleton-text--sm { width: 30%; }
+.skeleton-text--short { width: 40%; }
+.skeleton-text--medium { width: 60%; }
+.skeleton-text--long { width: 80%; }
+.skeleton-text--full { width: 100%; }
+
+/* 标题 */
+.skeleton-title {
+  height: 24px;
+  border-radius: var(--radius-sm);
+  width: 60%;
+}
+
+/* 头像 */
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.skeleton-avatar--sm { width: 32px; height: 32px; }
+.skeleton-avatar--lg { width: 56px; height: 56px; }
+
+/* 按钮 */
+.skeleton-button {
+  height: 32px;
+  width: 80px;
+  border-radius: var(--radius-md);
+}
+
+/* 输入框 */
+.skeleton-input {
+  height: 32px;
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+/* 单元格 */
+.skeleton-cell {
+  height: 16px;
+  border-radius: var(--radius-sm);
+}
+
+/* ========== 复合骨架组件 ========== */
+
+/* 表格行骨架 */
+.skeleton-table-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.skeleton-table-row:last-child {
+  border-bottom: none;
+}
+
+/* 卡片骨架 */
+.skeleton-card {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+.skeleton-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.skeleton-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 表单骨架 */
+.skeleton-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.skeleton-form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-form-label {
+  height: 14px;
+  width: 80px;
+  border-radius: var(--radius-sm);
+  background: var(--skeleton-base);
+}
+
+
+/* ============================================
+   3. 平滑状态切换动画
+   ============================================ */
+
+/* ========== 开关动画 ========== */
+
+.custom-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 22px;
+  background: #bfbfbf;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background var(--transition-fast) var(--ease-out);
+  user-select: none;
+}
+
+.custom-switch::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-fast) var(--ease-bounce);
+  will-change: transform;
+}
+
+.custom-switch[data-checked="true"] {
+  background: var(--color-primary);
+}
+
+.custom-switch[data-checked="true"]::after {
+  transform: translateX(22px);
+}
+
+/* ========== 复选框动画 ========== */
+
+.custom-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #bfbfbf;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-fast) var(--ease-out),
+              background var(--transition-fast) var(--ease-out);
+  user-select: none;
+}
+
+.custom-checkbox::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) scale(0);
+  opacity: 0;
+  transition: transform var(--transition-fast) var(--ease-bounce),
+              opacity var(--transition-fast) var(--ease-out);
+  will-change: transform, opacity;
+  margin-top: -2px;
+}
+
+.custom-checkbox[data-checked="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.custom-checkbox[data-checked="true"]::after {
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+}
+
+/* ========== 单选框动画 ========== */
+
+.custom-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #bfbfbf;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color var(--transition-fast) var(--ease-out);
+  user-select: none;
+}
+
+.custom-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform var(--transition-fast) var(--ease-bounce),
+              opacity var(--transition-fast) var(--ease-out);
+  will-change: transform, opacity;
+}
+
+.custom-radio[data-checked="true"] {
+  border-color: var(--color-primary);
+}
+
+.custom-radio[data-checked="true"]::after {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ========== Tabs 动画 ========== */
+
+.tabs-indicator {
+  position: absolute;
+  bottom: -1px;
+  height: 2px;
+  background: var(--color-primary);
+  transition: left var(--transition-normal) var(--ease-out),
+              width var(--transition-normal) var(--ease-out);
+  will-change: left, width;
+}
+
+/* ========== 折叠面板动画 ========== */
+
+.collapse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: var(--color-bg-secondary);
+  transition: background var(--transition-fast) var(--ease-out);
+  user-select: none;
+}
+
+.collapse-header:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.collapse-arrow {
+  transition: transform var(--transition-normal) var(--ease-out);
+  will-change: transform;
+}
+
+.collapse-header[data-expanded="true"] .collapse-arrow {
+  transform: rotate(180deg);
+}
+
+.collapse-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-slow) var(--ease-out);
+  will-change: max-height;
+}
+
+.collapse-content[data-expanded="true"] {
+  max-height: 1000px;
+}
+
+
+/* ============================================
+   4. 磨砂渐变描边（Notion/Figma 风格）
+   ============================================ */
+
+/* ========== 基础磨砂容器 ========== */
+
+.glass-container {
+  position: relative;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--glass-radius);
+}
+
+.glass-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ========== 磨砂输入框 ========== */
+
+.glass-input {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--color-text);
+  outline: none;
+  transition: box-shadow var(--transition-normal) var(--ease-out);
+}
+
+.glass-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.glass-input:focus {
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* ========== 磨砂卡片 ========== */
+
+.glass-card {
+  position: relative;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--glass-radius);
+  padding: 20px;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(0, 0, 0, 0.05) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ========== 磨砂弹窗 ========== */
+
+.glass-modal {
+  position: relative;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-xl);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+}
+
+.glass-modal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ========== 磨砂按钮 ========== */
+
+.glass-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--transition-normal) var(--ease-out), 
+              transform var(--transition-fast) var(--ease-out);
+  overflow: hidden;
+  user-select: none;
+}
+
+.glass-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.glass-button:active {
+  transform: scale(0.98);
+}
+
+
+/* ============================================
+   5. 悬停底色填充动画
+   ============================================ */
+
+/* ========== 从中间展开 ========== */
+
+.hover-fill-center {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hover-fill-center::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: var(--hover-fill-color);
+  transform: translateX(-50%);
+  transition: width var(--hover-fill-duration) var(--hover-fill-ease);
+  z-index: -1;
+}
+
+.hover-fill-center:hover::before {
+  width: 100%;
+}
+
+/* ========== 从底部上滑 ========== */
+
+.hover-fill-up {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hover-fill-up::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+  background: var(--hover-fill-color);
+  transition: height var(--hover-fill-duration) var(--hover-fill-ease);
+  z-index: -1;
+}
+
+.hover-fill-up:hover::before {
+  height: 100%;
+}
+
+/* ========== 从中心扩散 ========== */
+
+.hover-fill-scale {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hover-fill-scale::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: var(--hover-fill-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width var(--hover-fill-duration) var(--hover-fill-ease),
+              height var(--hover-fill-duration) var(--hover-fill-ease);
+  z-index: -1;
+}
+
+.hover-fill-scale:hover::before {
+  width: 200%;
+  height: 200%;
+}
+
+/* ========== 活跃状态 ========== */
+
+.hover-fill-center.active::before {
+  width: 100%;
+  background: var(--hover-fill-active);
+}
+
+.hover-fill-up.active::before {
+  height: 100%;
+  background: var(--hover-fill-active);
+}
+
+.hover-fill-scale.active::before {
+  width: 200%;
+  height: 200%;
+  background: var(--hover-fill-active);
+}
+
+/* ========== 按钮（中心扩散） ========== */
+
+.btn-fill-scale {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.btn-fill-scale::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: currentColor;
+  opacity: 0.1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 300ms var(--hover-fill-ease),
+              height 300ms var(--hover-fill-ease);
+  z-index: -1;
+}
+
+.btn-fill-scale:hover::before {
+  width: 250%;
+  height: 250%;
+}
+
+/* 按钮变体 - 从底部填充 */
+.btn-fill-up {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.btn-fill-up::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+  background: currentColor;
+  opacity: 0.15;
+  transition: height var(--hover-fill-duration) var(--hover-fill-ease);
+  z-index: -1;
+}
+
+.btn-fill-up:hover::before {
+  height: 100%;
+}
+
+/* ========== 减少动画偏好 ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-fill-center::before,
+  .hover-fill-up::before,
+  .hover-fill-scale::before,
+  .btn-fill-scale::before,
+  .btn-fill-up::before {
+    transition: none;
+  }
+}
+
+
+/* ============================================
+   Ant Design 组件覆盖
+   ============================================ */
+
+/* ========== Card 阴影定制 ========== */
+
+.ant-card.shadow-lift:hover {
+  box-shadow: 
+    0 5px 5px -3px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 8px 10px 1px rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 3px 14px 2px rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+  transform: translateY(-2px);
+}
+
+/* ========== Switch 动画定制 ========== */
+
+.ant-switch {
+  transition: background var(--transition-fast) var(--ease-out);
+}
+
+.ant-switch .ant-switch-handle {
+  transition: transform var(--transition-fast) var(--ease-bounce);
+}
+
+/* ========== Checkbox 动画定制 ========== */
+
+.ant-checkbox-inner {
+  transition: border-color var(--transition-fast) var(--ease-out),
+              background var(--transition-fast) var(--ease-out);
+}
+
+.ant-checkbox-inner::after {
+  transition: transform var(--transition-fast) var(--ease-bounce),
+              opacity var(--transition-fast) var(--ease-out);
+}
+
+/* ========== Radio 动画定制 ========== */
+
+.ant-radio-inner {
+  transition: border-color var(--transition-fast) var(--ease-out);
+}
+
+.ant-radio-inner::after {
+  transition: transform var(--transition-fast) var(--ease-bounce),
+              opacity var(--transition-fast) var(--ease-out);
+}
+
+/* ========== Tabs 下划线定制 ========== */
+
+.ant-tabs-ink-bar {
+  transition: left var(--transition-normal) var(--ease-out),
+              width var(--transition-normal) var(--ease-out);
+}
+
+/* ========== Modal 磨砂效果 ========== */
+
+.ant-modal-content.glass {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ========== Dropdown 阴影定制 ========== */
+
+.ant-dropdown-menu {
+  box-shadow: 
+    0 2px 4px -1px rgba(var(--shadow-color), var(--shadow-umbra-opacity)),
+    0 4px 5px 0 rgba(var(--shadow-color), var(--shadow-penumbra-opacity)),
+    0 1px 10px 0 rgba(var(--shadow-color), var(--shadow-ambient-opacity));
+}
+
+/* ========== Table 表格骨架屏 ========== */
+
+.ant-table-tbody tr.skeleton-row {
+  pointer-events: none;
+}
+
+.ant-table-tbody tr.skeleton-row > td {
+  padding: 16px;
+}
+
+/* ========== List 列表骨架屏 ========== */
+
+.ant-list-item.skeleton-list-item {
+  padding: 16px;
+  pointer-events: none;
+}
+
+
+/* ============================================
+   工具类
+   ============================================ */
+
+/* 禁用动画 */
+.no-animation,
+.no-animation *,
+.no-animation *::before,
+.no-animation *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* 硬件加速 */
+.gpu-accelerate {
+  transform: translateZ(0);
+  will-change: transform;
+}

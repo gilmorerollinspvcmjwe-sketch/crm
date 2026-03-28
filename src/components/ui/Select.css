@@ -1,0 +1,416 @@
+/**
+ * Select 样式 - 出海 CRM 设计系统
+ * 选择框组件样式
+ */
+
+/* ==================== 容器样式 ==================== */
+.crm-select-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  position: relative;
+  width: 100%;
+}
+
+.crm-select-label-left {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.crm-select-label-left .crm-select-label {
+  flex-shrink: 0;
+  width: 80px;
+  margin-bottom: 0;
+}
+
+/* ==================== 标签样式 ==================== */
+.crm-select-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
+  line-height: var(--line-height-normal);
+}
+
+.crm-select-required {
+  color: var(--danger-500);
+  margin-left: var(--spacing-1);
+}
+
+/* ==================== 选择框样式 ==================== */
+.crm-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  background: var(--bg-paper);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  
+  cursor: pointer;
+  
+  transition: 
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.crm-select:hover:not(.crm-select-disabled) {
+  border-color: var(--brand-500);
+}
+
+.crm-select-focused:not(.crm-select-disabled) {
+  border-color: var(--brand-500);
+  border-width: 2px;
+}
+
+.crm-select-disabled {
+  background: var(--neutral-50);
+  border-color: var(--neutral-200);
+  cursor: not-allowed;
+}
+
+.crm-select-error .crm-select {
+  border-color: var(--danger-500);
+}
+
+.crm-select-error .crm-select:hover {
+  border-color: var(--danger-600);
+}
+
+.crm-select-error .crm-select-focused {
+  border-color: var(--danger-600);
+  border-width: 2px;
+}
+
+/* ==================== 尺寸系统 ==================== */
+
+/* 小尺寸 */
+.crm-select-sm {
+  height: var(--control-height-sm);
+  padding: 0 var(--spacing-2);
+  font-size: var(--text-xs);
+}
+
+.crm-select-sm .crm-select-tag {
+  height: 20px;
+  font-size: var(--text-xs);
+}
+
+/* 默认尺寸 */
+.crm-select-md {
+  height: var(--control-height-md);
+  padding: 0 var(--spacing-3);
+  font-size: var(--text-sm);
+}
+
+/* 大尺寸 */
+.crm-select-lg {
+  height: var(--control-height-lg);
+  padding: 0 var(--spacing-4);
+  font-size: var(--text-base);
+}
+
+/* ==================== 值显示区域 ==================== */
+.crm-select-value {
+  flex: 1;
+  overflow: hidden;
+}
+
+.crm-select-single-value {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.crm-select-placeholder {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-tertiary);
+  line-height: var(--line-height-normal);
+}
+
+/* ==================== 多选标签 ==================== */
+.crm-select-tags {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-1);
+  overflow: hidden;
+}
+
+.crm-select-tag {
+  display: inline-flex;
+  align-items: center;
+  
+  height: 22px;
+  padding: 0 var(--spacing-2);
+  
+  background: var(--brand-50);
+  color: var(--brand-600);
+  
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  line-height: var(--line-height-tight);
+  
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--brand-200);
+  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-select-tag-count {
+  display: inline-flex;
+  align-items: center;
+  
+  height: 22px;
+  padding: 0 var(--spacing-2);
+  
+  background: var(--neutral-100);
+  color: var(--text-secondary);
+  
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  
+  border-radius: var(--radius-sm);
+}
+
+/* ==================== 箭头图标 ==================== */
+.crm-select-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  color: var(--text-tertiary);
+  
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.crm-select-open .crm-select-arrow {
+  transform: rotate(180deg);
+}
+
+.crm-select-arrow-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==================== 清除按钮 ==================== */
+.crm-select-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: 16px;
+  height: 16px;
+  
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  
+  color: var(--text-tertiary);
+  
+  transition: 
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.crm-select-clear:hover {
+  color: var(--text-primary);
+  background: var(--neutral-100);
+}
+
+.crm-select-clear svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ==================== 搜索输入框 ==================== */
+.crm-select-search-input {
+  width: 100%;
+  height: 100%;
+  
+  padding: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  
+  caret-color: var(--brand-500);
+}
+
+.crm-select-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ==================== 下拉列表 ==================== */
+.crm-select-dropdown {
+  position: absolute;
+  top: calc(100% + var(--spacing-1));
+  left: 0;
+  right: 0;
+  
+  background: var(--bg-paper);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-l3);
+  
+  z-index: var(--z-dropdown);
+  
+  animation: slideInDown var(--duration-fast) var(--ease-spring);
+  overflow: hidden;
+}
+
+.crm-select-options {
+  max-height: 240px;
+  overflow-y: auto;
+  padding: var(--spacing-1);
+}
+
+/* ==================== 选项样式 ==================== */
+.crm-select-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  
+  padding: var(--spacing-2) var(--spacing-3);
+  
+  border-radius: var(--radius-sm);
+  
+  cursor: pointer;
+  
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.crm-select-option:hover:not(.crm-select-option-disabled) {
+  background: var(--brand-50);
+}
+
+.crm-select-option-selected {
+  background: var(--brand-50);
+}
+
+.crm-select-option-selected:hover {
+  background: var(--brand-100);
+}
+
+.crm-select-option-disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.crm-select-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.crm-select-option-label {
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.crm-select-option-description {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--text-tertiary);
+  line-height: var(--line-height-normal);
+}
+
+.crm-select-option-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  color: var(--brand-500);
+}
+
+.crm-select-option-check svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==================== 空状态 ==================== */
+.crm-select-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  padding: var(--spacing-6);
+  
+  color: var(--text-tertiary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+/* ==================== 错误提示 ==================== */
+.crm-select-error-text {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--danger-600);
+  margin-top: var(--spacing-1);
+  line-height: var(--line-height-normal);
+}
+
+/* ==================== 帮助文本 ==================== */
+.crm-select-helper-text {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-1);
+  line-height: var(--line-height-normal);
+}
+
+/* ==================== 焦点环 ==================== */
+.crm-select:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+}
+
+/* ==================== RTL 支持 ==================== */
+[dir="rtl"] .crm-select-arrow {
+  order: -1;
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .crm-select,
+  .crm-select-arrow,
+  .crm-select-dropdown {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ==================== 高对比度支持 ==================== */
+@media (prefers-contrast: high) {
+  .crm-select {
+    border-width: 2px;
+  }
+  
+  .crm-select-option-selected {
+    border: 1px solid var(--brand-500);
+  }
+}

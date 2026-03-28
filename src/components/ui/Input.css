@@ -1,0 +1,359 @@
+/**
+ * Input 样式 - 出海 CRM 设计系统
+ * 输入框、搜索框、带后缀装饰的输入框
+ */
+
+/* ==================== 容器样式 ==================== */
+.crm-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.crm-input-label-left {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.crm-input-label-left .crm-input-label {
+  flex-shrink: 0;
+  width: 80px;
+  margin-bottom: 0;
+}
+
+/* ==================== 标签样式 ==================== */
+.crm-input-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
+  line-height: var(--line-height-normal);
+}
+
+.crm-input-required {
+  color: var(--danger-500);
+  margin-left: var(--spacing-1);
+}
+
+/* ==================== 输入框包装器 ==================== */
+.crm-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-paper);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition: 
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.crm-input-wrapper:hover:not(.crm-input-wrapper-error) {
+  border-color: var(--brand-500);
+}
+
+.crm-input-focused:not(.crm-input-wrapper-error) {
+  border-color: var(--brand-500);
+  border-width: 2px;
+}
+
+.crm-input-wrapper-error {
+  border-color: var(--danger-500);
+}
+
+.crm-input-wrapper-error:hover {
+  border-color: var(--danger-600);
+}
+
+.crm-input-wrapper-error.crm-input-focused {
+  border-color: var(--danger-600);
+  border-width: 2px;
+}
+
+.crm-input-disabled .crm-input-wrapper {
+  background: var(--neutral-50);
+  border-color: var(--neutral-200);
+  cursor: not-allowed;
+}
+
+.crm-input-readonly .crm-input-wrapper {
+  background: var(--neutral-50);
+}
+
+/* ==================== 尺寸系统 ==================== */
+
+/* 小尺寸 */
+.crm-input-sm {
+  height: var(--control-height-sm);
+}
+
+.crm-input-sm .crm-input {
+  font-size: var(--text-xs);
+}
+
+.crm-input-sm .crm-input-prefix,
+.crm-input-sm .crm-input-suffix {
+  font-size: var(--text-xs);
+}
+
+/* 默认尺寸 */
+.crm-input-md {
+  height: var(--control-height-md);
+}
+
+.crm-input-md .crm-input {
+  font-size: var(--text-sm);
+}
+
+/* 大尺寸 */
+.crm-input-lg {
+  height: var(--control-height-lg);
+}
+
+.crm-input-lg .crm-input {
+  font-size: var(--text-base);
+}
+
+.crm-input-lg .crm-input-prefix,
+.crm-input-lg .crm-input-suffix {
+  font-size: var(--text-lg);
+}
+
+/* ==================== 输入框本体 ==================== */
+.crm-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--spacing-3);
+  
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  
+  background: transparent;
+  border: none;
+  outline: none;
+  
+  caret-color: var(--brand-500);
+}
+
+.crm-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.crm-input:focus {
+  outline: none;
+}
+
+.crm-input:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.crm-input:read-only {
+  color: var(--text-secondary);
+}
+
+/* 带前缀时减少左边距 */
+.crm-input-has-prefix .crm-input {
+  padding-left: var(--spacing-1);
+}
+
+/* 带后缀时减少右边距 */
+.crm-input-has-suffix .crm-input {
+  padding-right: var(--spacing-1);
+}
+
+/* ==================== 前缀/后缀装饰 ==================== */
+.crm-input-prefix,
+.crm-input-suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  
+  padding: 0 var(--spacing-2);
+}
+
+.crm-input-prefix {
+  padding-left: var(--spacing-3);
+}
+
+.crm-input-suffix {
+  padding-right: var(--spacing-3);
+}
+
+/* ==================== 前后置标签 ==================== */
+.crm-input-addon-before,
+.crm-input-addon-after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background: var(--neutral-50);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  
+  padding: 0 var(--spacing-3);
+  border-radius: var(--radius-sm);
+}
+
+.crm-input-addon-before {
+  border-right: 1px solid var(--border-light);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.crm-input-addon-after {
+  border-left: 1px solid var(--border-light);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* ==================== 清除按钮 ==================== */
+.crm-input-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  width: 16px;
+  height: 16px;
+  margin-right: var(--spacing-2);
+  
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  
+  color: var(--text-tertiary);
+  
+  transition: 
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.crm-input-clear:hover {
+  color: var(--text-primary);
+  background: var(--neutral-100);
+}
+
+.crm-input-clear svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ==================== 加载状态 ==================== */
+.crm-input-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  width: 16px;
+  height: 16px;
+  margin-right: var(--spacing-2);
+  
+  color: var(--brand-500);
+}
+
+.crm-input-loading svg {
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+/* ==================== 错误提示 ==================== */
+.crm-input-error-text {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--danger-600);
+  margin-top: var(--spacing-1);
+  line-height: var(--line-height-normal);
+}
+
+/* ==================== 帮助文本 ==================== */
+.crm-input-helper-text {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-1);
+  line-height: var(--line-height-normal);
+}
+
+/* ==================== 搜索框特殊样式 ==================== */
+.crm-input-container .crm-input[type="search"] {
+  /* 搜索框宽度 */
+  min-width: 200px;
+}
+
+/* ==================== RTL 支持 ==================== */
+[dir="rtl"] .crm-input-container {
+  text-align: right;
+}
+
+[dir="rtl"] .crm-input-prefix {
+  padding-left: var(--spacing-2);
+  padding-right: var(--spacing-3);
+}
+
+[dir="rtl"] .crm-input-suffix {
+  padding-right: var(--spacing-2);
+  padding-left: var(--spacing-3);
+}
+
+[dir="rtl"] .crm-input-clear {
+  margin-left: var(--spacing-2);
+  margin-right: 0;
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .crm-input-wrapper,
+  .crm-input-clear,
+  .crm-input-loading svg {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ==================== 高对比度支持 ==================== */
+@media (prefers-contrast: high) {
+  .crm-input-wrapper {
+    border-width: 2px;
+  }
+  
+  .crm-input-label {
+    font-weight: var(--font-bold);
+  }
+  
+  .crm-input-error-text {
+    font-weight: var(--font-semibold);
+  }
+}
+
+/* ==================== 快捷键提示样式 ==================== */
+.crm-input-suffix kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  padding: var(--spacing-1) var(--spacing-2);
+  
+  background: var(--neutral-100);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  line-height: var(--line-height-tight);
+  
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+}

@@ -1,0 +1,491 @@
+/**
+ * CustomerReport 样式 - 出海 CRM 设计系统
+ * 客户分析报表页面样式
+ */
+
+/* ==================== 页面布局 ==================== */
+.customer-report-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-height: 100%;
+}
+
+/* ==================== 页面标题区 ==================== */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.page-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.page-title {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-heading);
+}
+
+.page-subtitle {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-tertiary);
+}
+
+.page-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+/* ==================== 统计卡片 ==================== */
+.stats-row {
+  margin-bottom: var(--spacing-2);
+}
+
+.stats-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.stats-card:hover {
+  box-shadow: var(--shadow-l2);
+}
+
+.stats-card .ant-statistic-title {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+}
+
+.stats-card .ant-statistic-content {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+}
+
+/* ==================== 图表卡片 ==================== */
+.charts-row {
+  margin-bottom: var(--spacing-2);
+}
+
+.chart-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  height: 100%;
+}
+
+.chart-card .ant-card-head {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.chart-card .ant-card-body {
+  padding: var(--spacing-4);
+}
+
+/* ==================== 增长趋势图 ==================== */
+.growth-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 200px;
+  padding: var(--spacing-4);
+}
+
+.growth-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+  flex: 1;
+}
+
+.growth-month {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-medium);
+}
+
+.growth-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 150px;
+}
+
+.growth-bar {
+  width: 14px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+}
+
+.growth-bar.new {
+  background: var(--brand-400);
+}
+
+.growth-bar.total {
+  background: var(--success-500);
+}
+
+.growth-bar:hover {
+  opacity: 0.8;
+}
+
+.growth-rate {
+  font-size: 10px;
+  color: var(--success-600);
+  font-weight: var(--font-medium);
+}
+
+/* ==================== 行业分布图 ==================== */
+.industry-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) 0;
+}
+
+.industry-bar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.industry-bar-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.industry-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.industry-name {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.industry-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--neutral-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.industry-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--duration-fast) var(--ease-out);
+}
+
+.industry-percent {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ==================== 等级分布图 ==================== */
+.level-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.level-bar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.level-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.level-label.level-a {
+  color: var(--danger-600);
+}
+
+.level-label.level-b {
+  color: var(--warning-600);
+}
+
+.level-label.level-c {
+  color: var(--info-600);
+}
+
+.level-label.level-d {
+  color: var(--neutral-600);
+}
+
+.level-bar-track {
+  flex: 1;
+  height: 10px;
+  background: var(--neutral-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.level-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--duration-fast) var(--ease-out);
+}
+
+.level-bar-fill.level-a {
+  background: var(--danger-500);
+}
+
+.level-bar-fill.level-b {
+  background: var(--warning-500);
+}
+
+.level-bar-fill.level-c {
+  background: var(--info-500);
+}
+
+.level-bar-fill.level-d {
+  background: var(--neutral-500);
+}
+
+.level-count {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ==================== 数据表格 ==================== */
+.tables-row {
+  margin-top: var(--spacing-2);
+}
+
+.table-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+}
+
+.table-card .ant-card-head {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.table-card .ant-card-body {
+  padding: var(--spacing-4);
+}
+
+.customer-table .ant-table-thead > tr > th {
+  height: 40px;
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--neutral-50);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.customer-table .ant-table-tbody > tr > td {
+  height: 48px;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.customer-table .ant-table-tbody > tr:hover > td {
+  background: var(--neutral-50);
+}
+
+/* ==================== 行业单元格 ==================== */
+.industry-cell {
+  font-weight: var(--font-medium);
+}
+
+/* ==================== 数量值 ==================== */
+.count-value {
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+/* ==================== 等级徽章 ==================== */
+.level-badge {
+  font-weight: var(--font-bold);
+}
+
+.level-badge.level-a {
+  color: var(--danger-600);
+}
+
+.level-badge.level-b {
+  color: var(--warning-600);
+}
+
+.level-badge.level-c {
+  color: var(--info-600);
+}
+
+.level-badge.level-d {
+  color: var(--neutral-600);
+}
+
+/* ==================== 百分比进度条 ==================== */
+.percentage-progress .ant-progress-bg {
+  height: 6px !important;
+}
+
+.percentage-progress .ant-progress-text {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+/* ==================== 骨架屏 ==================== */
+.skeleton-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.skeleton-stats {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.skeleton-stat-card {
+  flex: 1;
+  height: 100px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-charts {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.skeleton-chart-lg {
+  flex: 2;
+  height: 250px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-chart-sm {
+  flex: 1;
+  height: 250px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-tables {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.skeleton-table {
+  flex: 1;
+  height: 400px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--neutral-100) 25%, var(--neutral-50) 50%, var(--neutral-100) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.5s ease-in-out infinite;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+  }
+  
+  .page-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .stats-row,
+  .charts-row,
+  .tables-row {
+    flex-direction: column;
+  }
+
+  .stats-row .ant-col,
+  .charts-row .ant-col,
+  .tables-row .ant-col {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .growth-chart {
+    overflow-x: auto;
+    padding: var(--spacing-2);
+  }
+
+  .growth-bars {
+    height: 100px;
+  }
+
+  .growth-bar {
+    width: 10px;
+  }
+
+  .industry-bar-label {
+    width: 80px;
+  }
+
+  .level-label {
+    width: 30px;
+    font-size: var(--text-xs);
+  }
+
+  .level-count {
+    width: 30px;
+    font-size: var(--text-xs);
+  }
+}
+
+/* ==================== 减少动画支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .stats-card,
+  .growth-bar,
+  .industry-bar-fill,
+  .level-bar-fill {
+    transition: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+}

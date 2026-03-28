@@ -5,31 +5,28 @@
  * - Left Sidebar (240px): Opportunity info + Stage progress + Action buttons
  * - Middle Content (flex: 1): Tabs with Overview/Activity/Products/AI Insights
  * - Right Sidebar (320px): Related customer/contacts/quotes/contracts
+ * 
+ * Refactored with new UI design system
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
-  Button,
-  Space,
   Tabs,
   Tag,
   Table,
-  Timeline,
   message,
   Modal,
   Form,
-  Input,
-  Select,
+  Input as AntInput,
   Typography,
   Avatar,
   Divider,
-  Tooltip,
   Collapse,
   Badge,
   Steps,
   Progress,
-  Descriptions,
   Result,
+  Space,
 } from 'antd';
 import {
   ArrowLeftOutlined,
@@ -39,22 +36,20 @@ import {
   MailOutlined,
   BulbOutlined,
   CheckCircleOutlined,
-  ClockCircleOutlined,
   UserOutlined,
   TeamOutlined,
-  EnvironmentOutlined,
-  GlobalOutlined,
   CalendarOutlined,
   FileTextOutlined,
-  RightOutlined,
   TrophyOutlined,
-  ThunderboltOutlined,
-  DollarOutlined,
   SwapOutlined,
   CloseCircleOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { Badge as UIBadge } from '../components/ui/Badge';
 import { opportunityData } from '../mock/opportunityData';
 import { activityData } from '../mock/activityData';
 import { Opportunity, OpportunityStage, Competitor } from '../types/opportunity';
@@ -66,6 +61,7 @@ import {
   RelationshipChangeAI,
   SmartSuggestionsAI,
 } from '../components/AI';
+import './OpportunityDetail.css';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -214,7 +210,7 @@ export const OpportunityDetail: React.FC = () => {
 
   if (!opportunity) {
     return (
-      <div style={{ padding: 24, textAlign: 'center' }}>
+      <div className="opportunity-detail-empty">
         <Result
           status="404"
           title={t('opportunity.detail.notFound')}
@@ -521,48 +517,36 @@ export const OpportunityDetail: React.FC = () => {
   ];
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="opportunity-detail-page">
       {/* Header */}
-      <div style={{ padding: '12px 16px', borderBottom: `1px solid ${colors.border.default}`, background: '#fff' }}>
+      <div className="detail-header">
         <Button type="text" icon={<ArrowLeftOutlined />} onClick={handleBack}>
           {t('opportunity.detail.back')}
         </Button>
       </div>
 
       {/* Main Content - Three Column Layout */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div className="detail-main">
         {/* Left Sidebar - Stage Progress & Actions (240px) */}
-        <div
-          style={{
-            width: 240,
-            borderRight: `1px solid ${colors.border.default}`,
-            background: '#fff',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+        <div className="detail-sidebar-left">
           {/* Opportunity Info */}
-          <div style={{ padding: 16, borderBottom: `1px solid ${colors.border.light}` }}>
-            <Text strong style={{ display: 'block', fontSize: 15, marginBottom: 8 }}>
-              {opportunity.name}
-            </Text>
-            <Text strong style={{ fontSize: 18, color: colors.primary, display: 'block', marginBottom: 8 }}>
+          <div className="sidebar-header">
+            <Text strong className="opportunity-name">{opportunity.name}</Text>
+            <Text strong className="opportunity-amount">
               ¥{(opportunity.amount / 10000).toFixed(1)}万
             </Text>
-            <Tag
-              style={{
-                background: STAGE_COLORS[opportunity.stage]?.bg,
-                color: STAGE_COLORS[opportunity.stage]?.color,
-                border: 'none',
-              }}
+            <UIBadge 
+              color={opportunity.stage === OpportunityStage.CLOSED_WON ? 'success' : 
+                     opportunity.stage === OpportunityStage.CLOSED_LOST ? 'danger' : 'brand'} 
+              variant="soft"
             >
               {STAGE_LABELS[opportunity.stage]}
-            </Tag>
+            </UIBadge>
           </div>
 
           {/* Stage Progress Indicator */}
-          <div style={{ padding: 16, borderBottom: `1px solid ${colors.border.light}` }}>
-            <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 12 }}>
+          <div className="stage-progress">
+            <Text type="secondary" className="stage-label">
               {t('opportunity.detail.stageProgress')}
             </Text>
             <Steps
@@ -576,18 +560,17 @@ export const OpportunityDetail: React.FC = () => {
               }))}
             />
             {/* Quick stage change */}
-            <div style={{ marginTop: 12 }}>
-              <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 8 }}>
+            <div className="quick-change">
+              <Text type="secondary" className="quick-change-label">
                 {t('opportunity.detail.quickChange')}
               </Text>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                {STAGE_ORDER.slice(0, -1).map((stage, index) => (
+              <div className="stage-buttons">
+                {STAGE_ORDER.slice(0, -1).map((stage) => (
                   <Button
                     key={stage}
-                    size="small"
-                    type={stage === opportunity.stage ? 'primary' : 'default'}
+                    size="sm"
+                    type={stage === opportunity.stage ? 'primary' : 'secondary'}
                     onClick={() => handleChangeStage(stage)}
-                    style={{ fontSize: 11 }}
                   >
                     {STAGE_LABELS[stage]}
                   </Button>
@@ -597,68 +580,52 @@ export const OpportunityDetail: React.FC = () => {
           </div>
 
           {/* Action Buttons */}
-          <div style={{ padding: 12, flex: 1, overflow: 'auto' }}>
-            <Space direction="vertical" style={{ width: '100%' }} size={4}>
-              {actionButtons.map((btn, index) => {
-                if ('divider' in btn && btn.divider) {
-                  return <Divider key={`divider-${index}`} style={{ margin: '8px 0' }} />;
-                }
-                return (
-                  <Button
-                    key={btn.key}
-                    type="text"
-                    icon={btn.icon}
-                    style={{
-                      width: '100%',
-                      justifyContent: 'flex-start',
-                      color: btn.danger ? colors.danger : undefined,
-                    }}
-                    onClick={btn.onClick}
-                  >
-                    {btn.label}
-                  </Button>
-                );
-              })}
-            </Space>
+          <div className="sidebar-actions">
+            {actionButtons.map((btn, index) => {
+              if ('divider' in btn && btn.divider) {
+                return <Divider key={`divider-${index}`} className="action-divider" />;
+              }
+              return (
+                <Button
+                  key={btn.key}
+                  type="text"
+                  icon={btn.icon}
+                  className={`action-btn ${btn.danger ? 'action-btn-danger' : ''}`}
+                  onClick={btn.onClick}
+                >
+                  {btn.label}
+                </Button>
+              );
+            })}
           </div>
         </div>
 
         {/* Middle Content - Tabs (flex: 1) */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', overflow: 'hidden' }}>
+        <div className="detail-content">
           <Tabs
             activeKey={activeTab}
             onChange={setActiveTab}
             items={tabItems}
-            style={{ flex: 1, overflow: 'hidden' }}
-            tabBarStyle={{ padding: '0 16px', marginBottom: 0 }}
             className="opportunity-detail-tabs"
           />
         </div>
 
         {/* Right Sidebar - Related Info (320px) */}
-        <div
-          style={{
-            width: 320,
-            borderLeft: `1px solid ${colors.border.default}`,
-            background: '#fff',
-            overflow: 'auto',
-            padding: 16,
-          }}
-        >
+        <div className="detail-sidebar-right">
           {/* Customer Card */}
           <Card
             size="small"
             title={
-              <Space>
-                <TeamOutlined style={{ color: colors.primary }} />
+              <span className="sidebar-card-title">
+                <TeamOutlined className="sidebar-card-icon-primary" />
                 <span>{t('opportunity.detail.relatedCustomer')}</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 12 } }}
-            style={{ marginBottom: 12 }}
+            className="sidebar-card"
           >
-            <div style={{ marginBottom: 8 }}>
-              <Text type="secondary" style={{ fontSize: 12 }}>Customer</Text>
+            <div className="card-info-item">
+              <Text type="secondary" className="card-info-label">Customer</Text>
               <div>
                 <a onClick={() => navigate(`/customer/${opportunity.customerId}`)}>
                   <Text strong>{opportunity.customerName}</Text>
@@ -671,30 +638,24 @@ export const OpportunityDetail: React.FC = () => {
           <Card
             size="small"
             title={
-              <Space>
-                <UserOutlined style={{ color: colors.warning }} />
+              <span className="sidebar-card-title">
+                <UserOutlined className="sidebar-card-icon-warning" />
                 <span>{t('opportunity.detail.contacts')} ({relatedContacts.length})</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 0 } }}
-            style={{ marginBottom: 12 }}
+            className="sidebar-card"
           >
-            {relatedContacts.map((contact, index) => (
-              <div
-                key={contact.id}
-                style={{
-                  padding: '10px 12px',
-                  borderBottom: index < relatedContacts.length - 1 ? `1px solid ${colors.border.light}` : 'none',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            {relatedContacts.map((contact) => (
+              <div key={contact.id} className="contact-item">
+                <div className="contact-header">
                   <Avatar size="small" icon={<UserOutlined />} />
-                  <Text strong style={{ fontSize: 13 }}>{contact.name}</Text>
-                  <Tag color={decisionRoleColorMap[contact.role] || 'default'} style={{ margin: 0, fontSize: 11 }}>
+                  <Text strong className="contact-name">{contact.name}</Text>
+                  <Tag color={decisionRoleColorMap[contact.role] || 'default'} className="contact-role">
                     {contact.role}
                   </Tag>
                 </div>
-                <Text type="secondary" style={{ fontSize: 12 }}>{contact.position}</Text>
+                <Text type="secondary" className="contact-position">{contact.position}</Text>
               </div>
             ))}
           </Card>
@@ -703,29 +664,21 @@ export const OpportunityDetail: React.FC = () => {
           <Card
             size="small"
             title={
-              <Space>
-                <FileTextOutlined style={{ color: colors.info }} />
+              <span className="sidebar-card-title">
+                <FileTextOutlined className="sidebar-card-icon-info" />
                 <span>{t('opportunity.detail.quotes')} ({relatedQuotes.length})</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 0 } }}
-            style={{ marginBottom: 12 }}
+            className="sidebar-card"
           >
-            {relatedQuotes.map((quote, index) => (
-              <div
-                key={quote.id}
-                style={{
-                  padding: '10px 12px',
-                  borderBottom: index < relatedQuotes.length - 1 ? `1px solid ${colors.border.light}` : 'none',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text strong style={{ fontSize: 13 }}>{quote.number}</Text>
-                  <Text strong style={{ color: colors.primary, fontSize: 13 }}>
-                    ¥{quote.amount.toLocaleString()}
-                  </Text>
+            {relatedQuotes.map((quote) => (
+              <div key={quote.id} className="quote-item">
+                <div className="quote-header">
+                  <Text strong className="quote-number">{quote.number}</Text>
+                  <Text strong className="quote-amount">¥{quote.amount.toLocaleString()}</Text>
                 </div>
-                <Tag style={{ margin: 0, fontSize: 11 }}>{quote.status}</Tag>
+                <Tag className="quote-status">{quote.status}</Tag>
               </div>
             ))}
           </Card>
@@ -734,28 +687,21 @@ export const OpportunityDetail: React.FC = () => {
           <Card
             size="small"
             title={
-              <Space>
-                <CheckCircleOutlined style={{ color: colors.success }} />
+              <span className="sidebar-card-title">
+                <CheckCircleOutlined className="sidebar-card-icon-success" />
                 <span>{t('opportunity.detail.contracts')} ({relatedContracts.length})</span>
-              </Space>
+              </span>
             }
             styles={{ body: { padding: 0 } }}
+            className="sidebar-card"
           >
-            {relatedContracts.map((contract, index) => (
-              <div
-                key={contract.id}
-                style={{
-                  padding: '10px 12px',
-                  borderBottom: index < relatedContracts.length - 1 ? `1px solid ${colors.border.light}` : 'none',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text strong style={{ fontSize: 13 }}>{contract.number}</Text>
-                  <Text strong style={{ color: colors.primary, fontSize: 13 }}>
-                    ¥{contract.amount.toLocaleString()}
-                  </Text>
+            {relatedContracts.map((contract) => (
+              <div key={contract.id} className="contract-item">
+                <div className="contract-header">
+                  <Text strong className="contract-number">{contract.number}</Text>
+                  <Text strong className="contract-amount">¥{contract.amount.toLocaleString()}</Text>
                 </div>
-                <Tag color="green" style={{ margin: 0, fontSize: 11 }}>{contract.status}</Tag>
+                <Tag color="green" className="contract-status">{contract.status}</Tag>
               </div>
             ))}
           </Card>
@@ -775,7 +721,7 @@ export const OpportunityDetail: React.FC = () => {
           <Form.Item label={t('opportunity.detail.selectStage')}>
             <Select
               value={selectedStage || opportunity.stage}
-              onChange={(value) => setSelectedStage(value)}
+              onChange={(value) => setSelectedStage(value as OpportunityStage)}
               options={STAGE_ORDER.slice(0, -1).map(stage => ({
                 label: `${STAGE_LABELS[stage]} (${STAGE_PROBABILITY[stage]}%)`,
                 value: stage,

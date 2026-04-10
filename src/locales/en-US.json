@@ -1,0 +1,518 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "reset": "Reset",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "actions": "Actions",
+    "status": "Status",
+    "details": "Details",
+    "viewAll": "View All",
+    "noData": "No Data",
+    "selectAll": "Select All",
+    "clearSelection": "Clear Selection",
+    "showMore": "Show More",
+    "showLess": "Show Less",
+    "unit": {
+      "count": "items",
+      "tenThousand": "0k",
+      "times": "times",
+      "days": "days",
+      "minutes": "min",
+      "seconds": "sec",
+      "percent": "%",
+      "record": "record",
+      "months": "months"
+    },
+    "messages": {
+      "searchComplete": "Search completed",
+      "saveSuccess": "Saved successfully",
+      "deleteSuccess": "Deleted successfully",
+      "createSuccess": "Created successfully",
+      "updateSuccess": "Updated successfully",
+      "operationSuccess": "Operation successful",
+      "loadFailed": "Failed to load",
+      "saveFailed": "Failed to save",
+      "pleaseSelect": "Please select"
+    },
+    "validation": {
+      "required": "Required",
+      "pleaseEnter": "Please enter",
+      "pleaseSelect": "Please select"
+    },
+    "yes": "Yes",
+    "no": "No",
+    "query": "Query",
+    "total": "Total",
+    "items": "",
+    "detail": "Detail",
+    "failed": "Failed",
+    "operationSuccess": "Operation successful",
+    "operationFailed": "Operation failed",
+    "deleteConfirm": "Are you sure you want to delete?",
+    "saveSuccess": "Saved successfully",
+    "saveFailed": "Save failed",
+    "loadFailed": "Load failed",
+    "required": "Required",
+    "optional": "Optional",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "comingSoon": "Coming Soon",
+    "copy": "Copy",
+    "createSuccess": "Created Successfully",
+    "deleteSuccess": "Deleted Successfully",
+    "updateSuccess": "Updated Successfully",
+    "description": "Description",
+    "none": "None",
+    "select": "Select",
+    "to": "To",
+    "filter": "Filter",
+    "language": "Switch Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "customers": "Customers",
+    "opportunities": "Opportunities",
+    "leads": "Leads",
+    "contacts": "Contacts",
+    "contracts": "Contracts",
+    "products": "Products",
+    "reports": "Reports",
+    "settings": "Settings",
+    "workplace": "Workplace",
+    "salesWorkbench": "Sales Workbench",
+    "customerManagement": "Customer Management",
+    "customerList": "Customer List",
+    "contactList": "Contact List",
+    "salesManagement": "Sales Management",
+    "leadManagement": "Lead Management",
+    "opportunityManagement": "Opportunity Management",
+    "activityRecords": "Activity Records",
+    "orderManagement": "Order Management",
+    "orderList": "Order List",
+    "quotes": "Quotes",
+    "contractManagement": "Contract Management",
+    "paymentManagement": "Payment Management",
+    "productAndPricing": "Products & Pricing",
+    "productLibrary": "Product Library",
+    "priceList": "Price List",
+    "reportCenter": "Reports",
+    "salesFunnel": "Sales Funnel",
+    "performanceStats": "Performance",
+    "customerAnalysis": "Customer Analysis",
+    "activityReports": "Activity Reports",
+    "leadConversion": "Lead Conversion",
+    "paymentAnalysis": "Payment Analysis",
+    "intelligentAI": "Intelligent AI",
+    "intelligentLeadAssignment": "Intelligent Lead Assignment",
+    "leadScoringAI": "Lead Scoring AI",
+    "salesForecastAI": "Sales Forecast AI",
+    "customerSegmentationAI": "Customer Segmentation AI",
+    "churnWarning": "Churn Warning",
+    "meetingAssistant": "Meeting Assistant",
+    "predictiveAI": "Predictive AI",
+    "aiAgents": "AI Agents",
+    "marketingAutomation": "Marketing Automation",
+    "marketingCampaigns": "Marketing Campaigns",
+    "emailTemplates": "Email Templates",
+    "targetLists": "Target Lists",
+    "integration": "Integration",
+    "ticketSystem": "Ticket System",
+    "knowledgeBase": "Knowledge Base",
+    "callCenter": "Call Center",
+    "automation": "Automation",
+    "workflows": "Workflows",
+    "executionLogs": "Execution Logs",
+    "systemSettings": "System Settings",
+    "profile": "Profile",
+    "changePassword": "Change Password",
+    "notificationPreferences": "Notification Preferences",
+    "displayPreferences": "Display Preferences",
+    "roleManagement": "Role Management",
+    "userManagement": "User Management",
+    "permissionConfiguration": "Permission Configuration",
+    "customFields": "Custom Fields",
+    "customObjects": "Custom Objects",
+    "operationLog": "Operation Log",
+    "loginLog": "Login Log",
+    "systemConfiguration": "System Configuration",
+    "expandSidebar": "Expand Sidebar",
+    "collapseSidebar": "Collapse Sidebar",
+    "searchPlaceholder": "Search customers, opportunities, contracts...",
+    "notificationTitle": "Notifications",
+    "viewAllNotifications": "View All Notifications",
+    "userCenter": "User Center",
+    "accountSettings": "Account Settings",
+    "logout": "Logout",
+    "contractApprovalPending": "Contract Approval Pending",
+    "opportunityExpiringSoon": "Opportunity Expiring Soon",
+    "crmSystem": "CRM System",
+    "administrator": "Administrator"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?",
+    "loginSuccess": "Login successful",
+    "loginFailed": "Login failed",
+    "logoutSuccess": "Logout successful",
+    "usernameRequired": "Please enter username",
+    "passwordRequired": "Please enter password"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "viewToday": "My Today",
+    "viewManager": "Manager View",
+    "viewFinance": "Finance View",
+    "metrics": {
+      "todayLeads": "Today's Leads",
+      "conversionRate": "Conversion Rate",
+      "pendingFollowUps": "Pending Follow-ups",
+      "closedAmount": "Closed Amount"
+    },
+    "sections": {
+      "todos": "To-Do Items",
+      "funnel": "Sales Funnel",
+      "performance": "Performance Ranking"
+    }
+  },
+  "detail": {
+    "fields": {
+      "status": "Status",
+      "score": "Score",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "address": "Address",
+      "website": "Website",
+      "assignee": "Owner",
+      "createdAt": "Created At",
+      "lastContact": "Last Contact",
+      "industry": "Industry",
+      "level": "Level",
+      "source": "Source",
+      "notes": "Notes"
+    }
+  },
+  "customer": {
+    "fields": {
+      "name": "Customer Name",
+      "status": "Status",
+      "score": "Score",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "address": "Address",
+      "website": "Website",
+      "assignee": "Owner",
+      "createdAt": "Created At",
+      "lastContact": "Last Contact",
+      "industry": "Industry",
+      "level": "Level",
+      "source": "Source",
+      "notes": "Notes"
+    },
+    "detail": {
+      "backToList": "Back to List",
+      "notFound": "Customer not found or has been deleted",
+      "tabs": {
+        "overview": "Overview",
+        "activity": "Activity",
+        "aiInsights": "AI Insights"
+      },
+      "actions": {
+        "edit": "Edit",
+        "assign": "Assign",
+        "newDeal": "New Deal",
+        "newContact": "New Contact",
+        "followUp": "Follow Up",
+        "returnToPool": "Return to Pool",
+        "export": "Export"
+      },
+      "related": {
+        "contacts": "Related Contacts",
+        "deals": "Related Deals",
+        "activities": "Related Activities",
+        "tickets": "Related Tickets"
+      },
+      "sections": {
+        "basicInfo": "Basic Information"
+      }
+    },
+    "modal": {
+      "editTitle": "Edit Customer",
+      "deleteTitle": "Confirm Delete",
+      "deleteContent": "This action cannot be undone. Are you sure you want to delete this customer?"
+    }
+  },
+  "opportunity": {
+    "detail": {
+      "tabs": {
+        "overview": "Overview",
+        "activity": "Activity",
+        "quotes": "Quotes"
+      },
+      "actions": {
+        "newActivity": "New Activity",
+        "closeWon": "Close Won",
+        "closeLost": "Close Lost"
+      }
+    }
+  },
+  "contact": {
+    "detail": {
+      "tabs": {
+        "overview": "Overview",
+        "activity": "Activity"
+      }
+    }
+  },
+  "ai": {
+    "insights": {
+      "summary": "AI Overview",
+      "suggestions": "AI Suggestions"
+    }
+  },
+  "reports": {
+    "common": {
+      "export": "Export",
+      "exportCSV": "Export CSV",
+      "exportExcel": "Export Excel",
+      "refresh": "Refresh",
+      "timeRange": "Time Range",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter",
+      "thisYear": "This Year",
+      "customRange": "Custom Range",
+      "filter": "Filter",
+      "comparedToLastPeriod": "vs last period",
+      "noData": "No data available"
+    },
+    "salesFunnel": {
+      "title": "Sales Funnel",
+      "description": "Sales stage conversion analysis and forecasting",
+      "metrics": {
+        "totalLeads": "Total Leads",
+        "conversionRate": "Conversion Rate",
+        "avgDealCycle": "Avg. Deal Cycle",
+        "forecastAmount": "Forecast Amount"
+      },
+      "funnelChart": "Sales Funnel",
+      "stageConversion": "Stage Conversion Analysis",
+      "conversionBetween": "Conversion Efficiency",
+      "prediction": "Prediction Analysis",
+      "predictedDeals": "Predicted Deals This Month",
+      "predictedAmount": "Predicted Amount",
+      "targetProbability": "Target Achievement Probability",
+      "stages": {
+        "lead": "Lead",
+        "opportunity": "Opportunity",
+        "proposal": "Proposal",
+        "negotiation": "Negotiation",
+        "closed": "Closed"
+      },
+      "table": {
+        "stage": "Stage",
+        "count": "Opportunities",
+        "amount": "Amount",
+        "conversionRate": "Conversion Rate"
+      }
+    },
+    "performance": {
+      "title": "Performance Statistics",
+      "description": "Sales team performance ranking and analysis",
+      "metrics": {
+        "totalSales": "Total Sales",
+        "targetCompletion": "Target Completion",
+        "avgDealSize": "Avg. Deal Size",
+        "activeSalespeople": "Active Salespeople"
+      },
+      "tabs": {
+        "personal": "Personal Performance",
+        "team": "Team Performance"
+      },
+      "ranking": "Sales Ranking",
+      "monthlyRanking": "Monthly Personal Performance Ranking",
+      "teamPerformance": "Team Performance",
+      "teamSummary": "Sales Team Performance Summary",
+      "trendChart": "Performance Trend",
+      "table": {
+        "rank": "Rank",
+        "name": "Name",
+        "team": "Team",
+        "target": "Target",
+        "actual": "Actual",
+        "completionRate": "Completion Rate",
+        "gap": "Gap"
+      }
+    },
+    "customer": {
+      "title": "Customer Analysis",
+      "description": "Customer distribution and value analysis",
+      "metrics": {
+        "totalCustomers": "Total Customers",
+        "newCustomers": "New Customers",
+        "activeCustomers": "Active Customers",
+        "churnRate": "Churn Rate"
+      },
+      "segments": {
+        "title": "Customer Segmentation",
+        "highValue": "High Value",
+        "growing": "Growing",
+        "regular": "Regular",
+        "inactive": "Inactive",
+        "percentage": "Percentage",
+        "revenueContribution": "Revenue Contribution"
+      },
+      "distribution": {
+        "title": "Industry Distribution",
+        "description": "Customer industry distribution"
+      },
+      "trends": {
+        "title": "Customer Trends",
+        "description": "Customer count changes over last 6 months",
+        "new": "New",
+        "active": "Active",
+        "churned": "Churned"
+      },
+      "table": {
+        "industry": "Industry",
+        "count": "Count",
+        "percentage": "Percentage"
+      }
+    },
+    "activity": {
+      "title": "Activity Report",
+      "description": "Sales activity statistics and analysis",
+      "metrics": {
+        "totalActivities": "Total Activities",
+        "dailyAvg": "Daily Average",
+        "avgResponseTime": "Avg. Response Time",
+        "conversionRate": "Activity Conversion Rate"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "weekly": "Weekly Detail",
+        "performers": "Performer Ranking"
+      },
+      "typeDistribution": "Activity Type Distribution",
+      "typeDescription": "Sales activity type statistics",
+      "types": {
+        "call": "Call",
+        "email": "Email",
+        "meeting": "Meeting",
+        "visit": "Visit",
+        "message": "Message"
+      },
+      "weeklyDetail": "Weekly Activity Detail",
+      "weeklyDescription": "Daily activity breakdown",
+      "performerRanking": "Activity Ranking",
+      "performerDescription": "Salesperson activity ranking",
+      "table": {
+        "day": "Day",
+        "calls": "Calls",
+        "emails": "Emails",
+        "meetings": "Meetings",
+        "visits": "Visits"
+      }
+    },
+    "leadConversion": {
+      "title": "Lead Conversion",
+      "description": "Lead conversion efficiency and source analysis",
+      "metrics": {
+        "totalLeads": "Total Leads",
+        "convertedLeads": "Converted Leads",
+        "conversionRate": "Conversion Rate",
+        "avgConversionCycle": "Avg. Conversion Cycle"
+      },
+      "pipeline": {
+        "title": "Conversion Pipeline",
+        "description": "Lead stage conversion status"
+      },
+      "stages": {
+        "new": "New Lead",
+        "contacted": "Contacted",
+        "qualified": "Qualified",
+        "converted": "Converted"
+      },
+      "sourceAnalysis": {
+        "title": "Source Analysis",
+        "description": "Lead conversion efficiency by source",
+        "leads": "Leads",
+        "converted": "Converted"
+      },
+      "trends": {
+        "title": "Conversion Trends",
+        "description": "Conversion rate changes over last 6 months"
+      },
+      "sources": {
+        "website": "Website",
+        "campaign": "Campaign",
+        "referral": "Referral",
+        "social": "Social Media",
+        "other": "Other"
+      },
+      "table": {
+        "source": "Source",
+        "leads": "Leads",
+        "converted": "Converted",
+        "rate": "Rate"
+      }
+    },
+    "payment": {
+      "title": "Payment Analysis",
+      "description": "Contract payment progress and overdue alerts",
+      "metrics": {
+        "totalPayment": "Total Payment",
+        "completionRate": "Completion Rate",
+        "avgCycle": "Avg. Payment Cycle",
+        "overdueAmount": "Overdue Amount"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "trends": "Trend Analysis",
+        "overdue": "Overdue Alerts"
+      },
+      "statusDistribution": "Payment Status Distribution",
+      "statusDescription": "Payment amount by status",
+      "status": {
+        "paid": "Paid",
+        "partial": "Partial",
+        "pending": "Pending"
+      },
+      "monthlyTrend": "Monthly Payment Trend",
+      "monthlyDescription": "Planned vs actual payment comparison",
+      "overdueWarning": "Overdue Payment Alerts",
+      "overdueDescription": "Contracts requiring collection attention",
+      "overdueLevel": {
+        "severe": "Severe",
+        "medium": "Medium",
+        "minor": "Minor"
+      },
+      "followUp": "Follow Up",
+      "table": {
+        "month": "Month",
+        "plan": "Plan",
+        "actual": "Actual",
+        "completion": "Completion"
+      }
+    }
+  }
+}

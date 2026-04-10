@@ -1,0 +1,67 @@
+/**
+ * FilterBar 样式
+ * HubSpot 风格筛选栏组件
+ */
+
+/* 筛选栏容器 */
+.filter-bar-container {
+  margin-bottom: 16px;
+}
+
+/* 筛选表单 */
+.filter-bar-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 16px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* 筛选项 */
+.filter-bar-item {
+  flex: 0 0 auto;
+  min-width: 150px;
+}
+
+.filter-bar-item .ant-form-item-label {
+  padding-bottom: 4px;
+}
+
+.filter-bar-item .ant-form-item-label > label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* 操作按钮区域 */
+.filter-bar-actions {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+/* 筛选标签 */
+.filter-bar-tags {
+  margin-top: 12px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .filter-bar-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar-item {
+    width: 100%;
+  }
+
+  .filter-bar-actions {
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}

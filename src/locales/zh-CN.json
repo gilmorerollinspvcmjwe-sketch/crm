@@ -1,0 +1,518 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "confirm": "确定",
+    "back": "返回",
+    "search": "搜索",
+    "reset": "重置",
+    "export": "导出",
+    "import": "导入",
+    "refresh": "刷新",
+    "loading": "加载中...",
+    "success": "成功",
+    "error": "错误",
+    "warning": "警告",
+    "info": "提示",
+    "actions": "操作",
+    "status": "状态",
+    "details": "详情",
+    "viewAll": "查看全部",
+    "noData": "暂无数据",
+    "selectAll": "全选",
+    "clearSelection": "清除选择",
+    "showMore": "展开更多",
+    "showLess": "收起",
+    "unit": {
+      "count": "个",
+      "tenThousand": "万",
+      "times": "次",
+      "days": "天",
+      "minutes": "分钟",
+      "seconds": "秒",
+      "percent": "%",
+      "record": "条",
+      "months": "个月"
+    },
+    "messages": {
+      "searchComplete": "搜索完成",
+      "saveSuccess": "保存成功",
+      "deleteSuccess": "删除成功",
+      "createSuccess": "创建成功",
+      "updateSuccess": "更新成功",
+      "operationSuccess": "操作成功",
+      "loadFailed": "加载失败",
+      "saveFailed": "保存失败",
+      "pleaseSelect": "请选择"
+    },
+    "validation": {
+      "required": "必填",
+      "pleaseEnter": "请输入",
+      "pleaseSelect": "请选择"
+    },
+    "yes": "是",
+    "no": "否",
+    "query": "查询",
+    "total": "共",
+    "items": "个",
+    "detail": "详情",
+    "failed": "失败",
+    "operationSuccess": "操作成功",
+    "operationFailed": "操作失败",
+    "deleteConfirm": "确定要删除吗？",
+    "saveSuccess": "保存成功",
+    "saveFailed": "保存失败",
+    "loadFailed": "加载失败",
+    "required": "必填",
+    "optional": "选填",
+    "enabled": "启用",
+    "disabled": "禁用",
+    "comingSoon": "即将推出",
+    "copy": "复制",
+    "createSuccess": "创建成功",
+    "deleteSuccess": "删除成功",
+    "updateSuccess": "更新成功",
+    "description": "描述",
+    "none": "无",
+    "select": "选择",
+    "to": "至",
+    "filter": "筛选",
+    "language": "切换语言"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "customers": "客户管理",
+    "opportunities": "商机管理",
+    "leads": "线索管理",
+    "contacts": "联系人",
+    "contracts": "合同管理",
+    "products": "产品管理",
+    "reports": "报表分析",
+    "settings": "系统设置",
+    "workplace": "工作台",
+    "salesWorkbench": "销售工作台",
+    "customerManagement": "客户管理",
+    "customerList": "客户列表",
+    "contactList": "联系人列表",
+    "salesManagement": "销售管理",
+    "leadManagement": "线索管理",
+    "opportunityManagement": "商机管理",
+    "activityRecords": "跟进记录",
+    "orderManagement": "订单管理",
+    "orderList": "订单列表",
+    "quotes": "报价单",
+    "contractManagement": "合同管理",
+    "paymentManagement": "回款管理",
+    "productAndPricing": "产品与定价",
+    "productLibrary": "产品库",
+    "priceList": "价格表",
+    "reportCenter": "报表中心",
+    "salesFunnel": "销售漏斗",
+    "performanceStats": "业绩统计",
+    "customerAnalysis": "客户分析",
+    "activityReports": "跟进活动",
+    "leadConversion": "线索转化",
+    "paymentAnalysis": "回款分析",
+    "intelligentAI": "智能 AI",
+    "intelligentLeadAssignment": "智能线索分配",
+    "leadScoringAI": "线索评分 AI",
+    "salesForecastAI": "销售预测 AI",
+    "customerSegmentationAI": "客户分群 AI",
+    "churnWarning": "客户流失预警",
+    "meetingAssistant": "会议助手",
+    "predictiveAI": "预测性 AI",
+    "aiAgents": "AI 智能体",
+    "marketingAutomation": "营销自动化",
+    "marketingCampaigns": "营销活动",
+    "emailTemplates": "邮件模板",
+    "targetLists": "目标列表",
+    "integration": "集成对接",
+    "ticketSystem": "工单系统",
+    "knowledgeBase": "知识库",
+    "callCenter": "呼叫中心",
+    "automation": "自动化",
+    "workflows": "工作流",
+    "executionLogs": "执行日志",
+    "systemSettings": "系统设置",
+    "profile": "个人信息",
+    "changePassword": "修改密码",
+    "notificationPreferences": "通知偏好",
+    "displayPreferences": "显示偏好",
+    "roleManagement": "角色管理",
+    "userManagement": "用户管理",
+    "permissionConfiguration": "权限配置",
+    "customFields": "自定义字段",
+    "customObjects": "自定义对象",
+    "operationLog": "操作日志",
+    "loginLog": "登录日志",
+    "systemConfiguration": "系统配置",
+    "expandSidebar": "展开侧边栏",
+    "collapseSidebar": "收起侧边栏",
+    "searchPlaceholder": "搜索客户、商机、合同...",
+    "notificationTitle": "通知",
+    "viewAllNotifications": "查看全部通知",
+    "userCenter": "个人中心",
+    "accountSettings": "账户设置",
+    "logout": "退出登录",
+    "contractApprovalPending": "合同审批待处理",
+    "opportunityExpiringSoon": "商机即将过期",
+    "crmSystem": "CRM 系统",
+    "administrator": "管理员"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出登录",
+    "username": "用户名",
+    "password": "密码",
+    "rememberMe": "记住我",
+    "forgotPassword": "忘记密码？",
+    "loginSuccess": "登录成功",
+    "loginFailed": "登录失败",
+    "logoutSuccess": "退出成功",
+    "usernameRequired": "请输入用户名",
+    "passwordRequired": "请输入密码"
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "viewToday": "我的今日",
+    "viewManager": "管理视角",
+    "viewFinance": "财务视角",
+    "metrics": {
+      "todayLeads": "今日线索",
+      "conversionRate": "转化率",
+      "pendingFollowUps": "待跟进",
+      "closedAmount": "成交金额"
+    },
+    "sections": {
+      "todos": "待办事项",
+      "funnel": "销售漏斗",
+      "performance": "业绩排行"
+    }
+  },
+  "detail": {
+    "fields": {
+      "status": "状态",
+      "score": "评分",
+      "email": "邮箱",
+      "phone": "电话",
+      "company": "公司",
+      "address": "地址",
+      "website": "网站",
+      "assignee": "负责人",
+      "createdAt": "创建时间",
+      "lastContact": "最近联系",
+      "industry": "行业",
+      "level": "等级",
+      "source": "来源",
+      "notes": "备注"
+    }
+  },
+  "customer": {
+    "fields": {
+      "name": "客户名称",
+      "status": "状态",
+      "score": "评分",
+      "email": "邮箱",
+      "phone": "电话",
+      "company": "公司",
+      "address": "地址",
+      "website": "网站",
+      "assignee": "负责人",
+      "createdAt": "创建时间",
+      "lastContact": "最近联系",
+      "industry": "行业",
+      "level": "等级",
+      "source": "来源",
+      "notes": "备注"
+    },
+    "detail": {
+      "backToList": "返回列表",
+      "notFound": "客户不存在或已被删除",
+      "tabs": {
+        "overview": "概览",
+        "activity": "活动记录",
+        "aiInsights": "AI 洞察"
+      },
+      "actions": {
+        "edit": "编辑",
+        "assign": "分配",
+        "newDeal": "新建商机",
+        "newContact": "新建联系人",
+        "followUp": "跟进",
+        "returnToPool": "退回公海",
+        "export": "导出"
+      },
+      "related": {
+        "contacts": "相关联系人",
+        "deals": "相关商机",
+        "activities": "相关活动",
+        "tickets": "相关工单"
+      },
+      "sections": {
+        "basicInfo": "基本信息"
+      }
+    },
+    "modal": {
+      "editTitle": "编辑客户",
+      "deleteTitle": "确认删除",
+      "deleteContent": "删除后数据将无法恢复，确定要删除该客户吗？"
+    }
+  },
+  "opportunity": {
+    "detail": {
+      "tabs": {
+        "overview": "概览",
+        "activity": "活动记录",
+        "quotes": "报价单"
+      },
+      "actions": {
+        "newActivity": "新建活动",
+        "closeWon": "标记成交",
+        "closeLost": "标记失败"
+      }
+    }
+  },
+  "contact": {
+    "detail": {
+      "tabs": {
+        "overview": "概览",
+        "activity": "活动记录"
+      }
+    }
+  },
+  "ai": {
+    "insights": {
+      "summary": "AI 概览",
+      "suggestions": "智能建议"
+    }
+  },
+  "reports": {
+    "common": {
+      "export": "导出",
+      "exportCSV": "导出 CSV",
+      "exportExcel": "导出 Excel",
+      "refresh": "刷新",
+      "timeRange": "时间范围",
+      "thisWeek": "本周",
+      "thisMonth": "本月",
+      "thisQuarter": "本季度",
+      "thisYear": "本年",
+      "customRange": "自定义范围",
+      "filter": "筛选",
+      "comparedToLastPeriod": "较上期",
+      "noData": "暂无数据"
+    },
+    "salesFunnel": {
+      "title": "销售漏斗",
+      "description": "销售阶段转化分析与预测",
+      "metrics": {
+        "totalLeads": "总线索数",
+        "conversionRate": "转化率",
+        "avgDealCycle": "平均成交周期",
+        "forecastAmount": "预测成交额"
+      },
+      "funnelChart": "销售漏斗",
+      "stageConversion": "阶段转化分析",
+      "conversionBetween": "转化效率",
+      "prediction": "预测分析",
+      "predictedDeals": "预计本月成交",
+      "predictedAmount": "预计成交金额",
+      "targetProbability": "达成目标概率",
+      "stages": {
+        "lead": "线索",
+        "opportunity": "商机",
+        "proposal": "方案",
+        "negotiation": "谈判",
+        "closed": "成交"
+      },
+      "table": {
+        "stage": "阶段",
+        "count": "商机数",
+        "amount": "金额",
+        "conversionRate": "转化率"
+      }
+    },
+    "performance": {
+      "title": "业绩统计",
+      "description": "销售团队业绩排名与分析",
+      "metrics": {
+        "totalSales": "总销售额",
+        "targetCompletion": "目标完成率",
+        "avgDealSize": "平均客单价",
+        "activeSalespeople": "活跃销售"
+      },
+      "tabs": {
+        "personal": "个人业绩",
+        "team": "团队业绩"
+      },
+      "ranking": "销售排行榜",
+      "monthlyRanking": "本月个人业绩排名",
+      "teamPerformance": "团队业绩",
+      "teamSummary": "各销售团队业绩汇总",
+      "trendChart": "业绩趋势",
+      "table": {
+        "rank": "排名",
+        "name": "姓名",
+        "team": "团队",
+        "target": "目标",
+        "actual": "实际",
+        "completionRate": "完成率",
+        "gap": "差额"
+      }
+    },
+    "customer": {
+      "title": "客户分析",
+      "description": "客户分布与价值分析",
+      "metrics": {
+        "totalCustomers": "总客户数",
+        "newCustomers": "新增客户",
+        "activeCustomers": "活跃客户",
+        "churnRate": "客户流失率"
+      },
+      "segments": {
+        "title": "客户分层",
+        "highValue": "高价值客户",
+        "growing": "成长型客户",
+        "regular": "普通客户",
+        "inactive": "待激活客户",
+        "percentage": "占比",
+        "revenueContribution": "贡献收入"
+      },
+      "distribution": {
+        "title": "行业分布",
+        "description": "客户所属行业分布"
+      },
+      "trends": {
+        "title": "客户趋势",
+        "description": "近6个月客户数量变化",
+        "new": "新增",
+        "active": "活跃",
+        "churned": "流失"
+      },
+      "table": {
+        "industry": "行业",
+        "count": "客户数",
+        "percentage": "占比"
+      }
+    },
+    "activity": {
+      "title": "活动报表",
+      "description": "销售活动统计与分析",
+      "metrics": {
+        "totalActivities": "总活动数",
+        "dailyAvg": "日均活动",
+        "avgResponseTime": "平均响应时间",
+        "conversionRate": "活动转化率"
+      },
+      "tabs": {
+        "overview": "活动概览",
+        "weekly": "周活动明细",
+        "performers": "人员排行"
+      },
+      "typeDistribution": "活动类型分布",
+      "typeDescription": "各类销售活动数量统计",
+      "types": {
+        "call": "电话",
+        "email": "邮件",
+        "meeting": "会议",
+        "visit": "拜访",
+        "message": "消息"
+      },
+      "weeklyDetail": "本周活动明细",
+      "weeklyDescription": "按天统计各类活动",
+      "performerRanking": "活动排行",
+      "performerDescription": "销售人员活动量排名",
+      "table": {
+        "day": "日期",
+        "calls": "电话",
+        "emails": "邮件",
+        "meetings": "会议",
+        "visits": "拜访"
+      }
+    },
+    "leadConversion": {
+      "title": "线索转化",
+      "description": "线索转化效率与来源分析",
+      "metrics": {
+        "totalLeads": "总线索数",
+        "convertedLeads": "转化线索",
+        "conversionRate": "转化率",
+        "avgConversionCycle": "平均转化周期"
+      },
+      "pipeline": {
+        "title": "转化漏斗",
+        "description": "线索各阶段转化情况"
+      },
+      "stages": {
+        "new": "新线索",
+        "contacted": "已联系",
+        "qualified": "已验证",
+        "converted": "已转化"
+      },
+      "sourceAnalysis": {
+        "title": "来源分析",
+        "description": "各渠道线索转化效率对比",
+        "leads": "线索数",
+        "converted": "已转化"
+      },
+      "trends": {
+        "title": "转化趋势",
+        "description": "近6个月转化率变化"
+      },
+      "sources": {
+        "website": "官网",
+        "campaign": "营销活动",
+        "referral": "推荐",
+        "social": "社交媒体",
+        "other": "其他"
+      },
+      "table": {
+        "source": "来源",
+        "leads": "线索数",
+        "converted": "转化数",
+        "rate": "转化率"
+      }
+    },
+    "payment": {
+      "title": "回款分析",
+      "description": "合同回款进度与逾期预警",
+      "metrics": {
+        "totalPayment": "总回款金额",
+        "completionRate": "回款完成率",
+        "avgCycle": "平均回款周期",
+        "overdueAmount": "逾期金额"
+      },
+      "tabs": {
+        "overview": "回款概览",
+        "trends": "趋势分析",
+        "overdue": "逾期预警"
+      },
+      "statusDistribution": "回款状态分布",
+      "statusDescription": "各回款状态金额占比",
+      "status": {
+        "paid": "已回款",
+        "partial": "部分回款",
+        "pending": "待回款"
+      },
+      "monthlyTrend": "月度回款趋势",
+      "monthlyDescription": "计划回款与实际回款对比",
+      "overdueWarning": "逾期回款预警",
+      "overdueDescription": "需要关注催收的逾期合同",
+      "overdueLevel": {
+        "severe": "严重",
+        "medium": "中等",
+        "minor": "轻微"
+      },
+      "followUp": "催收跟进",
+      "table": {
+        "month": "月份",
+        "plan": "计划",
+        "actual": "实际",
+        "completion": "完成率"
+      }
+    }
+  }
+}

@@ -1,0 +1,141 @@
+﻿src/components/DataTable/VirtualDataTable.tsx(209,11): error TS2869: Right operand of ?? is unreachable because the left operand is never nullish.
+src/components/DataTable/VirtualDataTable.tsx(209,57): error TS2339: Property 'overhead' does not exist on type 'Required<VirtualizerOptions<HTMLDivElement, Element>>'.
+src/components/FilterBar/filterUtils.ts(374,49): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'never'.
+  Type 'string' is not assignable to type 'never'.
+src/components/FilterBar/filterUtils.ts(378,50): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'never'.
+  Type 'string' is not assignable to type 'never'.
+src/components/InvoiceForm.tsx(49,11): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: readonly ["涓撶エ", "鏅エ", "鏃?], params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Object literal may only specify known properties, and 'required_error' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+  Overload 2 of 2, '(entries: Readonly<Record<string, EnumValue>>, params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Argument of type 'string[]' is not assignable to parameter of type 'Readonly<Record<string, EnumValue>>'.
+      Index signature for type 'string' is missing in type 'string[]'.
+src/components/OrderItemList.tsx(77,5): error TS2345: Argument of type 'OrderItemEditable | { productName: string; productCode: string; specification: string; quantity: number; unit: string; unitPrice: number; discount: number; amount: number; remark: string; }' is not assignable to parameter of type 'OrderItemEditable | (() => OrderItemEditable)'.
+  Type '{ productName: string; productCode: string; specification: string; quantity: number; unit: string; unitPrice: number; discount: number; amount: number; remark: string; }' is not assignable to type 'OrderItemEditable | (() => OrderItemEditable)'.
+    Property 'productId' is missing in type '{ productName: string; productCode: string; specification: string; quantity: number; unit: string; unitPrice: number; discount: number; amount: number; remark: string; }' but required in type 'OrderItemEditable'.
+src/components/OrderItemList.tsx(99,19): error TS2345: Argument of type '{ productName: string; productCode: string; specification: string; quantity: number; unit: string; unitPrice: number; discount: number; amount: number; remark: string; }' is not assignable to parameter of type 'SetStateAction<OrderItemEditable>'.
+  Property 'productId' is missing in type '{ productName: string; productCode: string; specification: string; quantity: number; unit: string; unitPrice: number; discount: number; amount: number; remark: string; }' but required in type 'OrderItemEditable'.
+src/components/ReconciliationDialog.tsx(133,20): error TS2322: Type '{ children: string; required: true; }' is not assignable to type 'IntrinsicAttributes & Omit<LabelProps & RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: ClassProp | undefined) => string> & RefAttributes<...>'.
+  Property 'required' does not exist on type 'IntrinsicAttributes & Omit<LabelProps & RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: ClassProp | undefined) => string> & RefAttributes<...>'.
+src/components/ReconciliationDialog.tsx(224,20): error TS2322: Type '{ children: string; required: true; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LabelProps & RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: ClassProp | undefined) => string> & RefAttributes<...>'.
+  Property 'required' does not exist on type 'IntrinsicAttributes & Omit<LabelProps & RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: ClassProp | undefined) => string> & RefAttributes<...>'.
+src/components/ReconciliationDialog.tsx(379,20): error TS2322: Type '{ children: string; required: true; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LabelProps & RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: ClassProp | undefined) => string> & RefAttributes<...>'.
+  Property 'required' does not exist on type 'IntrinsicAttributes & Omit<LabelProps & RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: ClassProp | undefined) => string> & RefAttributes<...>'.
+src/components/Workflow/ExecutionTimeline.tsx(195,22): error TS7053: Element implicitly has an 'any' type because expression of type '"success" | "failed" | "skipped"' can't be used to index type '{ success: { label: string; icon: Element; color: string; bgColor: string; badge: string; }; failed: { label: string; icon: Element; color: string; bgColor: string; badge: string; }; running: { ...; }; pending: { ...; }; }'.
+  Property 'skipped' does not exist on type '{ success: { label: string; icon: Element; color: string; bgColor: string; badge: string; }; failed: { label: string; icon: Element; color: string; bgColor: string; badge: string; }; running: { ...; }; pending: { ...; }; }'.
+src/components/WorkflowEditor/NodePanel.tsx(99,12): error TS2552: Cannot find name 'ChevronDownIcon'. Did you mean 'ChevronDown'?
+src/components/WorkflowEditor/PropertyPanel.tsx(218,75): error TS2322: Type 'Record<string, unknown>' is not assignable to type 'TriggerConfig | ConditionConfig | ActionConfig'.
+  Property 'type' is missing in type 'Record<string, unknown>' but required in type 'TriggerConfig'.
+src/components/workflows/ActionConfig.tsx(88,12): error TS2304: Cannot find name 'UserAdd'.
+src/components/workflows/ConditionBuilder.tsx(318,14): error TS18048: 'availableFields' is possibly 'undefined'.
+src/components/workflows/ConditionBuilder.tsx(319,15): error TS18048: 'availableFields' is possibly 'undefined'.
+src/components/workflows/StepCard.tsx(181,27): error TS2339: Property 'Root' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(182,29): error TS2339: Property 'Trigger' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(191,30): error TS2339: Property 'Trigger' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(192,29): error TS2339: Property 'Content' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(193,31): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(201,32): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(202,31): error TS2339: Property 'Separator' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(203,31): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(211,32): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(212,31): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(220,32): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(221,31): error TS2339: Property 'Separator' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(222,31): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(231,32): error TS2339: Property 'Item' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(232,30): error TS2339: Property 'Content' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/components/workflows/StepCard.tsx(233,28): error TS2339: Property 'Root' does not exist on type 'typeof import("C:/Users/13609/Projects/crm-ui-upgrade/src/components/ui/dropdown-menu")'.
+src/forms/ContactPersonForm.tsx(175,33): error TS2304: Cannot find name 'lastSavedValuesRef'.
+src/forms/ContactPersonForm.tsx(177,11): error TS2304: Cannot find name 'lastSavedValuesRef'.
+src/forms/ContactPersonForm.tsx(229,35): error TS2322: Type '{ children: Element; title: string; icon: Element; }' is not assignable to type 'IntrinsicAttributes & FormSectionProps'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & FormSectionProps'.
+src/forms/ContactPersonForm.tsx(230,21): error TS2322: Type '{ children: Element[]; columns: number; }' is not assignable to type 'IntrinsicAttributes & FormGridProps'.
+  Property 'columns' does not exist on type 'IntrinsicAttributes & FormGridProps'.
+src/forms/ContactPersonForm.tsx(237,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(245,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(265,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(273,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(292,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(311,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(331,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(351,35): error TS2322: Type '{ children: Element; title: string; icon: Element; }' is not assignable to type 'IntrinsicAttributes & FormSectionProps'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & FormSectionProps'.
+src/forms/ContactPersonForm.tsx(352,21): error TS2322: Type '{ children: Element[]; columns: number; }' is not assignable to type 'IntrinsicAttributes & FormGridProps'.
+  Property 'columns' does not exist on type 'IntrinsicAttributes & FormGridProps'.
+src/forms/ContactPersonForm.tsx(358,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(366,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(374,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(382,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(390,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(399,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(405,35): error TS2322: Type '{ children: Element; title: string; icon: Element; }' is not assignable to type 'IntrinsicAttributes & FormSectionProps'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & FormSectionProps'.
+src/forms/ContactPersonForm.tsx(406,21): error TS2322: Type '{ children: Element; columns: number; }' is not assignable to type 'IntrinsicAttributes & FormGridProps'.
+  Property 'columns' does not exist on type 'IntrinsicAttributes & FormGridProps'.
+src/forms/ContactPersonForm.tsx(413,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(427,35): error TS2322: Type '{ children: Element; title: string; icon: Element; }' is not assignable to type 'IntrinsicAttributes & FormSectionProps'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & FormSectionProps'.
+src/forms/ContactPersonForm.tsx(428,21): error TS2322: Type '{ children: Element[]; columns: number; }' is not assignable to type 'IntrinsicAttributes & FormGridProps'.
+  Property 'columns' does not exist on type 'IntrinsicAttributes & FormGridProps'.
+src/forms/ContactPersonForm.tsx(434,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(442,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(450,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(458,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(477,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(486,15): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/ContactPersonForm.tsx(492,33): error TS2322: Type '{ children: Element; title: string; icon: Element; }' is not assignable to type 'IntrinsicAttributes & FormSectionProps'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & FormSectionProps'.
+src/forms/ContactPersonForm.tsx(498,13): error TS2322: Type 'Element' is not assignable to type '(field: any) => ReactNode'.
+  Type 'ReactElement<any, any>' provides no match for the signature '(field: any): ReactNode'.
+src/forms/CustomFieldForm.tsx(491,15): error TS2484: Export declaration conflicts with exported declaration of 'CustomFieldFormValues'.
+src/forms/PricebookEntryForm.tsx(482,15): error TS2484: Export declaration conflicts with exported declaration of 'PricebookEntryFormValues'.
+src/forms/UserForm.tsx(17,29): error TS2307: Cannot find module '@/components/ui/multi-select' or its corresponding type declarations.
+src/hooks/api/index.ts(3,1): error TS2308: Module './useCustomers' has already exported a member named 'BulkAssignParams'. Consider explicitly re-exporting to resolve the ambiguity.
+src/hooks/api/useActivities.ts(7,10): error TS2614: Module '"@/lib/axios"' has no exported member 'axios'. Did you mean to use 'import axios from "@/lib/axios"' instead?
+src/hooks/api/useAuditLogs.ts(3,15): error TS2305: Module '"@/types/auditLog"' has no exported member 'AuditLog'.
+src/hooks/api/useCallcenter.ts(23,47): error TS2345: Argument of type 'OutboundTaskListParams' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'OutboundTaskListParams'.
+src/hooks/api/useCallcenter.ts(95,19): error TS2488: Type '() => readonly ["crm", "callcenter", "tasks"]' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/hooks/api/useCustomObjects.ts(22,44): error TS2345: Argument of type 'CustomObjectListParams' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'CustomObjectListParams'.
+src/hooks/api/useKnowledge.ts(48,50): error TS2345: Argument of type 'KnowledgeDocumentListParams' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'KnowledgeDocumentListParams'.
+src/hooks/api/usePublicPool.ts(25,10): error TS18046: 'response' is of type 'unknown'.
+src/hooks/api/usePublicPool.ts(33,10): error TS18046: 'response' is of type 'unknown'.
+src/hooks/api/usePublicPool.ts(41,10): error TS18046: 'response' is of type 'unknown'.
+src/hooks/api/usePublicPool.ts(49,10): error TS18046: 'response' is of type 'unknown'.
+src/hooks/api/usePublicPool.ts(57,10): error TS18046: 'response' is of type 'unknown'.
+src/hooks/api/useTickets.ts(23,38): error TS2345: Argument of type 'TicketListParams' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'TicketListParams'.
+src/hooks/api/useWorkflows.ts(22,40): error TS2345: Argument of type 'WorkflowListParams' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'WorkflowListParams'.
+src/hooks/api/useWorkflows.ts(174,43): error TS2345: Argument of type 'ExecutionLogListParams' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'ExecutionLogListParams'.
+src/hooks/useCustomerImport.ts(8,39): error TS2591: Cannot find name 'buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/hooks/useCustomerImport.ts(357,57): error TS2345: Argument of type '{ type: "浼佷笟"; industry: any; scale: any; source: any; status: CustomerStatus; name: string; company: string; email: string; phone: string; level?: CustomerLevel | undefined; ... 4 more ...; assignee?: string | undefined; }[]' is not assignable to parameter of type 'Omit<MockCustomer, "id" | "createdAt" | "lastContact">[]'.
+  Type '{ type: "浼佷笟"; industry: any; scale: any; source: any; status: CustomerStatus; name: string; company: string; email: string; phone: string; level?: CustomerLevel; ... 4 more ...; assignee?: string; }' is not assignable to type 'Omit<MockCustomer, "id" | "createdAt" | "lastContact">'.
+    Types of property 'assignee' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+src/hooks/useCustomers.ts(392,61): error TS2552: Cannot find name 'CustomerScale'. Did you mean 'CustomerSource'?
+src/hooks/useUsers.ts(505,34): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.

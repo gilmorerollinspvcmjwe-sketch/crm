@@ -152,30 +152,45 @@ const menuItems = [
     ],
   },
   {
+    key: 'custom-objects',
+    label: '自定义对象',
+    icon: Zap,
+    children: [
+      { key: '/custom-objects', label: '自定义对象列表' },
+      { key: '/custom-objects/builder', label: '对象构建器' },
+    ],
+  },
+  {
     key: 'settings',
     label: '系统设置',
     icon: Settings,
     children: [
+      // 个人设置
       { key: '/settings/profile', label: '个人资料' },
       { key: '/settings/security', label: '安全设置' },
       { key: '/settings/preferences', label: '偏好设置' },
       { key: '/settings/notifications', label: '通知设置' },
+      // 系统配置
       { key: '/settings/email', label: '邮件设置' },
       { key: '/settings/integrations', label: '集成设置' },
       { key: '/settings/workflows', label: '工作流设置' },
       { key: '/settings/fields', label: '字段设置' },
       { key: '/settings/layout', label: '布局设置' },
       { key: '/settings/theme', label: '主题设置' },
+      // 数据管理
       { key: '/settings/data-backup', label: '数据备份' },
       { key: '/settings/import-export', label: '导入导出' },
+      // API & 集成
       { key: '/settings/api', label: 'API 设置' },
       { key: '/settings/webhook', label: 'Webhook' },
+      // 安全与审计
       { key: '/settings/audit-log', label: '审计日志' },
       { key: '/settings/login-log', label: '登录日志' },
-      { key: '/settings/license', label: '许可证' },
+      // 系统管理
       { key: '/settings/users', label: '用户管理' },
       { key: '/settings/roles', label: '角色管理' },
       { key: '/settings/permissions', label: '权限管理' },
+      { key: '/settings/license', label: '许可证' },
       { key: '/settings/system-info', label: '系统信息' },
       { key: '/settings/customization', label: '自定义设置' },
       { key: '/settings/mobile', label: '移动端设置' },
@@ -225,10 +240,9 @@ function MenuItem({ item, collapsed, currentPath, onNavigate }: MenuItemProps) {
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
-        <Button
-          variant="ghost"
+        <div
           className={cn(
-            'w-full justify-between h-10 px-3 text-slate-300 hover:text-white hover:bg-slate-800',
+            'w-full flex items-center justify-between h-10 px-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer',
             isActive && 'bg-slate-800 text-white'
           )}
         >
@@ -240,7 +254,7 @@ function MenuItem({ item, collapsed, currentPath, onNavigate }: MenuItemProps) {
             'h-4 w-4 transition-transform text-slate-400',
             isOpen && 'rotate-180'
           )} />
-        </Button>
+        </div>
       </CollapsibleTrigger>
       <CollapsibleContent className="pl-6 py-2 space-y-1">
         {item.children?.map(child => (

@@ -185,7 +185,7 @@ export function Header({
                       {item.isLast ? (
                         <BreadcrumbPage>{item.name}</BreadcrumbPage>
                       ) : (
-                        <BreadcrumbLink asChild>
+                        <BreadcrumbLink>
                           <Link to={item.url}>{item.name}</Link>
                         </BreadcrumbLink>
                       )}
@@ -219,17 +219,19 @@ export function Header({
           {/* 通知 */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-4 w-4" />
-                {unreadCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {unreadCount}
-                  </Badge>
-                )}
-              </Button>
+              <div>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <Badge
+                      variant="destructive"
+                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                    >
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
               <DropdownMenuLabel className="flex items-center justify-between">
@@ -261,15 +263,17 @@ export function Header({
           {/* 用户头像 */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/avatar.png" />
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                    管
-                  </AvatarFallback>
-                </Avatar>
-                {!isMobile && <span className="text-sm font-medium">管理员</span>}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="/avatar.png" />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                      管
+                    </AvatarFallback>
+                  </Avatar>
+                  {!isMobile && <span className="text-sm font-medium">管理员</span>}
+                </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel>我的账户</DropdownMenuLabel>

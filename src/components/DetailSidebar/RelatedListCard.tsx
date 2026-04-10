@@ -125,7 +125,7 @@ export function RelatedListCard({
     <Card className={cn('overflow-hidden', className)}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <CardHeader className="p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+          <div className="p-4 cursor-pointer hover:bg-muted/50 transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">
@@ -146,7 +146,7 @@ export function RelatedListCard({
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               )}
             </div>
-          </CardHeader>
+          </div>
         </CollapsibleTrigger>
 
         <CollapsibleContent>

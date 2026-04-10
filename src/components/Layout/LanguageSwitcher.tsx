@@ -45,7 +45,7 @@ export function LanguageSwitcher({
         <Button
           variant="ghost"
           size={compact ? 'icon' : 'sm'}
-          className={cn('gap-1', className)}
+          className={cn('flex items-center gap-1', className)}
         >
           <Languages className="h-4 w-4" />
           {!compact && <span className="text-sm">{currentLanguage?.name}</span>}

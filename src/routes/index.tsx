@@ -837,8 +837,6 @@ const routes: RouteObject[] = [
           // 向后兼容重定向
           { path: 'change-password', element: <Navigate to="/settings/security" replace /> },
           { path: 'display', element: <Navigate to="/settings/preferences" replace /> },
-          { path: 'custom-objects', element: <Navigate to="/settings" replace /> },
-          { path: 'custom-objects/:objectId', element: <Navigate to="/settings" replace /> },
         ],
       },
       

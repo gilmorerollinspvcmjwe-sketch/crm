@@ -65,26 +65,32 @@ export function ListPageContainer({
           {actions && actions.length > 0 && (
             <div className="flex items-center gap-2 flex-shrink-0">
               {actions.map((action, index) => (
-                <Button
-                  key={index}
-                  variant={action.variant || 'default'}
-                  size="sm"
-                  onClick={action.onClick}
-                  disabled={action.disabled}
-                  asChild={!!action.href}
-                >
+                <>
                   {action.href ? (
-                    <a href={action.href} className="flex items-center gap-2">
-                      {action.icon && <action.icon className="h-4 w-4" />}
-                      <span className="hidden sm:inline">{action.label}</span>
-                    </a>
+                    <Button
+                      key={index}
+                      variant={action.variant || 'default'}
+                      size="sm"
+                      asChild
+                    >
+                      <a href={action.href} className="flex items-center gap-2">
+                        {action.icon && <action.icon className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{action.label}</span>
+                      </a>
+                    </Button>
                   ) : (
-                    <>
+                    <Button
+                      key={index}
+                      variant={action.variant || 'default'}
+                      size="sm"
+                      onClick={action.onClick}
+                      disabled={action.disabled}
+                    >
                       {action.icon && <action.icon className="h-4 w-4" />}
                       <span className="hidden sm:inline">{action.label}</span>
-                    </>
+                    </Button>
                   )}
-                </Button>
+                </>
               ))}
             </div>
           )}

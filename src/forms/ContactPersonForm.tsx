@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useCallback, useRef } from "react"
+import { useEffect } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Save, RotateCcw } from "lucide-react"
@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -16,15 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
+import { FormGrid, FormSection, FormActions, FormField } from "@/components/form"
 import { useToast } from "@/hooks/use-toast"
-import {
-  FormGrid,
-  FormSection,
-  FormActions,
-  FormField,
-} from "@/components/form"
 import {
   contactPersonSchema,
   type ContactPersonFormValues,
@@ -41,8 +36,8 @@ const DRAFT_STORAGE_KEY = "contact_person_form_draft"
 // Select Options
 // ============================================================
 const genderOptions = [
-  { label: "�?, value: "�? },
-  { label: "�?, value: "�? },
+  { label: "男", value: "男" },
+  { label: "女", value: "女" },
   { label: "未知", value: "未知" },
 ]
 
@@ -54,15 +49,15 @@ const jobLevelOptions = [
 ]
 
 const decisionRoleOptions = [
-  { label: "决策�?, value: "决策�? },
-  { label: "影响�?, value: "影响�? },
-  { label: "使用�?, value: "使用�? },
-  { label: "把关�?, value: "把关�? },
+  { label: "决策者", value: "决策者" },
+  { label: "影响者", value: "影响者" },
+  { label: "使用者", value: "使用者" },
+  { label: "把关者", value: "把关者" },
   { label: "其他", value: "其他" },
 ]
 
 const educationOptions = [
-  { label: "高中及以�?, value: "高中及以�? },
+  { label: "高中及以下", value: "高中及以下" },
   { label: "大专", value: "大专" },
   { label: "本科", value: "本科" },
   { label: "硕士", value: "硕士" },
@@ -86,8 +81,6 @@ export interface ContactPersonFormProps {
   onSubmit: (values: ContactPersonFormValues) => void | Promise<void>
   onCancel?: () => void
   className?: string
-  enableAutoSave?: boolean
-  draftKey?: string
 }
 
 // ============================================================
@@ -100,19 +93,12 @@ export function ContactPersonForm({
   onSubmit,
   onCancel,
   className,
-  enableAutoSave = true,
-  draftKey,
 }: ContactPersonFormProps) {
-  const { t } = useTranslation()
   const { toast } = useToast()
-  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const lastSavedValuesRef = useRef<string>("")
-
-  const storageKey = draftKey || `${DRAFT_STORAGE_KEY}_${mode}`
+  const { t } = useTranslation()
 
   const form = useForm<ContactPersonFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(contactPersonSchema) as any,
+    resolver: zodResolver(contactPersonSchema),
     defaultValues: {
       ...contactPersonDefaultValues,
       ...initialValues,
@@ -122,156 +108,87 @@ export function ContactPersonForm({
 
   const {
     handleSubmit,
-    watch,
+    formState: { errors, isSubmitting },
     reset,
-    formState: { errors, isSubmitting, dirtyFields },
-    getValues,
+    watch,
   } = form
 
-  const hasUnsavedChanges = Object.keys(dirtyFields).length > 0
-
-  // Load draft on mount (for create mode)
+  // 同步表单数据
   useEffect(() => {
-    if (mode === "create" && enableAutoSave) {
-      const savedDraft = localStorage.getItem(storageKey)
-      if (savedDraft) {
-        try {
-          const draftValues = JSON.parse(savedDraft)
-          if (draftValues && Object.keys(draftValues).length > 0) {
-            reset({ ...contactPersonDefaultValues, ...draftValues } as ContactPersonFormValues)
-            toast({
-              title: "已加载草�?,
-              description: "之前的表单数据已恢复",
-              duration: 3000,
-            })
-          }
-        } catch (e) {
-          console.error("Failed to load draft:", e)
-        }
-      }
+    if (initialValues) {
+      reset({ ...contactPersonDefaultValues, ...initialValues } as ContactPersonFormValues)
     }
-  }, [mode, enableAutoSave, reset, storageKey, toast])
+  }, [initialValues, reset])
 
-  // Auto-save draft
-  const saveDraft = useCallback((values: Partial<ContactPersonFormValues>) => {
-    if (mode === "edit" || !enableAutoSave) return
+  // 处理提交
+  const handleOnSubmit = async (values: ContactPersonFormValues) => {
     try {
-      localStorage.setItem(storageKey, JSON.stringify(values))
-    } catch (e) {
-      console.error("Failed to save draft:", e)
+      await onSubmit(values)
+      toast({
+        title: mode === "create" ? "创建成功" : "更新成功",
+        description: "联系人信息已保存",
+      })
+    } catch (error) {
+      toast({
+        title: "保存失败",
+        description: "请稍后重试",
+        variant: "destructive",
+      })
     }
-  }, [mode, enableAutoSave, storageKey])
-
-  // Watch form changes for auto-save
-  useEffect(() => {
-    if (!enableAutoSave || mode === "edit") return
-
-    const subscription = watch((values) => {
-      if (autoSaveTimerRef.current) {
-        clearTimeout(autoSaveTimerRef.current)
-      }
-      autoSaveTimerRef.current = setTimeout(() => {
-        const currentValues = getValues()
-        const currentValueStr = JSON.stringify(currentValues)
-        if (currentValueStr !== lastSavedValuesRef.current) {
-          saveDraft(currentValues)
-          lastSavedValuesRef.current = currentValueStr
-        }
-      }, 1000)
-    })
-
-    return () => {
-      subscription.unsubscribe()
-      if (autoSaveTimerRef.current) {
-        clearTimeout(autoSaveTimerRef.current)
-      }
-    }
-  }, [watch, saveDraft, enableAutoSave, mode, getValues])
-
-  // Clear draft on successful submit
-  useEffect(() => {
-    if (!isSubmitting && !loading && mode === "create") {
-      const savedDraft = localStorage.getItem(storageKey)
-      if (savedDraft) {
-        localStorage.removeItem(storageKey)
-      }
-    }
-  }, [isSubmitting, loading, mode, storageKey])
-
-  // Clear draft on cancel
-  const handleCancel = useCallback(() => {
-    if (mode === "create" && enableAutoSave) {
-      localStorage.removeItem(storageKey)
-    }
-    onCancel?.()
-  }, [mode, enableAutoSave, storageKey, onCancel])
-
-  // Clear draft
-  const handleClearDraft = useCallback(() => {
-    localStorage.removeItem(storageKey)
-    reset(contactPersonDefaultValues as ContactPersonFormValues)
-    toast({
-      title: "草稿已清�?,
-      duration: 2000,
-    })
-  }, [storageKey, reset, toast])
-
-  const onSubmitForm = handleSubmit(async (values) => {
-    await onSubmit(values)
-    if (mode === "create" && enableAutoSave) {
-      localStorage.removeItem(storageKey)
-    }
-  })
+  }
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={onSubmitForm} className={cn("space-y-6", className)}>
+      <form onSubmit={handleSubmit(handleOnSubmit)} className={cn("space-y-6", className)}>
         {/* 基本信息 */}
         <FormSection title="基本信息">
-          <FormGrid cols={2}>
-            <FormField
-              name="name"
-              label="姓名"
-              required
-              error={errors.name}
-            >
-              <Input placeholder="请输入联系人姓名" />
+          <FormGrid columns={2}>
+            <FormField label="姓名" error={errors.name?.message} required>
+              <Input
+                {...form.register("name")}
+                placeholder="请输入姓名"
+                disabled={loading || isSubmitting}
+              />
             </FormField>
 
-            <FormField
-              name="gender"
-              label="性别"
-              error={errors.gender}
-            >
-              <RadioGroup>
+            <FormField label="性别" error={errors.gender?.message}>
+              <RadioGroup
+                {...form.register("gender")}
+                defaultValue={contactPersonDefaultValues.gender}
+                className="flex gap-4"
+                disabled={loading || isSubmitting}
+              >
                 {genderOptions.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`gender-${option.value}`} />
-                    <label
-                      htmlFor={`gender-${option.value}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {option.label}
-                    </label>
-                  </div>
+                  <label key={option.value} className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value={option.value} />
+                    <span>{option.label}</span>
+                  </label>
                 ))}
               </RadioGroup>
             </FormField>
 
-            <FormField
-              name="position"
-              label="职位"
-              error={errors.position}
-            >
-              <Input placeholder="请输入职�? />
+            <FormField label="职位" error={errors.jobTitle?.message}>
+              <Input
+                {...form.register("jobTitle")}
+                placeholder="请输入职位"
+                disabled={loading || isSubmitting}
+              />
             </FormField>
 
-            <FormField
-              name="jobLevel"
-              label="职级"
-              error={errors.jobLevel}
-            >
-              <Select>
+            <FormField label="部门" error={errors.department?.message}>
+              <Input
+                {...form.register("department")}
+                placeholder="请输入部门"
+                disabled={loading || isSubmitting}
+              />
+            </FormField>
+
+            <FormField label="职级" error={errors.jobLevel?.message}>
+              <Select
+                {...form.register("jobLevel")}
+                defaultValue={contactPersonDefaultValues.jobLevel}
+                disabled={loading || isSubmitting}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="请选择职级" />
                 </SelectTrigger>
@@ -285,12 +202,12 @@ export function ContactPersonForm({
               </Select>
             </FormField>
 
-            <FormField
-              name="decisionRole"
-              label="决策角色"
-              error={errors.decisionRole}
-            >
-              <Select>
+            <FormField label="决策角色" error={errors.decisionRole?.message}>
+              <Select
+                {...form.register("decisionRole")}
+                defaultValue={contactPersonDefaultValues.decisionRole}
+                disabled={loading || isSubmitting}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="请选择决策角色" />
                 </SelectTrigger>
@@ -304,158 +221,12 @@ export function ContactPersonForm({
               </Select>
             </FormField>
 
-            <FormField
-              name="status"
-              label="状�?
-              error={errors.status}
-            >
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="请选择状�? />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormField>
-
-            <FormField
-              name="isPrimary"
-              label="主要联系�?
-              error={errors.isPrimary}
-              className="col-span-2"
-            >
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="isPrimary"
-                  checked={watch("isPrimary")}
-                  onCheckedChange={(checked) => {
-                    form.setValue("isPrimary", checked === true)
-                  }}
-                />
-                <label
-                  htmlFor="isPrimary"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  设为主要联系�?                </label>
-              </div>
-            </FormField>
-          </FormGrid>
-        </FormSection>
-
-        {/* 联系信息 */}
-        <FormSection title="联系信息">
-          <FormGrid cols={2}>
-            <FormField
-              name="mobile"
-              label="手机号码"
-              error={errors.mobile}
-            >
-              <Input placeholder="请输入手机号�? />
-            </FormField>
-
-            <FormField
-              name="officePhone"
-              label="办公电话"
-              error={errors.officePhone}
-            >
-              <Input placeholder="请输入办公电�? />
-            </FormField>
-
-            <FormField
-              name="email"
-              label="邮箱"
-              error={errors.email}
-            >
-              <Input type="email" placeholder="请输入邮箱地址" />
-            </FormField>
-
-            <FormField
-              name="wechat"
-              label="微信"
-              error={errors.wechat}
-            >
-              <Input placeholder="请输入微信号" />
-            </FormField>
-
-            <FormField
-              name="qq"
-              label="QQ"
-              error={errors.qq}
-            >
-              <Input placeholder="请输�?QQ �? />
-            </FormField>
-
-            <FormField
-              name="address"
-              label="办公地址"
-              error={errors.address}
-              className="col-span-2"
-            >
-              <Textarea placeholder="请输入办公地址" rows={2} />
-            </FormField>
-          </FormGrid>
-        </FormSection>
-
-        {/* 关联客户 */}
-        <FormSection title="关联客户">
-          <FormGrid cols={1}>
-            <FormField
-              name="customerId"
-              label="关联客户"
-              required
-              error={errors.customerId}
-            >
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="请选择关联客户" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="customer1">示例客户 1</SelectItem>
-                  <SelectItem value="customer2">示例客户 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormField>
-          </FormGrid>
-        </FormSection>
-
-        {/* 个人信息 */}
-        <FormSection title="个人信息">
-          <FormGrid cols={2}>
-            <FormField
-              name="birthday"
-              label="生日"
-              error={errors.birthday}
-            >
-              <Input type="date" />
-            </FormField>
-
-            <FormField
-              name="joinDate"
-              label="入职时间"
-              error={errors.joinDate}
-            >
-              <Input type="date" />
-            </FormField>
-
-            <FormField
-              name="school"
-              label="毕业院校"
-              error={errors.school}
-            >
-              <Input placeholder="请输入毕业院�? />
-            </FormField>
-
-            <FormField
-              name="education"
-              label="学历"
-              error={errors.education}
-            >
-              <Select>
+            <FormField label="学历" error={errors.education?.message}>
+              <Select
+                {...form.register("education")}
+                defaultValue={contactPersonDefaultValues.education}
+                disabled={loading || isSubmitting}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="请选择学历" />
                 </SelectTrigger>
@@ -469,71 +240,100 @@ export function ContactPersonForm({
               </Select>
             </FormField>
 
-            <FormField
-              name="major"
-              label="专业"
-              error={errors.major}
-            >
-              <Input placeholder="请输入专�? />
+            <FormField label="状态" error={errors.status?.message}>
+              <Select
+                {...form.register("status")}
+                defaultValue={contactPersonDefaultValues.status}
+                disabled={loading || isSubmitting}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择状态" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+          </FormGrid>
+        </FormSection>
+
+        {/* 联系方式 */}
+        <FormSection title="联系方式">
+          <FormGrid columns={2}>
+            <FormField label="手机" error={errors.mobile?.message}>
+              <Input
+                {...form.register("mobile")}
+                placeholder="请输入手机号"
+                type="tel"
+                disabled={loading || isSubmitting}
+              />
             </FormField>
 
-            <FormField
-              name="hobbies"
-              label="兴趣爱好"
-              error={errors.hobbies}
-              className="col-span-2"
-            >
-              <Textarea placeholder="请输入兴趣爱�? rows={2} />
+            <FormField label="电话" error={errors.phone?.message}>
+              <Input
+                {...form.register("phone")}
+                placeholder="请输入电话"
+                type="tel"
+                disabled={loading || isSubmitting}
+              />
+            </FormField>
+
+            <FormField label="邮箱" error={errors.email?.message}>
+              <Input
+                {...form.register("email")}
+                placeholder="请输入邮箱"
+                type="email"
+                disabled={loading || isSubmitting}
+              />
+            </FormField>
+
+            <FormField label="微信" error={errors.wechat?.message}>
+              <Input
+                {...form.register("wechat")}
+                placeholder="请输入微信号"
+                disabled={loading || isSubmitting}
+              />
             </FormField>
           </FormGrid>
         </FormSection>
 
         {/* 备注 */}
         <FormSection title="备注">
-          <FormField
-            name="remark"
-            label=""
-            error={errors.remark}
-          >
-            <Textarea placeholder="请输入备注信�? rows={4} />
+          <FormField error={errors.note?.message}>
+            <Textarea
+              {...form.register("note")}
+              placeholder="请输入备注信息"
+              rows={4}
+              disabled={loading || isSubmitting}
+            />
           </FormField>
         </FormSection>
 
-        {/* 表单操作 */}
+        {/* 操作按钮 */}
         <FormActions>
-          {mode === "create" && enableAutoSave && hasUnsavedChanges && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={handleClearDraft}
-              className="mr-auto"
-            >
-              <RotateCcw className="h-4 w-4 mr-2" />
-              清除草稿
-            </Button>
-          )}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={loading || isSubmitting}
-          >
-            取消
-          </Button>
           <Button type="submit" disabled={loading || isSubmitting}>
             {loading || isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                保存�?..
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                保存中...
               </>
             ) : (
               <>
-                <Save className="mr-2 h-4 w-4" />
-                保存
+                <Save className="w-4 h-4 mr-2" />
+                {mode === "create" ? "创建" : "保存"}
               </>
             )}
           </Button>
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel} disabled={loading || isSubmitting}>
+              <RotateCcw className="w-4 h-4 mr-2" />
+              取消
+            </Button>
+          )}
         </FormActions>
       </form>
     </FormProvider>

@@ -25,6 +25,9 @@ import {
   Star,
   Check,
   LayoutList,
+  LayoutGrid,
+  GanttChart,
+  Table,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -78,7 +81,10 @@ interface SavedView {
   sortField?: string
   sortDirection?: "asc" | "desc"
   groupByField?: string
+  viewType?: "list" | "kanban" | "gantt"
 }
+
+type ViewDisplayType = "list" | "kanban" | "gantt"
 
 // ============ Mock Data ============
 
@@ -138,6 +144,7 @@ export default function ViewManagerPage() {
   const [saving, setSaving] = useState(false)
   const [newViewName, setNewViewName] = useState("")
   const [showNewView, setShowNewView] = useState(false)
+  const [displayType, setDisplayType] = useState<ViewDisplayType>("list")
 
   const selectedView = views.find((v) => v.id === selectedViewId)
 
@@ -150,6 +157,7 @@ export default function ViewManagerPage() {
       isPublic: false,
       columns: MOCK_COLUMNS,
       filters: [],
+      viewType: displayType,
     }
     setViews((prev) => [...prev, newView])
     setSelectedViewId(newView.id)
@@ -271,6 +279,42 @@ export default function ViewManagerPage() {
             </Button>
           </div>
           <Separator />
+          {/* View Type Selector */}
+          <div className="px-3 py-2 border-b">
+            <div className="flex items-center gap-1 bg-muted rounded-md p-1">
+              <button
+                onClick={() => setDisplayType("list")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1 py-1.5 rounded text-xs transition-colors",
+                  displayType === "list" ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <LayoutList className="h-3.5 w-3.5" />
+                列表
+              </button>
+              <button
+                onClick={() => setDisplayType("kanban")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1 py-1.5 rounded text-xs transition-colors",
+                  displayType === "kanban" ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                看板
+              </button>
+              <button
+                onClick={() => setDisplayType("gantt")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1 py-1.5 rounded text-xs transition-colors",
+                  displayType === "gantt" ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <GanttChart className="h-3.5 w-3.5" />
+                甘特
+              </button>
+            </div>
+          </div>
+          <Separator />
           <ScrollArea className="flex-1">
             <div className="px-2 py-2">
               {views.map((view) => (
@@ -348,7 +392,87 @@ export default function ViewManagerPage() {
                 <h2 className="text-lg font-semibold">{selectedView.name}</h2>
                 {selectedView.isDefault && <Badge className="bg-amber-100 text-amber-700 border-amber-200">默认</Badge>}
                 {!selectedView.isPublic && <Badge variant="secondary">私有</Badge>}
+                <Badge variant="outline" className="ml-auto">{displayType === "list" ? "列表视图" : displayType === "kanban" ? "看板视图" : "甘特视图"}</Badge>
               </div>
+
+              {/* View Type Preview */}
+              {displayType === "kanban" && (
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <LayoutGrid className="h-4 w-4" />
+                      看板视图预览
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex gap-4 overflow-x-auto pb-4">
+                      {/* Mock Kanban Columns */}
+                      {["待处理", "进行中", "已完成"].map((stage, idx) => (
+                        <div key={stage} className="flex-shrink-0 w-64">
+                          <div className="flex items-center justify-between mb-2 px-1">
+                            <span className="text-sm font-medium">{stage}</span>
+                            <Badge variant="secondary" className="text-xs">{idx * 3 + 2}</Badge>
+                          </div>
+                          <div className="space-y-2 min-h-[200px] rounded-lg bg-muted/50 p-2">
+                            {[1, 2].map((item) => (
+                              <div key={item} className="p-3 rounded-md border bg-background shadow-sm">
+                                <p className="text-sm font-medium truncate">记录 {item + idx * 3}</p>
+                                <p className="text-xs text-muted-foreground mt-1">负责人：张三</p>
+                                <div className="flex items-center gap-2 mt-2">
+                                  <span className="text-xs px-1.5 py-0.5 rounded bg-blue-50 text-blue-600">高优先级</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {displayType === "gantt" && (
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <GanttChart className="h-4 w-4" />
+                      甘特图视图预览
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <div className="min-w-[600px]">
+                        {/* Timeline Header */}
+                        <div className="flex border-b pb-2 mb-2">
+                          <div className="w-40 shrink-0 text-xs font-medium">任务名称</div>
+                          {["周一", "周二", "周三", "周四", "周五", "周六", "周日"].map((day) => (
+                            <div key={day} className="flex-1 text-center text-xs text-muted-foreground">{day}</div>
+                          ))}
+                        </div>
+                        {/* Gantt Rows */}
+                        {["需求分析", "UI设计", "开发", "测试"].map((task, idx) => (
+                          <div key={task} className="flex items-center py-2 border-b border-dashed">
+                            <div className="w-40 shrink-0 text-xs">{task}</div>
+                            <div className="flex-1 relative h-6 bg-muted/50 rounded">
+                              {/* Mock Gantt Bar */}
+                              <div
+                                className={cn(
+                                  "absolute top-1 h-4 rounded",
+                                  idx === 0 ? "bg-blue-400" : idx === 1 ? "bg-purple-400" : idx === 2 ? "bg-green-400" : "bg-amber-400"
+                                )}
+                                style={{
+                                  left: `${(idx * 15 + 10)}%`,
+                                  width: `${25 + idx * 5}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Columns Config */}
               <Card>

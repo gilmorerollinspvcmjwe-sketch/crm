@@ -344,13 +344,15 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                         <TableCell className="sticky right-0 bg-card">
                           <Popover>
                             <PopoverTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                              <div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-4" align="end">
                               <div className="flex flex-col gap-3">

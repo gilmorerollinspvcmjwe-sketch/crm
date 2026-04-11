@@ -168,8 +168,7 @@ export function Drawer({
             className="absolute right-4 top-4 [&_svg]:pointer-events-none"
             onClick={onCancel}
           >
-            <span aria-hidden>×</span>
-            <span className="sr-only">关闭</span>
+            ×
           </Button>
         </SheetClose>
       </SheetContent>

@@ -71,21 +71,23 @@ function ToolbarButton({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          variant={variant}
-          size="sm"
-          className={cn(
-            'h-8 w-8 p-0',
-            isActive && 'bg-primary/10 text-primary'
-          )}
-          disabled={disabled}
-          onClick={(e) => {
-            e.preventDefault()
-            action()
-          }}
-        >
-          {icon}
-        </Button>
+        <div>
+          <Button
+            variant={variant}
+            size="sm"
+            className={cn(
+              'h-8 w-8 p-0',
+              isActive && 'bg-primary/10 text-primary'
+            )}
+            disabled={disabled}
+            onClick={(e) => {
+              e.preventDefault()
+              action()
+            }}
+          >
+            {icon}
+          </Button>
+        </div>
       </TooltipTrigger>
       <TooltipContent side="bottom">
         <p>{tooltip}</p>
@@ -310,16 +312,18 @@ function EditorToolbar({
               <PopoverTrigger asChild>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        buttonClass,
-                        isLinkActive && 'bg-primary/10 text-primary'
-                      )}
-                    >
-                      <LinkIcon className="h-4 w-4" />
-                    </Button>
+                    <div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          buttonClass,
+                          isLinkActive && 'bg-primary/10 text-primary'
+                        )}
+                      >
+                        <LinkIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
                     <p>{isLinkActive ? '编辑链接' : '添加链接'}</p>

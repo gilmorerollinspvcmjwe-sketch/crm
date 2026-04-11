@@ -37,6 +37,10 @@ import {
   Clock,
   Star,
   CheckSquare,
+  FileText,
+  Calculator,
+  MapPin,
+  Layers,
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
@@ -81,6 +85,7 @@ interface FieldTypeOption {
 const fieldTypes: FieldTypeOption[] = [
   { value: "text", label: "单行文本", icon: Type, category: "text" },
   { value: "textarea", label: "多行文本", icon: AlignLeft, category: "text" },
+  { value: "richtext", label: "富文本", icon: FileText, category: "text" },
   { value: "number", label: "整数", icon: Hash, category: "number" },
   { value: "decimal", label: "小数", icon: Hash, category: "number" },
   { value: "currency", label: "货币", icon: DollarSign, category: "number" },
@@ -96,11 +101,14 @@ const fieldTypes: FieldTypeOption[] = [
   { value: "email", label: "邮箱", icon: Mail, category: "text" },
   { value: "phone", label: "电话", icon: Phone, category: "text" },
   { value: "url", label: "网址", icon: LinkIcon, category: "text" },
+  { value: "address", label: "地址", icon: MapPin, category: "special" },
   { value: "user", label: "用户", icon: User, category: "relation" },
   { value: "department", label: "部门", icon: Building, category: "relation" },
   { value: "file", label: "文件", icon: File, category: "special" },
   { value: "image", label: "图片", icon: Image, category: "special" },
   { value: "rating", label: "评分", icon: Star, category: "special" },
+  { value: "formula", label: "公式", icon: Calculator, category: "special" },
+  { value: "rollup", label: "汇总", icon: Layers, category: "special" },
 ]
 
 // ============ Option Editor ============
@@ -192,6 +200,14 @@ interface FieldFormValues {
   description: string
   defaultValue: string
   options: { label: string; value: string; color: string; sortOrder: number; enabled: boolean }[]
+  // Formula field config
+  formulaExpression?: string
+  formulaReturnType?: "text" | "number" | "boolean" | "date"
+  // Rollup field config
+  rollupObjectType?: string
+  rollupTargetField?: string
+  rollupOperation?: "count" | "sum" | "avg" | "min" | "max"
+  rollupFilter?: string
 }
 
 interface FieldEditorModalProps {
@@ -222,6 +238,9 @@ function FieldEditorModal({ open, onClose, onSave, editing, existingNames }: Fie
 
   const selectedType = fieldTypes.find(t => t.value === form.type)
   const needsOptions = ["select", "multiselect", "radio"].includes(form.type)
+  const isFormula = form.type === "formula"
+  const isRollup = form.type === "rollup"
+  const isAddress = form.type === "address"
 
   React.useEffect(() => {
     if (editing) {
@@ -357,6 +376,108 @@ function FieldEditorModal({ open, onClose, onSave, editing, existingNames }: Fie
             options={form.options}
             onChange={opts => setForm(f => ({ ...f, options: opts }))}
           />
+        )}
+
+        {/* Formula Configuration */}
+        {isFormula && (
+          <div className="space-y-3 p-3 rounded-lg bg-rose-50 border border-rose-100">
+            <div className="flex items-center gap-2">
+              <Calculator className="h-4 w-4 text-rose-500" />
+              <Label className="font-medium">公式配置</Label>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="formulaReturnType" className="text-xs">返回类型</Label>
+              <Select
+                value={form.formulaReturnType || "number"}
+                onValueChange={v => setForm(f => ({ ...f, formulaReturnType: v as FieldFormValues["formulaReturnType"] }))}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="number">数字</SelectItem>
+                  <SelectItem value="text">文本</SelectItem>
+                  <SelectItem value="boolean">布尔值</SelectItem>
+                  <SelectItem value="date">日期</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="formulaExpression" className="text-xs">公式表达式</Label>
+              <Textarea
+                id="formulaExpression"
+                value={form.formulaExpression || ""}
+                onChange={e => setForm(f => ({ ...f, formulaExpression: e.target.value }))}
+                placeholder="例如: {field_a} + {field_b}"
+                rows={3}
+                className="font-mono text-xs"
+              />
+              <p className="text-xs text-muted-foreground">
+                使用 {'{field_name}'} 引用字段，例如: {'{amount} * 0.1'}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Address Configuration */}
+        {isAddress && (
+          <div className="space-y-3 p-3 rounded-lg bg-teal-50 border border-teal-100">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-teal-500" />
+              <Label className="font-medium">地址配置</Label>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              地址字段包含以下子字段：省/州、市、区、街道地址、邮政编码、国家
+            </p>
+          </div>
+        )}
+
+        {/* Rollup Configuration */}
+        {isRollup && (
+          <div className="space-y-3 p-3 rounded-lg bg-violet-50 border border-violet-100">
+            <div className="flex items-center gap-2">
+              <Layers className="h-4 w-4 text-violet-500" />
+              <Label className="font-medium">汇总配置</Label>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rollupOperation" className="text-xs">汇总方式</Label>
+              <Select
+                value={form.rollupOperation || "count"}
+                onValueChange={v => setForm(f => ({ ...f, rollupOperation: v as FieldFormValues["rollupOperation"] }))}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="count">计数 (COUNT)</SelectItem>
+                  <SelectItem value="sum">求和 (SUM)</SelectItem>
+                  <SelectItem value="avg">平均值 (AVG)</SelectItem>
+                  <SelectItem value="min">最小值 (MIN)</SelectItem>
+                  <SelectItem value="max">最大值 (MAX)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rollupTargetField" className="text-xs">目标字段</Label>
+              <Input
+                id="rollupTargetField"
+                value={form.rollupTargetField || ""}
+                onChange={e => setForm(f => ({ ...f, rollupTargetField: e.target.value }))}
+                placeholder="例如: amount, quantity"
+                className="h-8 text-xs"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rollupFilter" className="text-xs">筛选条件</Label>
+              <Input
+                id="rollupFilter"
+                value={form.rollupFilter || ""}
+                onChange={e => setForm(f => ({ ...f, rollupFilter: e.target.value }))}
+                placeholder="例如: status = 'active'"
+                className="h-8 text-xs"
+              />
+            </div>
+          </div>
         )}
 
         {/* Placeholder & Description */}

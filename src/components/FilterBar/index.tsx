@@ -281,17 +281,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             render={({ field }) => (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "h-9 w-full justify-start text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    {field.value
-                      ? format(field.value instanceof Date ? field.value : new Date(field.value), 'yyyy-MM-dd')
-                      : placeholder || `请选择${filter.label}`}
-                  </Button>
+                  <div>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "h-9 w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? format(field.value instanceof Date ? field.value : new Date(field.value), 'yyyy-MM-dd')
+                        : placeholder || `请选择${filter.label}`}
+                    </Button>
+                  </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar

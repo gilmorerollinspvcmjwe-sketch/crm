@@ -348,9 +348,11 @@ export function WorkflowVisualizer({
       <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-background/90 backdrop-blur-sm rounded-lg border shadow-sm p-1">
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomOut}>
-              <ZoomOut className="h-4 w-4" />
-            </Button>
+            <div>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomOut}>
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>缩小</TooltipContent>
         </Tooltip>
@@ -359,18 +361,22 @@ export function WorkflowVisualizer({
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomIn}>
-              <ZoomIn className="h-4 w-4" />
-            </Button>
+            <div>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomIn}>
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>放大</TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4" />
-            </Button>
+            <div>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleReset}>
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>重置视图</TooltipContent>
         </Tooltip>

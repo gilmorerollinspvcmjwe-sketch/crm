@@ -57,7 +57,7 @@ export function DropdownMenu({
     >
       {trigger && (
         <DropdownMenuTriggerRoot asChild className={triggerClassName} disabled={disabled}>
-          {trigger}
+          <div>{trigger}</div>
         </DropdownMenuTriggerRoot>
       )}
       <DropdownMenuPrimitive.Portal>

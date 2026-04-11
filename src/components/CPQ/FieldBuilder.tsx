@@ -398,10 +398,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
       {/* 基础配置 */}
       <Collapsible open={basicOpen} onOpenChange={setBasicOpen}>
         <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-between font-semibold"
-          >
+          <div className="w-full flex items-center justify-between font-semibold">
             <span className="flex items-center gap-2">
               <Settings2 className="h-4 w-4" />
               基础配置
@@ -411,7 +408,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
             ) : (
               <ChevronRight className="h-4 w-4" />
             )}
-          </Button>
+          </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="space-y-4 pt-2">
           {/* 字段类型 */}
@@ -626,10 +623,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
       {PICKLIST_TYPES.includes(fieldType) && (
         <Collapsible open={optionsOpen} onOpenChange={setOptionsOpen}>
           <CollapsibleTrigger asChild>
-            <Button
-              variant="ghost"
-              className="w-full justify-between font-semibold"
-            >
+            <div className="w-full flex items-center justify-between font-semibold">
               <span className="flex items-center gap-2">
                 <List className="h-4 w-4" />
                 选项配置
@@ -640,7 +634,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
               ) : (
                 <ChevronRight className="h-4 w-4" />
               )}
-            </Button>
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-3 pt-2">
             {/* 选项列表 */}
@@ -747,10 +741,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
       {LOOKUP_TYPES.includes(fieldType) && (
         <Collapsible open={validationOpen} onOpenChange={setValidationOpen}>
           <CollapsibleTrigger asChild>
-            <Button
-              variant="ghost"
-              className="w-full justify-between font-semibold"
-            >
+            <div className="w-full flex items-center justify-between font-semibold">
               <span className="flex items-center gap-2">
                 <Link2 className="h-4 w-4" />
                 关联配置
@@ -760,7 +751,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
               ) : (
                 <ChevronRight className="h-4 w-4" />
               )}
-            </Button>
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-3 pt-2">
             <div className="space-y-2">
@@ -803,10 +794,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
       {/* 验证规则配置 */}
       <Collapsible open={validationOpen} onOpenChange={setValidationOpen}>
         <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-between font-semibold"
-          >
+          <div className="w-full flex items-center justify-between font-semibold">
             <span className="flex items-center gap-2">
               <Settings2 className="h-4 w-4" />
               验证规则
@@ -816,7 +804,7 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
             ) : (
               <ChevronRight className="h-4 w-4" />
             )}
-          </Button>
+          </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="space-y-4 pt-2">
           <div className="grid grid-cols-2 gap-4">
@@ -945,13 +933,13 @@ export const FieldBuilder: React.FC<FieldBuilderProps> = ({
       {/* 实时预览 */}
       <Collapsible open={true}>
         <CollapsibleTrigger asChild>
-          <Button variant="ghost" className="w-full justify-between font-semibold">
+          <div className="w-full flex items-center justify-between font-semibold">
             <span className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
               实时预览
             </span>
             <ChevronDown className="h-4 w-4" />
-          </Button>
+          </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2">
           <div className="rounded-lg border bg-muted/30 p-4 space-y-2">

@@ -242,12 +242,14 @@ function ConditionRow({ condition, fields, onChange, onDelete }: ConditionRowPro
         return (
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn("h-8 justify-start text-left font-normal w-[180px]", !condition.value && "text-muted-foreground")}
-              >
-                {condition.value ? format(new Date(condition.value as string), 'yyyy-MM-dd') : (placeholder || '选择日期')}
-              </Button>
+              <div>
+                <Button
+                  variant="outline"
+                  className={cn("h-8 justify-start text-left font-normal w-[180px]", !condition.value && "text-muted-foreground")}
+                >
+                  {condition.value ? format(new Date(condition.value as string), 'yyyy-MM-dd') : (placeholder || '选择日期')}
+                </Button>
+              </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar

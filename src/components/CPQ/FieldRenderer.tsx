@@ -231,18 +231,20 @@ const DateRenderer: React.FC<{
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          className={cn(
-            'w-full justify-start text-left font-normal',
-            !value && 'text-muted-foreground',
-            className
-          )}
-          disabled={disabled}
-        >
-          {displayValue || property.placeholder || '选择日期'}
-        </Button>
+        <div>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              'w-full justify-start text-left font-normal',
+              !value && 'text-muted-foreground',
+              className
+            )}
+            disabled={disabled}
+          >
+            {displayValue || property.placeholder || '选择日期'}
+          </Button>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
@@ -414,16 +416,17 @@ const MultiSelectRenderer: React.FC<{
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          className={cn(
-            'w-full justify-start min-h-[38px] h-auto flex-wrap gap-1',
-            !selectedValues.length && 'text-muted-foreground',
-            className
-          )}
-          disabled={disabled}
-        >
+        <div>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              'w-full justify-start min-h-[38px] h-auto flex-wrap gap-1',
+              !selectedValues.length && 'text-muted-foreground',
+              className
+            )}
+            disabled={disabled}
+          >
           {selectedOptions.length > 0 ? (
             selectedOptions.map((opt) => (
               <Badge
@@ -600,16 +603,17 @@ const LookupRenderer: React.FC<{
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          className={cn(
-            'w-full justify-start min-h-[38px] h-auto flex-wrap gap-1',
-            !selectedItems.length && 'text-muted-foreground',
-            className
-          )}
-          disabled={disabled}
-        >
+        <div>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              'w-full justify-start min-h-[38px] h-auto flex-wrap gap-1',
+              !selectedItems.length && 'text-muted-foreground',
+              className
+            )}
+            disabled={disabled}
+          >
           {selectedItems.length > 0 ? (
             selectedItems.map((item) => (
               <Badge key={item.id} variant="secondary" className="gap-1">

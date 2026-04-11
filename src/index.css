@@ -4,91 +4,120 @@
 
 @layer base {
   :root {
-    /* Primary Brand Colors - 蓝色系 */
-    --background: 0 0% 100%;
-    --foreground: 220 20% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
-    
-    /* Primary - CRM Blue */
-    --primary: 211 100% 50%;
-    --primary-foreground: 210 40% 98%;
-    --primary-hover: 211 100% 55%;
-    --primary-active: 211 100% 45%;
-    
-    /* Secondary */
-    --secondary: 220 15% 96%;
-    --secondary-foreground: 220 20% 20%;
-    
-    /* Muted */
-    --muted: 220 15% 96%;
-    --muted-foreground: 220 15% 45%;
-    
-    /* Accent */
-    --accent: 220 15% 96%;
-    --accent-foreground: 220 20% 20%;
-    
-    /* Semantic Colors */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 142 76% 36%;
-    --success-foreground: 142 70% 95%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 38 90% 95%;
-    --info: 211 100% 50%;
-    --info-foreground: 210 40% 98%;
-    
-    /* Border & Input */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 211 100% 50%;
-    
-    /* Radius - 8px Grid System */
-    --radius: 0.5rem;
-    --radius-sm: 0.375rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-    
+    /* Typography */
+    --font-sans: "Aptos", "Segoe UI Variable", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", "Cascadia Code", "Consolas", monospace;
+
+    /* Base surfaces */
+    --background: 0.985 0.003 242;
+    --foreground: 0.22 0.012 242;
+    --card: 0.995 0.002 242;
+    --card-foreground: 0.22 0.012 242;
+    --popover: 0.995 0.002 242;
+    --popover-foreground: 0.22 0.012 242;
+
+    /* Primary brand */
+    --primary: 0.56 0.09 212;
+    --primary-foreground: 0.985 0.003 242;
+    --primary-hover: 0.52 0.09 212;
+    --primary-active: 0.48 0.08 212;
+
+    /* Secondary and muted surfaces */
+    --secondary: 0.95 0.004 242;
+    --secondary-foreground: 0.33 0.012 242;
+    --muted: 0.972 0.004 242;
+    --muted-foreground: 0.54 0.01 242;
+    --accent: 0.946 0.006 214;
+    --accent-foreground: 0.28 0.012 242;
+
+    /* Semantic colors */
+    --destructive: 0.61 0.14 24;
+    --destructive-foreground: 0.985 0.003 242;
+    --success: 0.64 0.10 158;
+    --success-foreground: 0.985 0.003 242;
+    --warning: 0.74 0.12 84;
+    --warning-foreground: 0.22 0.02 84;
+    --info: 0.63 0.09 220;
+    --info-foreground: 0.985 0.003 242;
+
+    /* Borders and focus */
+    --border: 0.89 0.006 242;
+    --input: 0.89 0.006 242;
+    --ring: 0.56 0.09 212;
+
+    /* Shell-specific layers */
+    --shell-nav: 0.24 0.012 242;
+    --shell-nav-foreground: 0.93 0.004 242;
+    --shell-nav-muted: 0.68 0.008 242;
+    --shell-nav-border: 0.32 0.01 242;
+    --shell-nav-active: 0.34 0.016 224;
+    --shell-nav-active-foreground: 0.97 0.003 242;
+    --shell-panel: 0.972 0.004 242;
+    --shell-panel-elevated: 0.995 0.002 242;
+    --shell-panel-border: 0.87 0.006 242;
+    --shell-panel-muted: 0.95 0.004 242;
+
+    /* Radius */
+    --radius: 0.875rem;
+    --radius-sm: 0.625rem;
+    --radius-lg: 1.125rem;
+    --radius-xl: 1.5rem;
+
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03), 0 1px 3px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.10), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.12), 0 8px 10px -6px rgb(0 0 0 / 0.05);
-    
-    /* Animation Durations */
+    --shadow-sm: 0 1px 2px rgba(18, 24, 38, 0.04), 0 8px 16px rgba(18, 24, 38, 0.03);
+    --shadow-md: 0 2px 8px rgba(18, 24, 38, 0.06), 0 18px 40px rgba(18, 24, 38, 0.05);
+    --shadow-lg: 0 8px 24px rgba(18, 24, 38, 0.08), 0 28px 64px rgba(18, 24, 38, 0.10);
+    --shadow-xl: 0 16px 36px rgba(18, 24, 38, 0.10), 0 36px 84px rgba(18, 24, 38, 0.14);
+
+    /* Motion */
     --duration-fast: 150ms;
     --duration-normal: 200ms;
     --duration-slow: 300ms;
   }
 
   .dark {
-    --background: 220 20% 8%;
-    --foreground: 220 15% 95%;
-    --card: 220 20% 10%;
-    --card-foreground: 220 15% 95%;
-    --popover: 220 20% 10%;
-    --popover-foreground: 220 15% 95%;
-    
-    --primary: 211 100% 55%;
-    --primary-foreground: 220 20% 8%;
-    
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 220 15% 85%;
-    
-    --muted: 220 15% 15%;
-    --muted-foreground: 220 15% 60%;
-    
-    --accent: 220 15% 18%;
-    --accent-foreground: 220 15% 85%;
-    
-    --destructive: 0 62% 40%;
-    --destructive-foreground: 0 0% 98%;
-    
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 211 100% 55%;
+    --background: 0.19 0.006 242;
+    --foreground: 0.95 0.004 242;
+    --card: 0.22 0.006 242;
+    --card-foreground: 0.95 0.004 242;
+    --popover: 0.24 0.007 242;
+    --popover-foreground: 0.95 0.004 242;
+
+    --primary: 0.69 0.08 212;
+    --primary-foreground: 0.21 0.01 242;
+    --primary-hover: 0.73 0.08 212;
+    --primary-active: 0.65 0.08 212;
+
+    --secondary: 0.28 0.007 242;
+    --secondary-foreground: 0.90 0.004 242;
+    --muted: 0.24 0.007 242;
+    --muted-foreground: 0.72 0.008 242;
+    --accent: 0.30 0.01 214;
+    --accent-foreground: 0.94 0.004 242;
+
+    --destructive: 0.64 0.13 24;
+    --destructive-foreground: 0.95 0.004 242;
+    --success: 0.69 0.09 158;
+    --success-foreground: 0.19 0.006 242;
+    --warning: 0.79 0.11 84;
+    --warning-foreground: 0.22 0.02 84;
+    --info: 0.72 0.08 220;
+    --info-foreground: 0.19 0.006 242;
+
+    --border: 0.33 0.008 242;
+    --input: 0.33 0.008 242;
+    --ring: 0.69 0.08 212;
+
+    --shell-nav: 0.17 0.007 242;
+    --shell-nav-foreground: 0.94 0.004 242;
+    --shell-nav-muted: 0.69 0.008 242;
+    --shell-nav-border: 0.28 0.008 242;
+    --shell-nav-active: 0.31 0.016 224;
+    --shell-nav-active-foreground: 0.97 0.003 242;
+    --shell-panel: 0.22 0.006 242;
+    --shell-panel-elevated: 0.26 0.007 242;
+    --shell-panel-border: 0.31 0.008 242;
+    --shell-panel-muted: 0.25 0.007 242;
   }
 }
 
@@ -96,18 +125,49 @@
   * {
     @apply border-border;
   }
+  html {
+    background-color: oklch(var(--background));
+  }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-kerning: normal;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
   }
-  
-  /* Typography Scale - 8px Grid */
-  h1 { @apply text-2xl font-bold tracking-tight; }
-  h2 { @apply text-xl font-semibold tracking-tight; }
-  h3 { @apply text-lg font-semibold; }
-  h4 { @apply text-base font-medium; }
-  p { @apply text-sm; }
-  small { @apply text-xs text-muted-foreground; }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 620;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  small {
+    font-size: 0.75rem;
+    color: oklch(var(--muted-foreground));
+  }
 }
 
 @layer components {
@@ -392,23 +452,16 @@
    * ================================ */
   
   .border-subtle {
-    border-color: hsl(var(--border) / 0.5);
+    border-color: oklch(var(--border) / 0.55);
   }
   
   .border-emphasis {
-    border-color: hsl(var(--primary) / 0.3);
+    border-color: oklch(var(--primary) / 0.24);
   }
   
   /* ================================
    * Text Utilities
    * ================================ */
-  
-  .text-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--info)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
   
   .text-truncate-2 {
     display: -webkit-box;
@@ -447,7 +500,7 @@
     transition: box-shadow var(--duration-normal);
   }
   .hover-glow:hover {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 20px oklch(var(--primary) / 0.18);
   }
 }
 

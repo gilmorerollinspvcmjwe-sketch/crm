@@ -1,131 +1,102 @@
 /**
  * design-tokens.css
- * 
- * Design tokens from Ant Design CRM system.
- * These values are used to configure Tailwind CSS in tailwind.config.js
- * 
- * Usage:
- *   Run: node scripts/migrate-css-variables.js design-tokens.css tailwind-tokens.json
- *   This will parse these variables and generate Tailwind config values.
+ *
+ * CRM 主框架设计令牌。
+ * 面向海外 B 端企业场景，强调工业级秩序感、稳定性和长期使用耐看度。
  */
 
 :root {
   /* ============================================
-   * Ant Design Color Palette (Primary CRM Theme)
-   * ============================================ */
-  
-  /* Primary Colors */
-  --color-primary: #1677ff;
-  --color-primary-hover: #4096ff;
-  --color-primary-active: #0958d9;
-  --color-primary-disabled: #bae0ff;
-  --color-primary-outline: rgba(22, 119, 255, 0.1);
-  
-  /* Success Colors */
-  --color-success: #52c41a;
-  --color-success-hover: #73d13d;
-  --color-success-active: #389e0d;
-  --color-success-disabled: #b7eb8f;
-  --color-success-outline: rgba(82, 196, 26, 0.1);
-  
-  /* Warning Colors */
-  --color-warning: #faad14;
-  --color-warning-hover: #ffc53d;
-  --color-warning-active: #d48806;
-  --color-warning-disabled: #ffe58f;
-  --color-warning-outline: rgba(250, 173, 20, 0.1);
-  
-  /* Error/Destructive Colors */
-  --color-error: #ff4d4f;
-  --color-error-hover: #ff7875;
-  --color-error-active: #d4380d;
-  --color-error-disabled: #ffccc7;
-  --color-error-outline: rgba(255, 77, 79, 0.1);
-  
-  /* Info Colors */
-  --color-info: #1677ff;
-  --color-info-hover: #4096ff;
-  --color-info-active: #0958d9;
-  --color-info-disabled: #bae0ff;
-  --color-info-outline: rgba(22, 119, 255, 0.1);
-  
-  /* Text Colors */
-  --color-text: #000000d9;
-  --color-text-secondary: #00000073;
-  --color-text-tertiary: #00000047;
-  --color-text-quaternary: #00000026;
-  --color-text-disabled: #00000026;
-  
-  /* Background Colors */
-  --color-bg-container: #ffffff;
-  --color-bg-elevated: #ffffff;
-  --color-bg-layout: #f5f5f5;
-  --color-bg-spotlight: #383838;
-  --color-bg-mask: rgba(0, 0, 0, 0.45);
-  --color-bg-base: #ffffff;
-  
-  /* Border Colors */
-  --color-border: #d9d9d9;
-  --color-border-secondary: #f0f0f0;
-  
-  /* ============================================
-   * Spacing Scale (Based on 8px Grid)
-   * ============================================ */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-2xl: 48px;
-  --spacing-3xl: 64px;
-  
-  /* ============================================
-   * Border Radius
-   * ============================================ */
-  --radius-border-radius: 6px;
-  --radius-border-radius-sm: 4px;
-  --radius-border-radius-lg: 8px;
-  --radius-border-radius-xl: 16px;
-  --radius-border-radius-circle: 50%;
-  --radius-border-radius-full: 9999px;
-  
-  /* ============================================
    * Typography
    * ============================================ */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 14px;
-  --font-size-lg: 16px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 30px;
-  --font-size-4xl: 38px;
-  --font-size-5xl: 46px;
-  
+  --font-sans: "Aptos", "Segoe UI Variable", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", "Cascadia Code", "Consolas", monospace;
+
   /* ============================================
-   * Shadows
+   * Core Brand & Neutral Palette (OKLCH)
    * ============================================ */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
-  --shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.2);
-  
+  --color-primary: oklch(0.56 0.09 212);
+  --color-primary-strong: oklch(0.46 0.08 212);
+  --color-primary-soft: oklch(0.95 0.012 212);
+
+  --color-ink-980: oklch(0.19 0.012 242);
+  --color-ink-920: oklch(0.25 0.012 242);
+  --color-ink-760: oklch(0.44 0.012 242);
+  --color-ink-620: oklch(0.57 0.01 242);
+  --color-ink-500: oklch(0.68 0.008 242);
+  --color-ink-320: oklch(0.83 0.006 242);
+  --color-ink-180: oklch(0.91 0.004 242);
+  --color-ink-120: oklch(0.95 0.004 242);
+  --color-ink-80: oklch(0.975 0.003 242);
+
   /* ============================================
-   * Transitions
+   * Semantic Colors
    * ============================================ */
-  --transition-duration-fast: 0.1s;
-  --transition-duration-normal: 0.2s;
-  --transition-duration-slow: 0.3s;
+  --color-success: oklch(0.64 0.10 158);
+  --color-success-soft: oklch(0.95 0.02 158);
+  --color-warning: oklch(0.74 0.12 84);
+  --color-warning-soft: oklch(0.96 0.02 84);
+  --color-error: oklch(0.61 0.14 24);
+  --color-error-soft: oklch(0.95 0.025 24);
+  --color-info: oklch(0.63 0.09 220);
+  --color-info-soft: oklch(0.95 0.018 220);
+
+  /* ============================================
+   * Surfaces & Layout
+   * ============================================ */
+  --color-surface-base: oklch(0.985 0.003 242);
+  --color-surface-panel: oklch(0.972 0.004 242);
+  --color-surface-elevated: oklch(0.995 0.002 242);
+  --color-surface-shell: oklch(0.24 0.012 242);
+  --color-surface-shell-muted: oklch(0.30 0.012 242);
+  --color-surface-shell-soft: oklch(0.34 0.012 242);
+
+  /* ============================================
+   * Borders / Shadows / Radius
+   * ============================================ */
+  --color-border-strong: oklch(0.86 0.006 242);
+  --color-border-soft: oklch(0.92 0.004 242);
+  --shadow-sm: 0 1px 2px rgba(18, 24, 38, 0.04), 0 8px 16px rgba(18, 24, 38, 0.03);
+  --shadow-md: 0 2px 8px rgba(18, 24, 38, 0.06), 0 18px 40px rgba(18, 24, 38, 0.05);
+  --shadow-lg: 0 8px 24px rgba(18, 24, 38, 0.08), 0 28px 64px rgba(18, 24, 38, 0.10);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  /* ============================================
+   * Spacing
+   * ============================================ */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
 }
 
-/* Dark mode variables would go here */
 .dark {
-  --color-primary: #1668dc;
-  --color-text: #ffffffd9;
-  --color-text-secondary: #ffffff73;
-  --color-bg-container: #141414;
-  --color-bg-layout: #000000;
-  --color-border: #434343;
-  --color-border-secondary: #303030;
+  --color-primary: oklch(0.69 0.08 212);
+  --color-primary-strong: oklch(0.75 0.08 212);
+  --color-primary-soft: oklch(0.30 0.02 212);
+
+  --color-ink-980: oklch(0.97 0.004 242);
+  --color-ink-920: oklch(0.93 0.004 242);
+  --color-ink-760: oklch(0.74 0.008 242);
+  --color-ink-620: oklch(0.61 0.009 242);
+  --color-ink-500: oklch(0.48 0.009 242);
+  --color-ink-320: oklch(0.34 0.008 242);
+  --color-ink-180: oklch(0.24 0.006 242);
+  --color-ink-120: oklch(0.18 0.005 242);
+  --color-ink-80: oklch(0.15 0.004 242);
+
+  --color-surface-base: oklch(0.19 0.006 242);
+  --color-surface-panel: oklch(0.22 0.006 242);
+  --color-surface-elevated: oklch(0.26 0.007 242);
+  --color-surface-shell: oklch(0.16 0.007 242);
+  --color-surface-shell-muted: oklch(0.20 0.008 242);
+  --color-surface-shell-soft: oklch(0.24 0.008 242);
+
+  --color-border-strong: oklch(0.33 0.008 242);
+  --color-border-soft: oklch(0.28 0.007 242);
 }

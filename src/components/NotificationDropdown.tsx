@@ -1,6 +1,7 @@
 /**
- * 通知下拉组件 (NotificationDropdown)
- * 显示未读数量徽章，支持标记已读、筛选类型
+ * 通知下拉组件
+ *
+ * 调整为与新主框架一致的顶部入口与通知面板。
  */
 
 import * as React from 'react'
@@ -9,14 +10,10 @@ import {
   Bell,
   Check,
   CheckCheck,
-  Trash2,
-  Settings,
   Clock,
-  AlertCircle,
-  Info,
-  CheckCircle,
-  X,
   FileText,
+  Info,
+  Trash2,
   UserPlus,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -25,14 +22,12 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useNotifications, type NotificationType } from '@/hooks/useNotifications'
+import { cn } from '@/lib/utils'
 
-// 通知类型图标配置
 const typeIconConfig: Record<NotificationType, React.ComponentType<{ className?: string }>> = {
   system: Info,
   task: Clock,
@@ -40,26 +35,26 @@ const typeIconConfig: Record<NotificationType, React.ComponentType<{ className?:
   assignment: UserPlus,
 }
 
-// 通知类型颜色配置
-const typeColorConfig: Record<
-  NotificationType,
-  { color: string; bg: string; label: string }
-> = {
-  system: { color: 'text-blue-500', bg: 'bg-blue-500/10', label: '系统' },
-  task: { color: 'text-orange-500', bg: 'bg-orange-500/10', label: '待办' },
-  approval: { color: 'text-red-500', bg: 'bg-red-500/10', label: '审批' },
-  assignment: { color: 'text-purple-500', bg: 'bg-purple-500/10', label: '分配' },
+const typeColorConfig: Record<NotificationType, { color: string; bg: string; label: string }> = {
+  system: { color: 'text-primary', bg: 'bg-primary/10', label: '系统' },
+  task: { color: 'text-warning-foreground', bg: 'bg-warning/12', label: '待办' },
+  approval: { color: 'text-destructive', bg: 'bg-destructive/10', label: '审批' },
+  assignment: { color: 'text-foreground/75', bg: 'bg-muted', label: '分配' },
 }
 
-// 优先级配置
 const priorityConfig: Record<'low' | 'medium' | 'high' | 'urgent', { color: string; label: string }> = {
-  low: { color: 'text-gray-500', label: '低' },
-  medium: { color: 'text-blue-500', label: '中' },
-  high: { color: 'text-orange-500', label: '高' },
-  urgent: { color: 'text-red-500', label: '紧急' },
+  low: { color: 'text-muted-foreground', label: '低' },
+  medium: { color: 'text-primary', label: '中' },
+  high: { color: 'text-warning-foreground', label: '高' },
+  urgent: { color: 'text-destructive', label: '紧急' },
 }
 
-export function NotificationDropdown() {
+interface NotificationDropdownProps {
+  triggerClassName?: string
+  contentClassName?: string
+}
+
+export function NotificationDropdown({ triggerClassName, contentClassName }: NotificationDropdownProps) {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = React.useState(false)
   const [selectedTab, setSelectedTab] = React.useState<'all' | 'unread'>('all')
@@ -73,24 +68,20 @@ export function NotificationDropdown() {
     markAllAsRead,
     delete: deleteNotification,
     deleteAll,
-    typeConfig,
   } = useNotifications()
 
   const unreadCount = stats.unread
 
-  // 筛选通知
-  const filteredNotifications = notifications.filter((n) => {
-    if (selectedTab === 'unread' && n.read) return false
-    if (selectedType !== 'all' && n.type !== selectedType) return false
+  const filteredNotifications = notifications.filter((item) => {
+    if (selectedTab === 'unread' && item.read) return false
+    if (selectedType !== 'all' && item.type !== selectedType) return false
     return true
   })
 
-  // 排序（最新的在前）
   const sortedNotifications = [...filteredNotifications].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )
 
-  // 格式化时间
   const formatTime = (timestamp: string) => {
     const now = Date.now()
     const time = new Date(timestamp).getTime()
@@ -106,7 +97,6 @@ export function NotificationDropdown() {
     return new Date(timestamp).toLocaleDateString('zh-CN')
   }
 
-  // 处理通知点击
   const handleNotificationClick = (url?: string) => {
     if (url) {
       navigate(url)
@@ -114,141 +104,37 @@ export function NotificationDropdown() {
     setIsOpen(false)
   }
 
-  // 渲染单个通知
-  const renderNotification = (notification: typeof notifications[0]) => {
-    const typeInfo = typeColorConfig[notification.type]
-    const priorityInfo = priorityConfig[notification.priority]
-    const Icon = typeIconConfig[notification.type]
-
-    return (
-      <div
-        key={notification.id}
-        className={`p-3 border-b last:border-b-0 hover:bg-muted/50 cursor-pointer transition-colors ${
-          !notification.read ? 'bg-muted/30' : ''
-        }`}
-        onClick={() => {
-          if (!notification.read) {
-            markAsRead([notification.id])
-          }
-          handleNotificationClick(notification.action?.url)
-        }}
-      >
-        <div className="flex items-start gap-3">
-          {/* 图标 */}
-          <div className={`p-2 rounded-lg ${typeInfo.bg} flex-shrink-0`}>
-            <Icon className={`h-4 w-4 ${typeInfo.color}`} />
-          </div>
-
-          {/* 内容 */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <div className="flex items-center gap-2">
-                <p
-                  className={`text-sm font-medium ${
-                    !notification.read ? 'text-foreground' : 'text-muted-foreground'
-                  }`}
-                >
-                  {notification.title}
-                </p>
-                {!notification.read && (
-                  <Badge className="h-4 text-[10px] bg-blue-500">未读</Badge>
-                )}
-              </div>
-              <span className="text-xs text-muted-foreground flex-shrink-0">
-                {formatTime(notification.timestamp)}
-              </span>
-            </div>
-
-            <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
-              {notification.message}
-            </p>
-
-            {/* 优先级和操作 */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className={`text-xs ${priorityInfo.color}`}>
-                  {priorityInfo.label}
-                </span>
-                {notification.metadata &&
-                  Object.entries(notification.metadata).slice(0, 2).map(([key, value]) => (
-                    <Badge key={key} variant="secondary" className="text-[10px] h-4">
-                      {value}
-                    </Badge>
-                  ))}
-              </div>
-              {notification.action && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 text-xs"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleNotificationClick(notification.action?.url)
-                  }}
-                >
-                  {notification.action.label}
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* 操作按钮 */}
-          <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity">
-            {!notification.read && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  markAsRead([notification.id])
-                }}
-              >
-                <Check className="h-3.5 w-3.5" />
-              </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0 text-muted-foreground hover:text-red-500"
-              onClick={(e) => {
-                e.stopPropagation()
-                deleteNotification([notification.id])
-              }}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      {/* 触发按钮 */}
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button
+          variant="outline"
+          size="icon"
+          className={cn(
+            'relative rounded-2xl border-border/70 bg-card shadow-[var(--shadow-sm)] hover:bg-accent/65',
+            triggerClassName
+          )}
+        >
+          <Bell className="h-4 w-4" />
           {unreadCount > 0 && (
-            <Badge
-              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 hover:bg-red-500"
-            >
+            <Badge className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px]">
               {unreadCount > 99 ? '99+' : unreadCount}
             </Badge>
           )}
         </Button>
       </DropdownMenuTrigger>
 
-      {/* 下拉内容 */}
-      <DropdownMenuContent align="end" className="w-96">
-        {/* 头部 */}
-        <div className="flex items-center justify-between p-3 border-b">
+      <DropdownMenuContent
+        align="end"
+        className={cn(
+          'w-[25rem] overflow-hidden rounded-[1.25rem] border border-border/70 bg-[oklch(var(--shell-panel-elevated)/0.98)] p-0 shadow-[var(--shadow-xl)]',
+          contentClassName
+        )}
+      >
+        <div className="flex items-center justify-between border-b border-border/70 p-4">
           <div className="flex items-center gap-2">
-            <h4 className="font-semibold">通知中心</h4>
-            {unreadCount > 0 && (
-              <Badge variant="secondary">{unreadCount} 未读</Badge>
-            )}
+            <h4 className="text-sm font-semibold tracking-[-0.01em]">通知中心</h4>
+            {unreadCount > 0 && <Badge variant="secondary">{unreadCount} 未读</Badge>}
           </div>
           <div className="flex items-center gap-1">
             <Button
@@ -258,33 +144,26 @@ export function NotificationDropdown() {
               onClick={() => markAllAsRead()}
               disabled={unreadCount === 0}
             >
-              <CheckCheck className="h-3.5 w-3.5 mr-1" />
+              <CheckCheck className="mr-1 h-3.5 w-3.5" />
               全部已读
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0"
-              onClick={() => deleteAll()}
-            >
+            <Button variant="ghost" size="iconSm" aria-label="清空通知" onClick={() => deleteAll()}>
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
 
-        {/* 全部/未读 Tab */}
-        <Tabs value={selectedTab} onValueChange={(v) => setSelectedTab(v as 'all' | 'unread')}>
-          <div className="px-3 py-2 border-b">
-            <TabsList className="grid grid-cols-2 w-full">
+        <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as 'all' | 'unread')}>
+          <div className="border-b border-border/70 px-4 py-3">
+            <TabsList className="grid w-full grid-cols-2 rounded-2xl bg-muted/55">
               <TabsTrigger value="all">全部</TabsTrigger>
               <TabsTrigger value="unread">未读</TabsTrigger>
             </TabsList>
           </div>
         </Tabs>
 
-        {/* 类型筛选 */}
-        <div className="px-3 py-2 border-b">
-          <div className="flex items-center gap-1 flex-wrap">
+        <div className="border-b border-border/70 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-1">
             <Badge
               variant={selectedType === 'all' ? 'default' : 'outline'}
               className="cursor-pointer text-xs"
@@ -298,9 +177,7 @@ export function NotificationDropdown() {
                 <Badge
                   key={type}
                   variant={selectedType === type ? 'default' : 'outline'}
-                  className={`cursor-pointer text-xs ${
-                    selectedType === type ? config.bg : ''
-                  }`}
+                  className={cn('cursor-pointer text-xs', selectedType === type && config.bg)}
                   onClick={() => setSelectedType(type)}
                 >
                   {config.label}
@@ -310,30 +187,118 @@ export function NotificationDropdown() {
           </div>
         </div>
 
-        {/* 通知列表 */}
         <ScrollArea className="h-[400px]">
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Clock className="h-6 w-6 animate-spin text-muted-foreground" />
+            <div className="flex items-center justify-center py-10 text-muted-foreground">
+              <Clock className="h-5 w-5 animate-spin" />
             </div>
-          ) : sortedNotifications.length > 0 ? (
-            sortedNotifications.map(renderNotification)
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          ) : sortedNotifications.length === 0 ? (
+            <div className="py-10 text-center text-muted-foreground">
+              <Bell className="mx-auto mb-2 h-8 w-8 opacity-50" />
               <p className="text-sm">暂无通知</p>
             </div>
+          ) : (
+            sortedNotifications.map((notification) => {
+              const typeInfo = typeColorConfig[notification.type]
+              const priorityInfo = priorityConfig[notification.priority]
+              const Icon = typeIconConfig[notification.type]
+
+              return (
+                <div
+                  key={notification.id}
+                  className={cn(
+                    'group cursor-pointer border-b border-border/60 p-3 transition-colors last:border-b-0 hover:bg-accent/45',
+                    !notification.read && 'bg-muted/30'
+                  )}
+                  onClick={() => {
+                    if (!notification.read) {
+                      markAsRead([notification.id])
+                    }
+                    handleNotificationClick(notification.action?.url)
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={cn('flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl', typeInfo.bg)}>
+                      <Icon className={cn('h-4 w-4', typeInfo.color)} />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <p className={cn('text-sm font-medium', notification.read ? 'text-muted-foreground' : 'text-foreground')}>
+                            {notification.title}
+                          </p>
+                          {!notification.read && <Badge className="h-4 text-[10px]">未读</Badge>}
+                        </div>
+                        <span className="flex-shrink-0 text-xs text-muted-foreground">{formatTime(notification.timestamp)}</span>
+                      </div>
+
+                      <p className="mb-2 line-clamp-2 text-xs text-muted-foreground">{notification.message}</p>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={cn('text-xs', priorityInfo.color)}>{priorityInfo.label}</span>
+                          {notification.metadata &&
+                            Object.entries(notification.metadata)
+                              .slice(0, 2)
+                              .map(([key, value]) => (
+                                <Badge key={key} variant="secondary" className="h-4 text-[10px]">
+                                  {value}
+                                </Badge>
+                              ))}
+                        </div>
+                        {notification.action && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 text-xs"
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              handleNotificationClick(notification.action?.url)
+                            }}
+                          >
+                            {notification.action.label}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                      {!notification.read && (
+                        <Button
+                          variant="ghost"
+                          size="iconSm"
+                          aria-label="标记已读"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            markAsRead([notification.id])
+                          }}
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="iconSm"
+                        aria-label="删除通知"
+                        className="hover:text-destructive"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          deleteNotification([notification.id])
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })
           )}
         </ScrollArea>
 
-        {/* 底部链接 */}
-        <div className="p-3 border-t">
-          <Button
-            variant="ghost"
-            className="w-full text-xs"
-            size="sm"
-            onClick={() => handleNotificationClick('/notifications')}
-          >
+        <div className="border-t border-border/70 p-3">
+          <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => handleNotificationClick('/notifications')}>
             查看全部通知
           </Button>
         </div>

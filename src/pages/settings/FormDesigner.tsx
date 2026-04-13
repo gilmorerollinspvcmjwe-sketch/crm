@@ -53,6 +53,7 @@ import {
   Calculator,
   MapPin,
   Layers,
+  Workflow,
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
@@ -406,33 +407,43 @@ export default function FormDesignerPage() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="min-h-screen bg-background">
       {/* Top Bar */}
-      <div className="flex items-center gap-3 px-6 py-3 border-b bg-background">
-        <Button variant="ghost" size="icon" asChild>
-          <Link to={`/custom-objects/${objectId}`}>
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-sm font-semibold">表单设计器</h1>
-          <p className="text-xs text-muted-foreground">
-            自定义对象 / {objectId} / 表单设计器
-          </p>
+      <div className="border-b border-border/70 bg-[oklch(var(--shell-panel-elevated)/0.94)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-4 md:px-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="flex items-start gap-3">
+            <Button variant="ghost" size="icon" asChild>
+              <Link to={`/custom-objects/${objectId}`}>
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
+            </Button>
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                <Workflow className="h-3.5 w-3.5" />
+                Form designer workspace
+              </div>
+              <h1 className="mt-3 text-2xl font-bold tracking-tight">表单设计器</h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                围绕对象录入流程配置字段分组、区块层级和可见性，保持表单结构清晰可维护。
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant={previewMode ? "default" : "outline"}
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setPreviewMode(!previewMode)}
+            >
+              <Eye className="h-3.5 w-3.5" />
+              {previewMode ? "编辑" : "预览"}
+            </Button>
+            <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={saving}>
+              {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+              保存
+            </Button>
+          </div>
         </div>
-        <Button
-          variant={previewMode ? "default" : "outline"}
-          size="sm"
-          className="gap-1.5"
-          onClick={() => setPreviewMode(!previewMode)}
-        >
-          <Eye className="h-3.5 w-3.5" />
-          {previewMode ? "编辑" : "预览"}
-        </Button>
-        <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-          保存
-        </Button>
       </div>
 
       <div className="flex-1 flex overflow-hidden">

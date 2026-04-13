@@ -28,6 +28,7 @@ import {
   LayoutGrid,
   GanttChart,
   Table,
+  TableProperties,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -246,24 +247,34 @@ export default function ViewManagerPage() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="min-h-screen bg-background">
       {/* Top Bar */}
-      <div className="flex items-center gap-3 px-6 py-3 border-b bg-background">
-        <Button variant="ghost" size="icon" asChild>
-          <Link to={`/custom-objects/${objectId}`}>
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-sm font-semibold">视图管理器</h1>
-          <p className="text-xs text-muted-foreground">
-            自定义对象 / {objectId} / 视图管理器
-          </p>
+      <div className="border-b border-border/70 bg-[oklch(var(--shell-panel-elevated)/0.94)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-4 md:px-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="flex items-start gap-3">
+            <Button variant="ghost" size="icon" asChild>
+              <Link to={`/custom-objects/${objectId}`}>
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
+            </Button>
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                <TableProperties className="h-3.5 w-3.5" />
+                View manager workspace
+              </div>
+              <h1 className="mt-3 text-2xl font-bold tracking-tight">视图管理器</h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                管理对象的列表、看板和甘特视图，支撑文档里要求的多视图保存能力。
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={saving}>
+              {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+              保存
+            </Button>
+          </div>
         </div>
-        <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
-          保存
-        </Button>
       </div>
 
       <div className="flex-1 flex overflow-hidden">

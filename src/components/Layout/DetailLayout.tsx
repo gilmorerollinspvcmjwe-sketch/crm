@@ -51,52 +51,46 @@ export function DetailLayout({
   rightSidebarClassName,
 }: DetailLayoutProps) {
   return (
-    <div className={cn('flex flex-col h-full bg-background', className)}>
-      {/* Header Section */}
+    <div className={cn('flex h-full flex-col rounded-[1.5rem] border border-border/70 bg-card shadow-[var(--shadow-sm)]', className)}>
       {header && (
-        <div className="flex items-center px-6 py-4 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 sticky top-0 z-10 shadow-sm">
+        <div className="sticky top-0 z-10 border-b border-border/70 bg-[oklch(var(--shell-panel-elevated)/0.92)] px-5 py-4 backdrop-blur-xl md:px-6">
           {header}
         </div>
       )}
 
-      {/* Main Content - Three Column Layout */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar - Fixed 280px */}
+      <div className="flex flex-1 flex-col overflow-hidden xl:flex-row">
         {leftSidebar && (
           <aside
             className={cn(
-              'w-[280px] flex-shrink-0 border-r bg-muted/20 overflow-y-auto',
-              'hidden md:block', // Hide on mobile
+              'border-b border-border/70 bg-muted/25 xl:w-[300px] xl:flex-shrink-0 xl:border-b-0 xl:border-r',
               leftSidebarClassName
             )}
           >
-            <div className="p-5 space-y-5">
+            <div className="space-y-4 p-4 md:p-5">
               {leftSidebar}
             </div>
           </aside>
         )}
 
-        {/* Middle Content - Flex Grow */}
         <main
           className={cn(
-            'flex-1 overflow-y-auto bg-background',
-            'min-w-0', // Prevent flex item overflow
+            'min-w-0 flex-1 overflow-y-auto bg-background',
             contentClassName
           )}
         >
-          {children}
+          <div className="p-4 md:p-5 xl:p-6">
+            {children}
+          </div>
         </main>
 
-        {/* Right Sidebar - Fixed 360px */}
         {rightSidebar && (
           <aside
             className={cn(
-              'w-[360px] flex-shrink-0 border-l bg-muted/20 overflow-y-auto',
-              'hidden lg:block', // Hide on tablet and mobile
+              'border-t border-border/70 bg-muted/25 xl:w-[340px] xl:flex-shrink-0 xl:border-l xl:border-t-0',
               rightSidebarClassName
             )}
           >
-            <div className="p-5 space-y-5">
+            <div className="space-y-4 p-4 md:p-5">
               {rightSidebar}
             </div>
           </aside>
@@ -123,12 +117,12 @@ export function DetailLayoutHeader({
   className?: string
 }) {
   return (
-    <div className={cn('flex items-center justify-between w-full', className)}>
-      <div className="flex items-center gap-2">
+    <div className={cn('flex w-full flex-col gap-3 xl:flex-row xl:items-center xl:justify-between', className)}>
+      <div className="min-w-0">
         {onBack && (
           <button
             onClick={onBack}
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -146,10 +140,14 @@ export function DetailLayoutHeader({
             {backLabel}
           </button>
         )}
-        {breadcrumb && <span className="text-muted-foreground">/</span>}
-        {breadcrumb}
+        {breadcrumb && (
+          <div className="mt-2 flex min-w-0 items-center gap-2">
+            <span className="text-muted-foreground">/</span>
+            <div className="min-w-0 truncate">{breadcrumb}</div>
+          </div>
+        )}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2 xl:justify-end">{actions}</div>}
     </div>
   )
 }

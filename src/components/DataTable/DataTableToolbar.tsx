@@ -34,20 +34,23 @@ export function DataTableToolbar<TData>({
   const hasSelection = selectedRows.length > 0
 
   return (
-    <div className="flex flex-col gap-3 mb-4">
+    <div className="mb-4 space-y-3">
       {showBatchActions && hasSelection && (
-        <div className="flex items-center gap-2 p-3 bg-primary/5 border border-primary/20 rounded-md">
-          <span className="text-sm font-medium text-primary">
-            已选择 {selectedRows.length} 项
-          </span>
-          <div className="flex items-center gap-2 ml-auto">
+        <div className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-card px-4 py-3 shadow-[var(--shadow-sm)] lg:flex-row lg:items-center">
+          <div className="min-w-0">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">批量操作</p>
+            <p className="mt-1 text-sm font-medium text-foreground">
+              已选择 {selectedRows.length} 项
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
             {batchActions?.map((action, idx) => (
               <Button
                 key={idx}
                 size="sm"
                 variant={action.variant || 'default'}
                 onClick={() => action.onClick(selectedRows.map(r => r.original))}
-                className="h-7 text-xs"
+                className="h-8 text-xs"
               >
                 {action.icon && <span className="mr-1">{action.icon}</span>}
                 {action.label}
@@ -57,33 +60,35 @@ export function DataTableToolbar<TData>({
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-card px-4 py-3 shadow-[var(--shadow-sm)] lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
           {showSearch && (
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="relative min-w-0 lg:w-[320px]">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder={searchPlaceholder}
                 value={searchValue}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="pl-9 h-9 w-[240px] bg-background"
+                className="h-10 w-full rounded-2xl border-border/70 bg-background pl-10 shadow-none"
               />
             </div>
           )}
-          {renderToolbar?.()}
+          <div className="flex flex-wrap items-center gap-2">
+            {renderToolbar?.()}
+          </div>
         </div>
 
         {showDensityToggle && (
-          <div className="flex items-center border rounded-md overflow-hidden">
+          <div className="flex items-center overflow-hidden rounded-2xl border border-border/70 bg-muted/40">
             {densities.map((d) => (
               <Button
                 key={d}
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  'rounded-none px-3 h-8 text-xs font-normal',
-                  density === d && 'bg-secondary text-foreground font-medium'
+                  'h-9 rounded-none px-3 text-xs font-normal',
+                  density === d && 'bg-card text-foreground font-medium shadow-[var(--shadow-sm)]'
                 )}
                 onClick={() => onDensityChange?.(d)}
               >

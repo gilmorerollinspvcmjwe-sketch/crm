@@ -16,6 +16,7 @@ import { Suspense } from 'react'
 import { 
   createBrowserRouter, 
   Navigate, 
+  useParams,
   type RouteObject 
 } from 'react-router-dom'
 import { MainLayout } from '@/components/Layout/MainLayout'
@@ -32,6 +33,12 @@ const LoadingFallback = () => (
     <Spinner className="h-6 w-6" />
   </div>
 )
+
+function LegacyCustomObjectRedirect({ target }: { target: 'detail' | 'builder' }) {
+  const { objectId = '' } = useParams()
+  const to = target === 'builder' ? `/custom-objects/${objectId}/builder` : `/custom-objects/${objectId}`
+  return <Navigate to={to} replace />
+}
 
 // ============================================
 // 懒加载页面组件
@@ -681,7 +688,15 @@ const routes: RouteObject[] = [
         element: <LazyPage component={CustomObjectBuilder} />,
       },
       {
+        path: 'custom-objects/:objectId/builder',
+        element: <LazyPage component={CustomObjectBuilder} />,
+      },
+      {
         path: 'custom-objects/settings/:objectId',
+        element: <LazyPage component={CustomObjectSettings} />,
+      },
+      {
+        path: 'custom-objects/:objectId/settings',
         element: <LazyPage component={CustomObjectSettings} />,
       },
       {
@@ -833,6 +848,18 @@ const routes: RouteObject[] = [
           {
             path: 'advanced',
             element: <LazyPage component={AdvancedSettings} />,
+          },
+          {
+            path: 'custom-objects',
+            element: <Navigate to="/custom-objects" replace />,
+          },
+          {
+            path: 'custom-objects/:objectId',
+            element: <LegacyCustomObjectRedirect target="detail" />,
+          },
+          {
+            path: 'custom-objects/:objectId/edit',
+            element: <LegacyCustomObjectRedirect target="builder" />,
           },
           // 向后兼容重定向
           { path: 'change-password', element: <Navigate to="/settings/security" replace /> },

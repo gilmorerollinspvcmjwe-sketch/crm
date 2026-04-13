@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useParams, useNavigate, Link } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { ColumnDef } from "@tanstack/react-table"
 import {
   ArrowLeft,
@@ -344,12 +344,8 @@ export function CustomObjectDetail() {
       {/* Header */}
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="flex items-start gap-3">
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/custom-objects">
-              <span className="flex items-center">
-                <ArrowLeft className="h-4 w-4" />
-              </span>
-            </Link>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/custom-objects")}>
+            <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
@@ -369,17 +365,11 @@ export function CustomObjectDetail() {
           <Button variant="outline" size="sm">
             <Download className="h-3.5 w-3.5 mr-1" /> 导出
           </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/custom-objects/${objectId}/builder`}>
-              <span className="flex items-center">
-                <Edit className="h-3.5 w-3.5 mr-1" /> 编辑对象
-              </span>
-            </Link>
+          <Button variant="outline" size="sm" onClick={() => navigate(`/custom-objects/${objectId}/builder`)}>
+            <Edit className="h-3.5 w-3.5 mr-1" /> 编辑对象
           </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/custom-objects/${objectId}/settings`}>
-              <Settings className="h-3.5 w-3.5 mr-1" /> 设置
-            </Link>
+          <Button variant="outline" size="sm" onClick={() => navigate(`/custom-objects/${objectId}/settings`)}>
+            <Settings className="h-3.5 w-3.5 mr-1" /> 设置
           </Button>
           <Button size="sm" onClick={handleNew}>
             <Plus className="h-3.5 w-3.5 mr-1" /> 新建

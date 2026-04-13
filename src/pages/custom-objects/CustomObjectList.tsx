@@ -1,13 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import {
   FolderKanban,
   Laptop,
   FileText,
   TicketCheck,
   Megaphone,
+  BookOpen,
+  Users,
   Plus,
   Search,
   Settings,
@@ -55,10 +57,12 @@ const iconMap: Record<string, React.ElementType> = {
   FileText,
   TicketCheck,
   Megaphone,
+  BookOpen,
+  Users,
 }
 
 function ObjectIcon({ icon, color, className }: { icon?: string; color?: string; className?: string }) {
-  const Icon = icon ? iconMap[icon] : FolderKanban
+  const Icon = (icon && iconMap[icon]) || FolderKanban
   return (
     <div
       className={cn("w-10 h-10 rounded-lg flex items-center justify-center", className)}
@@ -117,12 +121,8 @@ function ObjectCard({ obj, onEdit, onDelete, onDuplicate }: ObjectCardProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link to={`/custom-objects/${obj.id}`} className="flex items-center gap-2 cursor-pointer">
-                    <span className="flex items-center gap-2">
-                      <Eye className="h-4 w-4" /> 查看详情
-                    </span>
-                  </Link>
+                <DropdownMenuItem onClick={() => navigate(`/custom-objects/${obj.id}`)} className="flex items-center gap-2 cursor-pointer">
+                  <Eye className="h-4 w-4" /> 查看详情
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onEdit(obj)} className="flex items-center gap-2 cursor-pointer">
                   <Edit className="h-4 w-4" /> 编辑
@@ -157,19 +157,11 @@ function ObjectCard({ obj, onEdit, onDelete, onDuplicate }: ObjectCardProps) {
           )}
         </div>
         <div className="mt-3 flex items-center gap-2">
-          <Button variant="outline" size="sm" className="flex-1" asChild>
-            <Link to={`/custom-objects/${obj.id}`}>
-              <span className="flex items-center">
-                <Eye className="h-3.5 w-3.5 mr-1" /> 打开
-              </span>
-            </Link>
+          <Button variant="outline" size="sm" className="flex-1" onClick={() => navigate(`/custom-objects/${obj.id}`)}>
+            <Eye className="h-3.5 w-3.5 mr-1" /> 打开
           </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/custom-objects/${obj.id}/settings`}>
-              <span className="flex items-center">
-                <Settings className="h-3.5 w-3.5 mr-1" /> 设置
-              </span>
-            </Link>
+          <Button variant="outline" size="sm" onClick={() => navigate(`/custom-objects/${obj.id}/settings`)}>
+            <Settings className="h-3.5 w-3.5 mr-1" /> 设置
           </Button>
         </div>
       </CardContent>

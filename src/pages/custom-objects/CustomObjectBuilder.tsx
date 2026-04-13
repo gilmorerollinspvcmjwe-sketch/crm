@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useParams, useNavigate, Link } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import {
   ArrowLeft,
   Plus,
@@ -786,12 +786,8 @@ export function CustomObjectBuilder() {
       {/* Header */}
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
-            <Link to={`/custom-objects/${objectId}`}>
-              <span className="flex items-center">
-                <ArrowLeft className="h-4 w-4" />
-              </span>
-            </Link>
+          <Button variant="ghost" size="icon" onClick={() => navigate(`/custom-objects/${objectId}`)}>
+            <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">

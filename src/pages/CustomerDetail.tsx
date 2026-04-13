@@ -38,6 +38,7 @@ import { Timeline, TimelineItem } from "@/components/timeline/Timeline"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
+import { CustomerSummaryAI, AIInteractionAnalysis, AIRelationshipChange, AISmartSuggestions } from "@/components/AI"
 
 // DetailLayout components
 import { DetailLayout, DetailLayoutHeader } from "@/components/Layout/DetailLayout"
@@ -761,7 +762,14 @@ export function CustomerDetail() {
                 className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-muted-foreground data-[state=active]:text-foreground"
               >
                 <LayoutDashboardIcon className="w-4 h-4" />
-                <span>概览</span>
+                <span>360概览</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="ai-insights"
+                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-muted-foreground data-[state=active]:text-foreground"
+              >
+                <Star className="w-4 h-4" />
+                <span>AI 洞察</span>
               </TabsTrigger>
               <TabsTrigger
                 value="activity"
@@ -795,6 +803,39 @@ export function CustomerDetail() {
             {/* Overview Tab */}
             <TabsContent value="overview" className="flex-1 p-6 m-0 overflow-y-auto">
               <div className="space-y-6">
+                <Card className="border-border/70 shadow-[var(--shadow-sm)]">
+                  <CardContent className="p-5">
+                    <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">客户关系摘要</p>
+                          <p className="mt-2 text-base font-semibold text-foreground">
+                            {customer.name} 当前处于{customer.status}状态，最近一次互动时间为 {lastContactDate === "暂无记录" ? "未记录" : new Date(lastContactDate).toLocaleDateString('zh-CN')}。
+                          </p>
+                        </div>
+                        <p className="text-sm leading-7 text-muted-foreground">
+                          {customer.description || "当前客户档案尚未补充完整经营描述，建议补齐客户背景、合作目标、当前阻力和下一步计划，以便团队统一判断。"}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-border/70 bg-muted/30 p-4">
+                        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">当前重点</p>
+                        <div className="mt-4 space-y-3 text-sm">
+                          <div>
+                            <p className="font-medium text-foreground">关系状态</p>
+                            <p className="mt-1 text-muted-foreground">{statusConfig[customer.status].label}，需要结合最近互动和商机推进节奏持续判断。</p>
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">下一步动作</p>
+                            <p className="mt-1 text-muted-foreground">
+                              {activeOpportunitiesCount > 0 ? "优先围绕当前商机推进决策节点和下一次关键触达。" : "先恢复互动频率，再识别新的业务机会或协同需求。"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {/* Key Metrics Row */}
                 <div className="grid grid-cols-4 gap-4">
                   <Card className="border-border/70 shadow-[var(--shadow-sm)]">
@@ -887,6 +928,20 @@ export function CustomerDetail() {
                     </Timeline>
                   </CardContent>
                 </Card>
+              </div>
+            </TabsContent>
+
+            {/* AI Insights Tab */}
+            <TabsContent value="ai-insights" className="flex-1 p-6 m-0 overflow-y-auto">
+              <div className="space-y-6">
+                <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                  <CustomerSummaryAI customerId={customerId} customerName={customer.name} />
+                  <AISmartSuggestions customerId={customerId} />
+                </div>
+                <div className="grid gap-6 xl:grid-cols-2">
+                  <AIInteractionAnalysis customerId={customerId} />
+                  <AIRelationshipChange customerId={customerId} />
+                </div>
               </div>
             </TabsContent>
 

@@ -45,6 +45,7 @@ import { useToast } from "@/hooks/use-toast"
 import { mockCustomObjects } from "@/mock/customObjectData"
 import type { CustomObject, CustomObjectStatus } from "@/types/customObject"
 import { cn } from "@/lib/utils"
+import { EmptyState } from "@/components/ui/empty-state"
 
 // ============ Icon Map ============
 
@@ -484,12 +485,16 @@ export function CustomObjectList() {
   }
 
   return (
-    <div className="p-4 md:p-6 w-full mx-auto">
+    <div className="w-full mx-auto space-y-5 p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <div>
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div className="max-w-3xl">
+          <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            <FolderKanban className="h-3.5 w-3.5" />
+            Custom object workspace
+          </div>
           <h1 className="text-2xl font-bold">自定义对象</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             管理和配置业务自定义对象
           </p>
         </div>
@@ -531,18 +536,13 @@ export function CustomObjectList() {
 
       {/* Empty State */}
       {(filtered || []).length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <FolderKanban className="h-12 w-12 text-muted-foreground/50 mb-4" />
-          <h3 className="font-semibold mb-1">暂无自定义对象</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {search ? "没有找到匹配的对象" : "创建一个新的自定义对象开始使用"}
-          </p>
-          {!search && (
-            <Button onClick={handleCreate}>
-              <Plus className="h-4 w-4 mr-1" /> 新建第一个对象
-            </Button>
-          )}
-        </div>
+        <EmptyState
+          variant={search ? "search" : "noData"}
+          title={search ? "没有找到匹配对象" : "暂无自定义对象"}
+          description={search ? "试试更短的关键词，或者切换筛选状态。" : "创建一个新的自定义对象开始使用。"}
+          action={!search ? { label: "新建第一个对象", onClick: handleCreate, icon: <Plus className="h-4 w-4" /> } : undefined}
+          className="py-16"
+        />
       )}
 
       {/* Grid */}

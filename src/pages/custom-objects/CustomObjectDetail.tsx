@@ -47,8 +47,7 @@ import { ConfirmDialog } from "@/components/modal/Dialog"
 import { Modal } from "@/components/modal/Dialog"
 import { useToast } from "@/hooks/use-toast"
 import {
-  mockCustomObjectDefinitions,
-  getMockObjectWithRecords,
+  getCustomObjectById,
   getMockRecords,
 } from "@/mock/customObjectData"
 import type { CustomObject, CustomObjectDefinition, ObjectProperty, ObjectRecord, PropertyType } from "@/types/customObject"
@@ -264,11 +263,11 @@ export function CustomObjectDetail() {
 
   React.useEffect(() => {
     if (!objectId) return
-    const result = getMockObjectWithRecords(objectId)
-    if (result) {
-      setObjectDef(result.definition)
-      setProperties(result.definition.fields)
-      setRecords(getMockRecords(objectId))
+    const definition = getCustomObjectById(objectId)
+    if (definition) {
+      setObjectDef(definition)
+      setProperties(definition.fields)
+      setRecords(getMockRecords(definition.name))
     }
     setLoading(false)
   }, [objectId])
@@ -341,23 +340,29 @@ export function CustomObjectDetail() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl space-y-6 p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Button variant="ghost" size="icon" asChild>
-          <Link to="/custom-objects">
-            <span className="flex items-center">
-              <ArrowLeft className="h-4 w-4" />
-            </span>
-          </Link>
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">{objectDef.singularName}</h1>
-          <p className="text-sm text-muted-foreground">
-            {objectDef.description || `${objectDef.pluralName} 记录管理`}
-          </p>
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div className="flex items-start gap-3">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/custom-objects">
+              <span className="flex items-center">
+                <ArrowLeft className="h-4 w-4" />
+              </span>
+            </Link>
+          </Button>
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <FileText className="h-3.5 w-3.5" />
+              Custom object workspace
+            </div>
+            <h1 className="mt-3 text-2xl font-bold">{objectDef.singularName}</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {objectDef.description || `${objectDef.pluralName} 记录管理`}
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm">
             <Upload className="h-3.5 w-3.5 mr-1" /> 导入
           </Button>
@@ -383,7 +388,7 @@ export function CustomObjectDetail() {
       </div>
 
       {/* Info Card */}
-      <div className="bg-card border rounded-lg p-4 mb-6 flex items-center gap-4">
+      <div className="flex items-center gap-4 rounded-[1.25rem] border border-border/70 bg-card p-5 shadow-[var(--shadow-sm)]">
         <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
           <FileText className="h-6 w-6 text-primary" />
         </div>
@@ -410,7 +415,7 @@ export function CustomObjectDetail() {
       </div>
 
       {/* Records Table */}
-      <div className="border bg-card rounded-lg p-4">
+      <div className="rounded-[1.25rem] border border-border/70 bg-card p-4 shadow-[var(--shadow-sm)]">
         <RecordTable
           objectDef={objectDef}
           properties={properties}

@@ -354,9 +354,9 @@ export function CustomObjectSettings() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto space-y-6 p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" asChild>
             <Link to={`/custom-objects/${objectId}`}>
@@ -365,9 +365,13 @@ export function CustomObjectSettings() {
               </span>
             </Link>
           </Button>
-          <div>
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <Settings className="h-3.5 w-3.5" />
+              Object settings workspace
+            </div>
             <h1 className="text-2xl font-bold">{objectDef.singularName} 设置</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-2 text-sm text-muted-foreground">
               管理对象的基本信息、字段和显示配置
             </p>
           </div>
@@ -379,7 +383,7 @@ export function CustomObjectSettings() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 rounded-2xl bg-muted/45">
           <TabsTrigger value="info" className="gap-1.5">
             <Settings className="h-3.5 w-3.5" /> 对象信息
           </TabsTrigger>

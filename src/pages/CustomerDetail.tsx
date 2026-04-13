@@ -334,19 +334,19 @@ export function CustomerDetail() {
         leftSidebar={
           <>
             {/* Enhanced Customer Info Card */}
-            <Card className="overflow-hidden border-slate-200 shadow-sm">
+            <Card className="overflow-hidden border-border/70 shadow-[var(--shadow-sm)]">
               {/* Header with Avatar */}
-              <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-6 border-b border-slate-200">
+              <div className="border-b border-border/70 bg-muted/35 p-6">
                 <div className="flex items-start gap-4">
-                  <Avatar className="h-16 w-16 ring-4 ring-white shadow-md">
+                  <Avatar className="h-16 w-16 border border-border/70 shadow-[var(--shadow-sm)]">
                     <AvatarImage src={(customer as any).avatarUrl} alt={customer.name} />
-                    <AvatarFallback className="bg-blue-500 text-white text-xl font-bold">
+                    <AvatarFallback className="bg-foreground text-background text-xl font-bold">
                       {customer.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h2 className="text-xl font-bold text-slate-900 truncate">{customer.name}</h2>
+                      <h2 className="text-xl font-bold text-foreground truncate">{customer.name}</h2>
                       <Badge
                         variant={statusConfig[customer.status]?.variant}
                         className={cn("text-xs font-medium", statusConfig[customer.status]?.className)}
@@ -354,7 +354,7 @@ export function CustomerDetail() {
                         {customer.status}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-1.5 text-slate-600">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
                       <Building2 className="w-4 h-4" />
                       <span className="text-sm truncate">{customer.company || "未填写公司"}</span>
                     </div>
@@ -366,45 +366,45 @@ export function CustomerDetail() {
               <CardContent className="p-4 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   {/* Customer Score */}
-                  <div className="bg-slate-50 rounded-lg p-3.5 border border-slate-200 min-w-0">
+                  <div className="bg-muted/35 rounded-lg p-3.5 border border-border/70 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <Star className="w-4 h-4 text-amber-500 fill-amber-500 flex-shrink-0" />
-                      <span className="text-xs text-slate-600 truncate">客户评分</span>
+                      <Star className="w-4 h-4 text-foreground/70 flex-shrink-0" />
+                      <span className="text-xs text-muted-foreground truncate">客户评分</span>
                     </div>
                     <div className="flex items-end gap-2">
-                      <span className="text-2xl font-bold text-slate-900">{healthScore}</span>
-                      <span className="text-xs text-slate-500 mb-1">/100</span>
+                      <span className="text-2xl font-bold text-foreground">{healthScore}</span>
+                      <span className="text-xs text-muted-foreground mb-1">/100</span>
                     </div>
                     <Progress value={healthScore} className="h-1.5 mt-2" />
                   </div>
 
                   {/* Contract Amount */}
-                  <div className="bg-slate-50 rounded-lg p-3.5 border border-slate-200 min-w-0">
+                  <div className="bg-muted/35 rounded-lg p-3.5 border border-border/70 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <DollarSign className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                      <span className="text-xs text-slate-600 truncate">合同金额</span>
+                      <DollarSign className="w-4 h-4 text-foreground/70 flex-shrink-0" />
+                      <span className="text-xs text-muted-foreground truncate">合同金额</span>
                     </div>
-                    <div className="text-2xl font-bold text-emerald-600">
+                    <div className="text-2xl font-bold text-foreground">
                       ¥{(totalOpportunityAmount / 10000).toFixed(1)}万
                     </div>
                   </div>
 
                   {/* Active Opportunities */}
-                  <div className="bg-slate-50 rounded-lg p-3.5 border border-slate-200 min-w-0">
+                  <div className="bg-muted/35 rounded-lg p-3.5 border border-border/70 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                      <span className="text-xs text-slate-600 truncate">活跃商机</span>
+                      <TrendingUp className="w-4 h-4 text-foreground/70 flex-shrink-0" />
+                      <span className="text-xs text-muted-foreground truncate">活跃商机</span>
                     </div>
-                    <div className="text-2xl font-bold text-blue-600">{activeOpportunitiesCount}</div>
+                    <div className="text-2xl font-bold text-foreground">{activeOpportunitiesCount}</div>
                   </div>
 
                   {/* Last Contact */}
-                  <div className="bg-slate-50 rounded-lg p-3.5 border border-slate-200 min-w-0">
+                  <div className="bg-muted/35 rounded-lg p-3.5 border border-border/70 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <Clock className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                      <span className="text-xs text-slate-600 truncate">最近联系</span>
+                      <Clock className="w-4 h-4 text-foreground/70 flex-shrink-0" />
+                      <span className="text-xs text-muted-foreground truncate">最近联系</span>
                     </div>
-                    <div className="text-xs font-semibold text-slate-700 truncate">
+                    <div className="text-xs font-semibold text-foreground/80 truncate">
                       {lastContactDate !== "暂无记录" ? new Date(lastContactDate).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' }) : "-"}
                     </div>
                   </div>
@@ -416,18 +416,18 @@ export function CustomerDetail() {
                 <div className="space-y-3">
                   {/* Contact Info */}
                   <div className="space-y-2">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide">联系信息</h4>
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">联系信息</h4>
                     <div className="space-y-2">
                       {customer.email && (
                         <div className="flex items-center gap-2 text-sm">
-                          <Mail className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{customer.email}</span>
+                          <Mail className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-foreground/80">{customer.email}</span>
                         </div>
                       )}
                       {customer.phone && (
                         <div className="flex items-center gap-2 text-sm">
-                          <Phone className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{customer.phone}</span>
+                          <Phone className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-foreground/80">{customer.phone}</span>
                         </div>
                       )}
                     </div>
@@ -435,18 +435,18 @@ export function CustomerDetail() {
 
                   {/* Company Info */}
                   <div className="space-y-2">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide">公司信息</h4>
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">公司信息</h4>
                     <div className="space-y-2">
                       {customer.industry && (
                         <div className="flex items-center gap-2 text-sm">
-                          <Building className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{customer.industry}</span>
+                          <Building className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-foreground/80">{customer.industry}</span>
                         </div>
                       )}
                       {customer.website && (
                         <div className="flex items-center gap-2 text-sm">
-                          <Globe className="w-4 h-4 text-slate-400" />
-                          <a href={customer.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          <Globe className="w-4 h-4 text-muted-foreground" />
+                          <a href={customer.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                             {customer.website}
                           </a>
                         </div>
@@ -457,10 +457,10 @@ export function CustomerDetail() {
                   {/* Address */}
                   {customer.address && (
                     <div className="space-y-2">
-                      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide">地址</h4>
+                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">地址</h4>
                       <div className="flex items-start gap-2 text-sm">
-                        <MapPinIcon className="w-4 h-4 text-slate-400 mt-0.5" />
-                        <span className="text-slate-700">{customer.address}</span>
+                        <MapPinIcon className="w-4 h-4 text-muted-foreground mt-0.5" />
+                        <span className="text-foreground/80">{customer.address}</span>
                       </div>
                     </div>
                   )}
@@ -468,8 +468,8 @@ export function CustomerDetail() {
                   {/* Description */}
                   {customer.description && (
                     <div className="space-y-2">
-                      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide">客户描述</h4>
-                      <p className="text-sm text-slate-600 leading-relaxed">{customer.description}</p>
+                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">客户描述</h4>
+                      <p className="text-sm text-foreground/72 leading-relaxed">{customer.description}</p>
                     </div>
                   )}
                 </div>
@@ -508,17 +508,17 @@ export function CustomerDetail() {
             <Card className="overflow-hidden border-slate-200 shadow-sm">
               <Collapsible open={contactsExpanded} onOpenChange={setContactsExpanded}>
                 <CollapsibleTrigger asChild>
-                  <CardHeader className="p-4 cursor-pointer hover:bg-slate-50 transition-colors">
+                  <CardHeader className="p-4 cursor-pointer hover:bg-muted/35 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-slate-500" />
-                        <span className="font-semibold text-slate-900">相关联系人</span>
+                          <Users className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-semibold text-foreground">相关联系人</span>
                         <Badge variant="secondary" className="text-xs">{relatedContacts.length}</Badge>
                       </div>
                       {contactsExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                          <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       ) : (
-                        <ChevronUp className="w-4 h-4 text-slate-400" />
+                          <ChevronUp className="w-4 h-4 text-muted-foreground" />
                       )}
                     </div>
                   </CardHeader>
@@ -531,17 +531,17 @@ export function CustomerDetail() {
                           <div
                             key={contact.id}
                             onClick={() => navigate(`/contacts/${contact.id}`)}
-                            className="p-3 hover:bg-slate-50 cursor-pointer transition-colors overflow-hidden"
+                            className="p-3 hover:bg-muted/35 cursor-pointer transition-colors overflow-hidden"
                           >
                             <div className="flex items-start gap-3">
                               <Avatar className="h-8 w-8 flex-shrink-0">
-                                <AvatarFallback className="text-xs bg-slate-100 text-slate-600">
+                                  <AvatarFallback className="text-xs bg-muted text-foreground/72">
                                   {(contact.customerName || "C").charAt(0).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-2 mb-1">
-                                  <span className="font-medium text-sm text-slate-900 truncate flex-1">
+                                    <span className="font-medium text-sm text-foreground truncate flex-1">
                                     {contact.customerName || "未知"}
                                   </span>
                                   {getDecisionRoleBadge(contact)}
@@ -586,17 +586,17 @@ export function CustomerDetail() {
             <Card className="overflow-hidden border-slate-200 shadow-sm">
               <Collapsible open={opportunitiesExpanded} onOpenChange={setOpportunitiesExpanded}>
                 <CollapsibleTrigger asChild>
-                  <CardHeader className="p-4 cursor-pointer hover:bg-slate-50 transition-colors">
+                  <CardHeader className="p-4 cursor-pointer hover:bg-muted/35 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Lightbulb className="w-4 h-4 text-amber-500" />
-                        <span className="font-semibold text-slate-900">相关商机</span>
+                          <Lightbulb className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-semibold text-foreground">相关商机</span>
                         <Badge variant="secondary" className="text-xs">{relatedOpportunities.length}</Badge>
                       </div>
                       {opportunitiesExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                          <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       ) : (
-                        <ChevronUp className="w-4 h-4 text-slate-400" />
+                          <ChevronUp className="w-4 h-4 text-muted-foreground" />
                       )}
                     </div>
                   </CardHeader>
@@ -620,11 +620,11 @@ export function CustomerDetail() {
                             <div
                               key={opp.id}
                               onClick={() => navigate(`/opportunities/${opp.id}`)}
-                              className="p-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                            className="p-3 hover:bg-muted/35 cursor-pointer transition-colors"
                             >
                               <div className="space-y-2">
                                 <div className="flex items-start justify-between gap-2">
-                                  <span className="font-medium text-sm text-slate-900 truncate flex-1">
+                                  <span className="font-medium text-sm text-foreground truncate flex-1">
                                     {opp.name}
                                   </span>
                                   <Badge
@@ -640,8 +640,8 @@ export function CustomerDetail() {
                                   </Badge>
                                 </div>
                                 <div className="flex items-center justify-between text-xs">
-                                  <span className="font-semibold text-emerald-600">¥{Number(opp.amount).toLocaleString()}</span>
-                                  <span className="text-slate-500">{opp.probability}%</span>
+                                  <span className="font-semibold text-foreground">¥{Number(opp.amount).toLocaleString()}</span>
+                                  <span className="text-muted-foreground">{opp.probability}%</span>
                                 </div>
                                 <Progress value={Number(opp.probability) || 0} className="h-1.5" />
                               </div>
@@ -676,17 +676,17 @@ export function CustomerDetail() {
             <Card className="overflow-hidden border-slate-200 shadow-sm">
               <Collapsible open={tasksExpanded} onOpenChange={setTasksExpanded}>
                 <CollapsibleTrigger asChild>
-                  <CardHeader className="p-4 cursor-pointer hover:bg-slate-50 transition-colors">
+                  <CardHeader className="p-4 cursor-pointer hover:bg-muted/35 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-500" />
-                        <span className="font-semibold text-slate-900">待办任务</span>
+                          <CheckCircle className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-semibold text-foreground">待办任务</span>
                         <Badge variant="secondary" className="text-xs">{tasks.filter(t => !t.completed).length}</Badge>
                       </div>
                       {tasksExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                          <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       ) : (
-                        <ChevronUp className="w-4 h-4 text-slate-400" />
+                          <ChevronUp className="w-4 h-4 text-muted-foreground" />
                       )}
                     </div>
                   </CardHeader>
@@ -724,7 +724,7 @@ export function CustomerDetail() {
                               <div className="flex-1 min-w-0">
                                 <p className={cn(
                                   "text-sm",
-                                  task.completed ? "line-through text-slate-500" : "text-slate-900"
+                                  task.completed ? "line-through text-muted-foreground" : "text-foreground"
                                 )}>
                                   {task.title}
                                 </p>
@@ -732,7 +732,7 @@ export function CustomerDetail() {
                                   <Badge variant="outline" className={cn("text-xs flex-shrink-0", priorityColors[task.priority])}>
                                     {priorityLabel[task.priority]}
                                   </Badge>
-                                  <span className="text-xs text-slate-500 truncate">截止：{new Date(task.dueDate).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}</span>
+                                  <span className="text-xs text-muted-foreground truncate">截止：{new Date(task.dueDate).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}</span>
                                 </div>
                               </div>
                             </div>
@@ -755,17 +755,17 @@ export function CustomerDetail() {
         {/* Main Content Area with Professional Tabs */}
         <div className="h-full">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-            <TabsList className="w-full justify-start bg-white border-b border-slate-200 rounded-none h-auto p-0 gap-1 px-6 py-3">
+            <TabsList className="w-full justify-start bg-transparent border-b border-border/70 rounded-none h-auto p-0 gap-1 px-6 py-3">
               <TabsTrigger
                 value="overview"
-                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-slate-600 data-[state=active]:text-blue-600"
+                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-muted-foreground data-[state=active]:text-foreground"
               >
                 <LayoutDashboardIcon className="w-4 h-4" />
                 <span>概览</span>
               </TabsTrigger>
               <TabsTrigger
                 value="activity"
-                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-slate-600 data-[state=active]:text-blue-600"
+                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-muted-foreground data-[state=active]:text-foreground"
               >
                 <Activity className="w-4 h-4" />
                 <span>活动记录</span>
@@ -775,14 +775,14 @@ export function CustomerDetail() {
               </TabsTrigger>
               <TabsTrigger
                 value="communication"
-                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-slate-600 data-[state=active]:text-blue-600"
+                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-muted-foreground data-[state=active]:text-foreground"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>沟通记录</span>
               </TabsTrigger>
               <TabsTrigger
                 value="opportunities"
-                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-slate-600 data-[state=active]:text-blue-600"
+                className="flex items-center gap-2 px-4 py-2 border-b-2 border-transparent rounded-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-muted-foreground data-[state=active]:text-foreground"
               >
                 <Lightbulb className="w-4 h-4" />
                 <span>商机</span>
@@ -797,54 +797,54 @@ export function CustomerDetail() {
               <div className="space-y-6">
                 {/* Key Metrics Row */}
                 <div className="grid grid-cols-4 gap-4">
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border/70 shadow-[var(--shadow-sm)]">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                          <Star className="w-5 h-5 text-blue-600" />
+                        <div className="p-2 bg-muted rounded-lg">
+                          <Star className="w-5 h-5 text-foreground/72" />
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500">客户评分</p>
-                          <p className="text-xl font-bold text-slate-900">{healthScore}</p>
+                          <p className="text-xs text-muted-foreground">客户评分</p>
+                          <p className="text-xl font-bold text-foreground">{healthScore}</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border/70 shadow-[var(--shadow-sm)]">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-emerald-50 rounded-lg">
-                          <DollarSign className="w-5 h-5 text-emerald-600" />
+                        <div className="p-2 bg-muted rounded-lg">
+                          <DollarSign className="w-5 h-5 text-foreground/72" />
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500">总商机金额</p>
-                          <p className="text-xl font-bold text-emerald-600">¥{(totalOpportunityAmount / 10000).toFixed(1)}万</p>
+                          <p className="text-xs text-muted-foreground">总商机金额</p>
+                          <p className="text-xl font-bold text-foreground">¥{(totalOpportunityAmount / 10000).toFixed(1)}万</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border/70 shadow-[var(--shadow-sm)]">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                          <TrendingUp className="w-5 h-5 text-purple-600" />
+                        <div className="p-2 bg-muted rounded-lg">
+                          <TrendingUp className="w-5 h-5 text-foreground/72" />
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500">活跃商机</p>
-                          <p className="text-xl font-bold text-purple-600">{activeOpportunitiesCount}</p>
+                          <p className="text-xs text-muted-foreground">活跃商机</p>
+                          <p className="text-xl font-bold text-foreground">{activeOpportunitiesCount}</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border/70 shadow-[var(--shadow-sm)]">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-amber-50 rounded-lg">
-                          <Users className="w-5 h-5 text-amber-600" />
+                        <div className="p-2 bg-muted rounded-lg">
+                          <Users className="w-5 h-5 text-foreground/72" />
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500">联系人</p>
-                          <p className="text-xl font-bold text-amber-600">{relatedContacts.length}</p>
+                          <p className="text-xs text-muted-foreground">联系人</p>
+                          <p className="text-xl font-bold text-foreground">{relatedContacts.length}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -852,10 +852,10 @@ export function CustomerDetail() {
                 </div>
 
                 {/* Activity Timeline */}
-                <Card className="border-slate-200 shadow-sm">
-                  <CardHeader className="p-4 border-b border-slate-100">
+                <Card className="border-border/70 shadow-[var(--shadow-sm)]">
+                  <CardHeader className="p-4 border-b border-border/70">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-slate-900">最近活动</h3>
+                      <h3 className="font-semibold text-foreground">最近活动</h3>
                       <Button variant="outline" size="sm">
                         <Clock className="w-4 h-4 mr-1" />
                         添加活动

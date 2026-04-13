@@ -2,13 +2,13 @@
 
 > 项目路径：`C:\Users\13609\Projects\crm-ui-upgrade`
 > 计划版本：MIGRATION_PLAN_V3
-> 最后更新：2026-04-11 15:30
+> 最后更新：2026-04-13 10:50
 
 ## 当前会话
 
-- 正在做什么：继续补齐入口与路径一致性，并开始重做列表/详情模板层
-- 上次停在哪：系统设置、自定义对象、报表、AI、工作流等模块入口已补回，CustomerList/CustomerDetail 保住了完整业务内容
-- 近期关键决定：入口/路由/常量/跳转工具统一推进；模板层先改 `DataTableToolbar` 和 `DetailLayout`，为后续 `CustomerDetail` 和更多页面迁移做底座
+- 正在做什么：继续完成模板层升级，已给 DataTable 接入图片化空状态，并把同一套工作台表达复制到 OpportunityList
+- 上次停在哪：入口与路径一致性已基本补齐，CustomerList/CustomerDetail 保住了完整业务内容，但 CustomerDetail 深层主线重构和设置/自定义对象内部页面升级还没开始
+- 近期关键决定：先完成列表模板层和主工作流复制（Customer -> Opportunity），再继续收 CustomerDetail 主线和设置/自定义对象内部页面风格
 
 ---
 

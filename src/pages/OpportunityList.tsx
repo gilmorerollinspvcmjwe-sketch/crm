@@ -93,6 +93,33 @@ function AmountDisplay({ amount }: { amount: number }) {
   )
 }
 
+function SummaryMetric({
+  label,
+  value,
+  note,
+  icon,
+}: {
+  label: string
+  value: string | number
+  note: string
+  icon: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl border border-border/70 bg-card px-4 py-3 shadow-[var(--shadow-sm)]">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{label}</p>
+          <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-foreground">{value}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{note}</p>
+        </div>
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border/70 bg-muted/60 text-foreground/78">
+          {icon}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 // ============ Filter Configuration ============
 
 const opportunityFilters: FilterItem[] = [
@@ -784,7 +811,7 @@ export function OpportunityList() {
   }
 
   const handleRowClick = (row: Opportunity) => {
-    navigate(`/opportunity/${row.id}`)
+    navigate(`/opportunities/${row.id}`)
   }
 
   // Export handlers
@@ -866,14 +893,18 @@ export function OpportunityList() {
   const weightedAmount = data?.data?.reduce((sum, o) => sum + (o.stage !== "失败" ? o.amount * o.probability / 100 : 0), 0) || 0
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
-      <div className="w-full mx-auto space-y-4">
+    <div className="min-h-screen bg-background animate-in fade-in duration-300">
+      <div className="w-full mx-auto space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1 flex-1">
-            <h1 className="text-2xl font-bold tracking-tight">商机管理</h1>
-            <p className="text-muted-foreground text-sm">
-              管理所有商机，跟踪销售进度
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Opportunity workspace
+            </div>
+            <h1 className="mt-3 text-2xl font-bold tracking-tight">商机管理</h1>
+            <p className="mt-3 max-w-[72ch] text-sm text-muted-foreground">
+              管理所有商机，跟踪销售进度，并保留完整的阶段、金额、概率、批量操作和视图切换能力。
             </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -903,7 +934,7 @@ export function OpportunityList() {
                 variant={viewMode === "kanban" ? "secondary" : "ghost"}
                 size="sm"
                 className="h-8"
-                onClick={() => navigate(`/opportunity/kanban`)}
+                onClick={() => navigate(`/opportunities/kanban`)}
               >
                 <LayoutGrid className="w-4 h-4" />
               </Button>
@@ -916,75 +947,56 @@ export function OpportunityList() {
         </div>
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           {stageStats.filter(s => s.stage !== "失败").map((stat) => (
-            <Card key={stat.stage} className="bg-muted/30">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: stat.color }} />
-                  <p className="text-sm text-muted-foreground">{stageConfig[stat.stage].label}</p>
-                </div>
-                <p className="text-xl font-bold">{stat.count}</p>
-                <p className="text-xs text-muted-foreground">
-                  {new Intl.NumberFormat("zh-CN", {
-                    style: "currency",
-                    currency: "CNY",
-                    minimumFractionDigits: 0,
-                  }).format(stat.amount)}
-                </p>
-              </CardContent>
-            </Card>
+            <SummaryMetric
+              key={stat.stage}
+              label={stageConfig[stat.stage].label}
+              value={stat.count}
+              note={new Intl.NumberFormat("zh-CN", {
+                style: "currency",
+                currency: "CNY",
+                minimumFractionDigits: 0,
+              }).format(stat.amount)}
+              icon={<div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: stat.color }} />}
+            />
           ))}
-          <Card className="bg-green-50 border-green-200">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <p className="text-sm text-muted-foreground">成交</p>
-              </div>
-              <p className="text-xl font-bold text-green-600">
-                {data?.data?.filter(o => o.stage === "成交").length || 0}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                成交率: {data?.data?.length 
-                  ? Math.round((data?.data?.filter(o => o.stage === "成交").length / data.data.length) * 100) 
-                  : 0}%
-              </p>
-            </CardContent>
-          </Card>
+          <SummaryMetric
+            label="成交"
+            value={data?.data?.filter(o => o.stage === "成交").length || 0}
+            note={`成交率: ${data?.data?.length ? Math.round((data?.data?.filter(o => o.stage === "成交").length / data.data.length) * 100) : 0}%`}
+            icon={<CheckCircle className="h-4 w-4" />}
+          />
         </div>
 
         {/* Total Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">活跃商机总额</p>
-              <p className="text-2xl font-bold text-blue-600">
-                {new Intl.NumberFormat("zh-CN", {
-                  style: "currency",
-                  currency: "CNY",
-                  minimumFractionDigits: 0,
-                }).format(totalAmount)}
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="bg-purple-50 border-purple-200">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">加权金额</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {new Intl.NumberFormat("zh-CN", {
-                  style: "currency",
-                  currency: "CNY",
-                  minimumFractionDigits: 0,
-                }).format(weightedAmount)}
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="bg-muted/30">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">商机总数</p>
-              <p className="text-2xl font-bold">{data?.data?.length || 0}</p>
-            </CardContent>
-          </Card>
+        <div className="grid gap-3 xl:grid-cols-3">
+          <SummaryMetric
+            label="活跃商机总额"
+            value={new Intl.NumberFormat("zh-CN", {
+              style: "currency",
+              currency: "CNY",
+              minimumFractionDigits: 0,
+            }).format(totalAmount)}
+            note="当前仍在推进中的有效金额"
+            icon={<TrendingUp className="h-4 w-4" />}
+          />
+          <SummaryMetric
+            label="加权金额"
+            value={new Intl.NumberFormat("zh-CN", {
+              style: "currency",
+              currency: "CNY",
+              minimumFractionDigits: 0,
+            }).format(weightedAmount)}
+            note="结合概率后的预测价值"
+            icon={<Funnel className="h-4 w-4" />}
+          />
+          <SummaryMetric
+            label="商机总数"
+            value={data?.data?.length || 0}
+            note="当前视图下包含的全部机会"
+            icon={<LayoutGrid className="h-4 w-4" />}
+          />
         </div>
 
         {/* FilterBar */}
@@ -1021,7 +1033,7 @@ export function OpportunityList() {
             defaultPageSize={10}
             emptyText="暂无商机数据"
             loading={isLoading || isFilterLoading}
-            className="border rounded-lg"
+            className="rounded-[1.25rem] border-none"
             onRowClick={handleRowClick}
           />
         )}
@@ -1029,7 +1041,7 @@ export function OpportunityList() {
         {viewMode === "funnel" && (
           <FunnelView
             opportunities={filteredData}
-            onOpportunityClick={(id) => navigate(`/opportunity/${id}`)}
+            onOpportunityClick={(id) => navigate(`/opportunities/${id}`)}
             onAdvanceStage={handleAdvanceStage}
             onCloseWon={handleCloseWon}
             onCloseLost={handleCloseLost}

@@ -171,6 +171,11 @@ const SystemInfo = React.lazy(() => import('@/pages/settings/SystemInfo'))
 const CustomizationSettings = React.lazy(() => import('@/pages/settings/CustomizationSettings'))
 const MobileSettings = React.lazy(() => import('@/pages/settings/MobileSettings'))
 const AdvancedSettings = React.lazy(() => import('@/pages/settings/AdvancedSettings'))
+const FormDesigner = React.lazy(() => import('@/pages/settings/FormDesigner'))
+const PageBuilder = React.lazy(() => import('@/pages/settings/PageBuilder'))
+const ViewManager = React.lazy(() => import('@/pages/settings/ViewManager'))
+const PipelineManager = React.lazy(() => import('@/pages/settings/PipelineManager'))
+const ObjectRelationships = React.lazy(() => import('@/pages/settings/ObjectRelationships'))
 
 // 系统管理
 const RoleManagement = React.lazy(() => import('@/pages/admin/RoleManagement'))
@@ -788,6 +793,26 @@ const routes: RouteObject[] = [
             path: 'theme',
             element: <LazyPage component={ThemeSettings} />,
           },
+          {
+            path: 'form-designer',
+            element: <LazyPage component={FormDesigner} />,
+          },
+          {
+            path: 'page-builder',
+            element: <LazyPage component={PageBuilder} />,
+          },
+          {
+            path: 'view-manager',
+            element: <LazyPage component={ViewManager} />,
+          },
+          {
+            path: 'pipeline-manager',
+            element: <LazyPage component={PipelineManager} />,
+          },
+          {
+            path: 'object-relationships',
+            element: <LazyPage component={ObjectRelationships} />,
+          },
           // 数据管理
           {
             path: 'data-backup',
@@ -854,6 +879,10 @@ const routes: RouteObject[] = [
             element: <Navigate to="/custom-objects" replace />,
           },
           {
+            path: 'custom-fields',
+            element: <Navigate to="/settings/fields" replace />,
+          },
+          {
             path: 'custom-objects/:objectId',
             element: <LegacyCustomObjectRedirect target="detail" />,
           },
@@ -864,6 +893,9 @@ const routes: RouteObject[] = [
           // 向后兼容重定向
           { path: 'change-password', element: <Navigate to="/settings/security" replace /> },
           { path: 'display', element: <Navigate to="/settings/preferences" replace /> },
+          { path: 'workflow/new', element: <Navigate to="/workflows/builder" replace /> },
+          { path: 'workflow/:workflowId/edit', element: <Navigate to="/workflows/:workflowId/edit" replace /> },
+          { path: 'workflow/:workflowId/logs', element: <Navigate to="/automation/logs" replace /> },
         ],
       },
       

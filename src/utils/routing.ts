@@ -18,9 +18,11 @@ import {
   QUOTE,
   PRODUCT,
   PRICEBOOK,
+  CUSTOM_OBJECTS,
   SETTINGS,
   AI,
   AUTOMATION,
+  WORKFLOW_ENGINE,
   RouteParams,
 } from '@/constants/routes'
 
@@ -123,14 +125,14 @@ export function getPricebookDetailPath(id: string): string {
  * 生成自定义对象配置路径
  */
 export function getCustomObjectConfigPath(objectId: string): string {
-  return generatePath(SETTINGS.CUSTOM_OBJECT_CONFIG, { objectId })
+  return generatePath(CUSTOM_OBJECTS.DETAIL, { objectId })
 }
 
 /**
  * 生成自定义对象编辑路径
  */
 export function getCustomObjectEditPath(objectId: string): string {
-  return generatePath(SETTINGS.CUSTOM_OBJECT_EDIT, { objectId })
+  return generatePath(CUSTOM_OBJECTS.BUILDER, { objectId })
 }
 
 /**
@@ -140,7 +142,7 @@ export function getWorkflowEditPath(workflowId: string, inSettings = false): str
   if (inSettings) {
     return generatePath(SETTINGS.WORKFLOW_EDIT, { workflowId })
   }
-  return generatePath(AUTOMATION.WORKFLOW_EDIT, { workflowId })
+  return generatePath(WORKFLOW_ENGINE.EDIT, { id: workflowId })
 }
 
 /**

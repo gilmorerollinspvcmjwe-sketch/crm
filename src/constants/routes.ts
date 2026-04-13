@@ -234,6 +234,11 @@ export const SETTINGS = {
   FIELDS: '/settings/fields',
   LAYOUT: '/settings/layout',
   THEME: '/settings/theme',
+  FORM_DESIGNER: '/settings/form-designer',
+  PAGE_BUILDER: '/settings/page-builder',
+  VIEW_MANAGER: '/settings/view-manager',
+  PIPELINE_MANAGER: '/settings/pipeline-manager',
+  OBJECT_RELATIONSHIPS: '/settings/object-relationships',
   EMAIL: '/settings/email',
   INTEGRATIONS: '/settings/integrations',
   WORKFLOWS: '/settings/workflows',
@@ -269,6 +274,7 @@ export const LEGACY_REDIRECTS: Record<string, string> = {
   '/ai': AI.LEAD_ASSIGNMENT,
   '/marketing': MARKETING.CAMPAIGNS,
   '/integration': INTEGRATION.TICKETS,
+  '/settings/custom-fields': SETTINGS.FIELDS,
 }
 
 // ============================================

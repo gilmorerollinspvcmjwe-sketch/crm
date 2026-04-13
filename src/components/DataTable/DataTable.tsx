@@ -43,6 +43,13 @@ function SortIcon({ column }: { column: { getIsSorted: () => false | 'asc' | 'de
   )
 }
 
+function isInteractiveElement(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false
+  return Boolean(
+    target.closest('button, a, input, textarea, select, [role="checkbox"], [role="button"], [data-stop-row-click="true"]')
+  )
+}
+
 export function DataTable<TData, TValue>(
   {
     columns,
@@ -180,10 +187,24 @@ export function DataTable<TData, TValue>(
 
       {showBatchActions && hasSelection && renderBatchBar?.(selectedRows.length, selectedRows.map(r => r.original))}
 
-      <div className={cn('rounded-lg border bg-card overflow-hidden shadow-sm', densityClassMap[density])}>
+      <div className={cn('overflow-hidden rounded-[1.25rem] border border-border/70 bg-card shadow-[var(--shadow-sm)]', densityClassMap[density])}>
+        <div className="border-b border-border/70 bg-muted/25 px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">Table workspace</p>
+              <p className="mt-1 text-sm text-foreground/82">
+                共 {table.getFilteredRowModel().rows.length} 条结果
+                {hasSelection ? `，已选 ${selectedRows.length} 条` : ''}
+              </p>
+            </div>
+            <span className="rounded-2xl border border-border/70 bg-card px-3 py-1.5 text-xs text-muted-foreground">
+              {density === 'compact' ? '紧凑视图' : density === 'comfortable' ? '宽松视图' : '标准视图'}
+            </span>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full caption-bottom text-sm">
-            <thead className="border-b bg-muted/50">
+            <thead className="border-b border-border/70 bg-muted/35">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -199,9 +220,9 @@ export function DataTable<TData, TValue>(
                           left: fixed === 'left' ? 0 : undefined,
                           right: fixed === 'right' ? 0 : undefined,
                           zIndex: fixed ? 1 : 0,
-                          backgroundColor: fixed ? 'hsl(var(--card))' : undefined,
+                          backgroundColor: fixed ? 'oklch(var(--card))' : undefined,
                         }}
-                        className={cn('h-11 px-4 text-left align-middle font-medium text-muted-foreground text-xs uppercase tracking-wider', fixed && 'border-r')}
+                        className={cn('h-12 px-4 text-left align-middle text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground', fixed && 'border-r border-border/70')}
                       >
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </th>
@@ -236,12 +257,15 @@ export function DataTable<TData, TValue>(
                   <tr
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    onClick={() => onRowClick?.(row.original)}
+                    onClick={(event) => {
+                      if (isInteractiveElement(event.target)) return
+                      onRowClick?.(row.original)
+                    }}
                     className={cn(
-                      'border-b transition-all duration-150',
-                      'hover:bg-primary/5 hover:shadow-sm',
+                      'border-b border-border/60 transition-colors duration-150',
+                      'hover:bg-accent/40',
                       onRowClick && 'cursor-pointer',
-                      row.getIsSelected() && 'bg-primary/5'
+                      row.getIsSelected() && 'bg-muted/45'
                     )}
                   >
                     {row.getVisibleCells().map((cell) => {
@@ -257,9 +281,9 @@ export function DataTable<TData, TValue>(
                             left: fixed === 'left' ? 0 : undefined,
                             right: fixed === 'right' ? 0 : undefined,
                             zIndex: fixed ? 1 : 0,
-                            backgroundColor: fixed ? 'hsl(var(--card))' : undefined,
+                            backgroundColor: fixed ? 'oklch(var(--card))' : undefined,
                           }}
-                          className={cn('align-middle', fixed && 'border-r')}
+                          className={cn('align-middle', fixed && 'border-r border-border/70')}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useNavigate } from "react-router-dom"
 import { ColumnDef } from "@tanstack/react-table"
-import { Plus, Mail, UserPlus, Trash2, ArrowRight, Eye, Edit, MoreHorizontal, FileDown, Loader2, Download } from "lucide-react"
+import { Plus, Mail, UserPlus, Trash2, ArrowRight, Eye, Edit, MoreHorizontal, FileDown, Loader2, Download, Activity } from "lucide-react"
 
 import { DataTable } from "@/components/DataTable"
 import type { DataTableColumnMeta } from "@/components/DataTable"
@@ -793,14 +793,18 @@ export function LeadList() {
   ]
 
   return (
-    <div className="min-h-screen bg-background p-6 animate-fade-in">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background animate-fade-in">
+      <div className="max-w-7xl mx-auto space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between animate-slide-in-down">
-          <div className="space-y-1">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between animate-slide-in-down">
+          <div className="max-w-3xl space-y-1">
+            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <Activity className="h-3.5 w-3.5" />
+              Lead workspace
+            </div>
             <h1 className="text-2xl font-bold tracking-tight">线索管理</h1>
-            <p className="text-muted-foreground">
-              管理所有潜在客户线索，支持转化为客户
+            <p className="text-sm text-muted-foreground">
+              管理所有潜在客户线索，支持转化为客户，同时保留完整筛选、批量操作和转化路径。
             </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -859,7 +863,7 @@ export function LeadList() {
           defaultPageSize={10}
           emptyText="暂无线索数据"
           loading={isLoading || isFilterLoading}
-          className="border rounded-lg animate-slide-in-up"
+          className="rounded-[1.25rem] border-none animate-slide-in-up"
         />
 
         {/* Create Modal */}

@@ -6,9 +6,9 @@
 
 ## 当前会话
 
-- 正在做什么：继续完成模板层升级，已给 DataTable 接入图片化空状态，并把同一套工作台表达复制到 OpportunityList
-- 上次停在哪：入口与路径一致性已基本补齐，CustomerList/CustomerDetail 保住了完整业务内容，但 CustomerDetail 深层主线重构和设置/自定义对象内部页面升级还没开始
-- 近期关键决定：先完成列表模板层和主工作流复制（Customer -> Opportunity），再继续收 CustomerDetail 主线和设置/自定义对象内部页面风格
+- 正在做什么：继续完成模板层升级，已把 DataTable 的图片化空状态和统一工作台表达复制到 Opportunity / Lead / Contact / Order / Contract 等核心列表页
+- 上次停在哪：入口与路径一致性已基本补齐，CustomerDetail 仍是完整业务内容优先的过渡版本，尚未收成最终动态客户档案
+- 近期关键决定：先把列表工作台模板尽量复制到核心主流程页面，再继续集中处理 CustomerDetail 主线重构和设置/自定义对象内部页面风格
 
 ---
 

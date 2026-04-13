@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { Plus, Package, Download, Trash2, MoreHorizontal, Clock, Settings, Truck, CheckCircle } from "lucide-react"
+import { Plus, Package, Download, Trash2, MoreHorizontal, Clock, Settings, Truck, CheckCircle, Activity } from "lucide-react"
 
 import { DataTable } from "@/components/DataTable"
 import type { DataTableColumnMeta } from "@/components/DataTable"
@@ -387,13 +387,17 @@ export function OrderList() {
   }, [filteredData])
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 animate-in fade-in duration-300">
-      <div className="w-full mx-auto space-y-4">
+    <div className="min-h-screen bg-background animate-in fade-in duration-300">
+      <div className="w-full mx-auto space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1 flex-1">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl space-y-1 flex-1">
+            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <Activity className="h-3.5 w-3.5" />
+              Order workspace
+            </div>
             <h1 className="text-2xl font-bold tracking-tight">订单管理</h1>
-            <p className="text-muted-foreground text-sm">管理所有订单，包括创建、发货跟踪和状态更新</p>
+            <p className="text-sm text-muted-foreground">管理所有订单，包括创建、发货跟踪和状态更新，保留完整筛选和批量操作。</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button onClick={() => setShowCreateModal(true)}>
@@ -404,8 +408,8 @@ export function OrderList() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card className="border-slate-200 shadow-sm">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+          <Card className="border-border/70 shadow-[var(--shadow-sm)]">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-blue-50 rounded-lg">
@@ -418,7 +422,7 @@ export function OrderList() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="border-border/70 shadow-[var(--shadow-sm)]">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-blue-50 rounded-lg">
@@ -431,7 +435,7 @@ export function OrderList() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="border-border/70 shadow-[var(--shadow-sm)]">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-cyan-50 rounded-lg">
@@ -444,7 +448,7 @@ export function OrderList() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="border-border/70 shadow-[var(--shadow-sm)]">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-blue-50 rounded-lg">
@@ -457,7 +461,7 @@ export function OrderList() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="border-border/70 shadow-[var(--shadow-sm)]">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-emerald-50 rounded-lg">
@@ -515,7 +519,7 @@ export function OrderList() {
           defaultPageSize={10}
           emptyText="暂无订单数据"
           loading={isFilterLoading}
-          className="border rounded-lg"
+          className="rounded-[1.25rem] border-none"
         />
 
         {/* Create Modal */}

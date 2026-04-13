@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useNavigate } from "react-router-dom"
 import { ColumnDef } from "@tanstack/react-table"
-import { Plus, Mail, Trash2, Eye, Edit, MoreHorizontal, FileDown, Phone, MessageSquare, Clock } from "lucide-react"
+import { Plus, Mail, Trash2, Eye, Edit, MoreHorizontal, FileDown, Phone, MessageSquare, Clock, Activity } from "lucide-react"
 
 import { DataTable } from "@/components/DataTable"
 import type { DataTableColumnMeta } from "@/components/DataTable"
@@ -607,14 +607,18 @@ export function ContactList() {
   ]
 
   return (
-    <div className="min-h-screen bg-background p-6 animate-fade-in">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background animate-fade-in">
+      <div className="max-w-7xl mx-auto space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between animate-slide-in-down">
-          <div className="space-y-1">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between animate-slide-in-down">
+          <div className="max-w-3xl space-y-1">
+            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <Activity className="h-3.5 w-3.5" />
+              Contact activity workspace
+            </div>
             <h1 className="text-2xl font-bold tracking-tight">沟通记录</h1>
-            <p className="text-muted-foreground">
-              管理所有客户沟通记录，支持筛选、排序、批量操作
+            <p className="text-sm text-muted-foreground">
+              管理所有客户沟通记录，支持筛选、排序、批量操作，同时保持完整互动字段。
             </p>
           </div>
           <Button onClick={() => setCreateModalOpen(true)} className="animate-scale-in shadow-sm hover:shadow-md transition-all duration-200">
@@ -625,23 +629,23 @@ export function ContactList() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-4 gap-4 animate-slide-in-up" style={{ animationDelay: '100ms' }}>
-          <div className="card-elevated p-4">
+          <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[var(--shadow-sm)]">
             <div className="text-sm text-muted-foreground">总记录数</div>
             <div className="text-2xl font-bold mt-1">{filteredData.length}</div>
           </div>
-          <div className="card-elevated p-4">
+          <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[var(--shadow-sm)]">
             <div className="text-sm text-muted-foreground">电话沟通</div>
             <div className="text-2xl font-bold mt-1 text-green-600">
               {filteredData.filter(c => c.type === "电话").length}
             </div>
           </div>
-          <div className="card-elevated p-4">
+          <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[var(--shadow-sm)]">
             <div className="text-sm text-muted-foreground">邮件沟通</div>
             <div className="text-2xl font-bold mt-1 text-blue-600">
               {filteredData.filter(c => c.type === "邮件").length}
             </div>
           </div>
-          <div className="card-elevated p-4">
+          <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[var(--shadow-sm)]">
             <div className="text-sm text-muted-foreground">面谈</div>
             <div className="text-2xl font-bold mt-1 text-purple-600">
               {filteredData.filter(c => c.type === "面谈").length}
@@ -683,7 +687,7 @@ export function ContactList() {
           defaultPageSize={10}
           emptyText="暂无沟通记录"
           loading={isLoading || isFilterLoading}
-          className="border rounded-lg animate-slide-in-up"
+          className="rounded-[1.25rem] border-none animate-slide-in-up"
         />
 
         {/* Create Modal */}

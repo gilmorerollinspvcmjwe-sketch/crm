@@ -18,6 +18,10 @@ import {
   GripVertical,
   CheckSquare,
   X,
+  FileText,
+  Link2,
+  Workflow,
+  TableProperties,
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
@@ -48,6 +52,36 @@ import { useToast } from "@/hooks/use-toast"
 import { mockCustomObjectDefinitions } from "@/mock/customObjectData"
 import type { CustomObject, ObjectProperty } from "@/types/customObject"
 import { cn } from "@/lib/utils"
+
+function ToolEntryCard({
+  title,
+  description,
+  icon,
+  onClick,
+}: {
+  title: string
+  description: string
+  icon: React.ReactNode
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full rounded-2xl border border-border/70 bg-card p-4 text-left shadow-[var(--shadow-sm)] transition-colors hover:bg-accent/45"
+    >
+      <div className="flex items-start gap-3">
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border/70 bg-muted/50 text-foreground/78">
+          {icon}
+        </span>
+        <div>
+          <p className="text-sm font-semibold text-foreground">{title}</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">{description}</p>
+        </div>
+      </div>
+    </button>
+  )
+}
 
 // ============ Field Visibility Config ============
 
@@ -484,6 +518,53 @@ export function CustomObjectSettings() {
             </CardContent>
           </Card>
 
+          <Card className="border-border/70 shadow-[var(--shadow-sm)] mt-4">
+            <CardHeader>
+              <CardTitle>对象扩展能力</CardTitle>
+              <CardDescription>按文档要求，从这里进入对象属性、表单、页面、关系、阶段与视图配置。</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 md:grid-cols-2">
+                <ToolEntryCard
+                  title="自定义属性"
+                  description="进入对象构建器，系统字段保持稳定，可新增更多业务属性。"
+                  icon={<CheckSquare className="h-4 w-4" />}
+                  onClick={() => navigate(`/custom-objects/${objectId}/builder`)}
+                />
+                <ToolEntryCard
+                  title="编辑表单"
+                  description="配置对象表单结构和字段展示，让录入流程更符合业务场景。"
+                  icon={<FileText className="h-4 w-4" />}
+                  onClick={() => navigate(`/custom-objects/${objectId}/form-designer`)}
+                />
+                <ToolEntryCard
+                  title="对象关系"
+                  description="设置对象之间的自定义关联，让详情页展示相关对象数据。"
+                  icon={<Link2 className="h-4 w-4" />}
+                  onClick={() => navigate(`/custom-objects/${objectId}/object-relationships`)}
+                />
+                <ToolEntryCard
+                  title="阶段管理"
+                  description="针对交易、订单等需要阶段流转的对象，配置阶段和规则。"
+                  icon={<Workflow className="h-4 w-4" />}
+                  onClick={() => navigate(`/custom-objects/${objectId}/pipeline-manager`)}
+                />
+                <ToolEntryCard
+                  title="自定义页面"
+                  description="配置详情页左中右区域的页面与卡片展示方式。"
+                  icon={<Layout className="h-4 w-4" />}
+                  onClick={() => navigate(`/custom-objects/${objectId}/page-builder`)}
+                />
+                <ToolEntryCard
+                  title="视图管理"
+                  description="保存多个列表、看板或甘特视图，满足不同角色的查看方式。"
+                  icon={<TableProperties className="h-4 w-4" />}
+                  onClick={() => navigate(`/custom-objects/${objectId}/view-manager`)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Danger Zone */}
           <Card className="border-red-200 mt-4">
             <CardHeader>
@@ -513,6 +594,9 @@ export function CustomObjectSettings() {
               <CardDescription>控制各字段在列表、详情、搜索等功能中的显示行为</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="mb-4 rounded-xl border border-border/70 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+                系统自带属性应保持稳定，新增业务属性请通过“对象扩展能力”里的“自定义属性”进入对象构建器完成。
+              </div>
               <FieldVisibilityEditor
                 properties={properties}
                 onChange={setProperties}

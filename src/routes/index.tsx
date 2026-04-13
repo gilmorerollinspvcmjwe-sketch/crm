@@ -40,6 +40,15 @@ function LegacyCustomObjectRedirect({ target }: { target: 'detail' | 'builder' }
   return <Navigate to={to} replace />
 }
 
+function LegacyCustomObjectToolRedirect({
+  suffix,
+}: {
+  suffix: 'form-designer' | 'page-builder' | 'view-manager' | 'pipeline-manager' | 'object-relationships'
+}) {
+  const { objectId = '' } = useParams()
+  return <Navigate to={`/custom-objects/${objectId}/${suffix}`} replace />
+}
+
 // ============================================
 // 懒加载页面组件
 // ============================================
@@ -705,6 +714,26 @@ const routes: RouteObject[] = [
         element: <LazyPage component={CustomObjectSettings} />,
       },
       {
+        path: 'custom-objects/:objectId/form-designer',
+        element: <LazyPage component={FormDesigner} />,
+      },
+      {
+        path: 'custom-objects/:objectId/page-builder',
+        element: <LazyPage component={PageBuilder} />,
+      },
+      {
+        path: 'custom-objects/:objectId/view-manager',
+        element: <LazyPage component={ViewManager} />,
+      },
+      {
+        path: 'custom-objects/:objectId/pipeline-manager',
+        element: <LazyPage component={PipelineManager} />,
+      },
+      {
+        path: 'custom-objects/:objectId/object-relationships',
+        element: <LazyPage component={ObjectRelationships} />,
+      },
+      {
         path: 'custom-objects/:objectId',
         element: <LazyPage component={CustomObjectDetail} />,
       },
@@ -889,6 +918,26 @@ const routes: RouteObject[] = [
           {
             path: 'custom-objects/:objectId/edit',
             element: <LegacyCustomObjectRedirect target="builder" />,
+          },
+          {
+            path: 'custom-objects/:objectId/form-designer',
+            element: <LegacyCustomObjectToolRedirect suffix="form-designer" />,
+          },
+          {
+            path: 'custom-objects/:objectId/page-builder',
+            element: <LegacyCustomObjectToolRedirect suffix="page-builder" />,
+          },
+          {
+            path: 'custom-objects/:objectId/view-manager',
+            element: <LegacyCustomObjectToolRedirect suffix="view-manager" />,
+          },
+          {
+            path: 'custom-objects/:objectId/pipeline-manager',
+            element: <LegacyCustomObjectToolRedirect suffix="pipeline-manager" />,
+          },
+          {
+            path: 'custom-objects/:objectId/object-relationships',
+            element: <LegacyCustomObjectToolRedirect suffix="object-relationships" />,
           },
           // 向后兼容重定向
           { path: 'change-password', element: <Navigate to="/settings/security" replace /> },
